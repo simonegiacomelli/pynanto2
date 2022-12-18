@@ -1,8 +1,7 @@
-import glob
-from collections import namedtuple
-from os import PathLike
+import zipfile
+from io import BytesIO
 from pathlib import Path
-from typing import Iterator, Tuple, Union, NamedTuple, Optional, Callable
+from typing import Iterator, NamedTuple, Optional, Callable
 
 
 class Item(NamedTuple):
@@ -37,3 +36,15 @@ def bundle_definition(folder: Path, relative_to: Optional[Path] = None
 
     yield from recurse(folder)
     return iter(())
+
+
+def build_archive(item_iterator: Iterator[Item]) -> bytes:
+    stream = BytesIO()
+    zf = zipfile.ZipFile(stream, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=1)
+
+    for item in item_iterator:
+        zf.write(item.filepath, item.arcname)
+    zf.close()
+
+    stream.seek(0)
+    return stream.getbuffer().tobytes()
