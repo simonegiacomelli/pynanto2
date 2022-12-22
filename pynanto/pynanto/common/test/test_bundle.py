@@ -58,7 +58,7 @@ class Test_build_archive(unittest.TestCase):
             content: bytes
 
         folder = self.support_data / 'simple'
-        (folder / 'empty_dir').mkdir(exist_ok=True) # should be ignored by build_archive
+        (folder / 'empty_dir').mkdir(exist_ok=True)  # should be ignored by build_archive
 
         archive_bytes = build_archive(bundle_definition(folder))
 
