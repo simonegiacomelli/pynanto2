@@ -32,7 +32,6 @@ class MyTestCase(unittest.TestCase):
         actual = get_url_response(url)
 
         self.assertEqual(response, actual)
-        ws.stop()
 
 
 def get_url_response(url: str) -> Response:

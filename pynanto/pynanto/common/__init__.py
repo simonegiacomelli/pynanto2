@@ -56,20 +56,12 @@ class Webserver(ABC):
         self._start_listen()
         return self
 
-    def stop(self) -> 'Webserver':
-        self._stop()
-        return self
-
     @abstractmethod
     def _setup_routes(self):
         pass
 
     @abstractmethod
     def _start_listen(self):
-        pass
-
-    @abstractmethod
-    def _stop(self):
         pass
 
 

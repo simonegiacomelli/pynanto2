@@ -1,4 +1,5 @@
 from threading import Thread
+from typing import Optional
 
 from flask import Flask, Response
 
@@ -10,6 +11,7 @@ class WsFlask(Webserver):
     def __init__(self):
         super().__init__()
         self.app = Flask(__name__)
+        self.thread: Optional[Thread] = None
 
     def _setup_routes(self):
         for route in self.routes.list:
@@ -23,8 +25,5 @@ class WsFlask(Webserver):
         def flask_run():
             self.app.run(host=self.host, port=self.port)
 
-        thread = Thread(target=flask_run, daemon=True)
-        thread.start()
-
-    def _stop(self):
-        pass
+        self.thread = Thread(target=flask_run, daemon=True)
+        self.thread.start()
