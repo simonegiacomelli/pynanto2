@@ -4,6 +4,7 @@ from typing import Optional
 from flask import Flask, Response
 
 import pynanto.common
+import pynanto.response
 from pynanto import Webserver
 
 
@@ -16,7 +17,7 @@ class WsFlask(Webserver):
     def _setup_routes(self):
         for route in self.routes.list:
             def func() -> Response:
-                pn_response: pynanto.Response = route.callback()
+                pn_response: pynanto.response.Response = route.callback()
                 return Response(pn_response.content, status=200, content_type=pn_response.content_type)
 
             self.app.add_url_rule(route.path, view_func=func)

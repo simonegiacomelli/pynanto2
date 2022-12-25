@@ -1,10 +1,8 @@
 import pytest
 from playwright.sync_api import Page, expect
 
-import pynanto
-import pynanto.server.wait_url
-from pynanto import Response, Routes, Bootstrap
-from pynanto.server.find_port import find_port
+from pynanto import Bootstrap, Response, Routes
+from pynanto.server import wait_url, find_port
 from pynanto.test.avaialable_webservers import available_webservers
 
 
@@ -29,7 +27,7 @@ def test_bootstrap(page: Page, webserver_class):
         .start_listen()
 
     url = f'http://127.0.0.1:{port}'
-    pynanto.server.wait_url.wait_url(url + '/is_server_running')
+    wait_url(url + '/is_server_running')
     page.goto(url)
 
     expect(page.locator('id=tag1')).to_have_value('Hello world!')

@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.responses import Response
 
 import pynanto.common
+import pynanto.response
 from pynanto import Webserver
 
 
@@ -18,7 +19,7 @@ class WsFastapi(Webserver):
     def _setup_routes(self):
         for route in self.routes.list:
             def func(*args) -> Response:
-                pn_response: pynanto.Response = route.callback()
+                pn_response: pynanto.response.Response = route.callback()
                 return Response(content=pn_response.content, media_type=pn_response.content_type)
 
             self.app.add_route(route.path, route=func)

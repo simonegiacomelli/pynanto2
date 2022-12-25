@@ -3,10 +3,8 @@ import urllib.request
 
 import pytest
 
-import pynanto
-import pynanto.server.wait_url
-from pynanto import Routes, Response
-from pynanto.server.find_port import find_port
+from pynanto import Response, Routes
+from pynanto.server import find_port, wait_url
 from pynanto.test.avaialable_webservers import available_webservers
 
 
@@ -29,7 +27,7 @@ def test_webserver_implementations(webserver_class):
 
     url = f'http://127.0.0.1:{port}'
 
-    pynanto.server.wait_url.wait_url(url + '/is_server_running')
+    wait_url(url + '/is_server_running')
 
     actual = get_url_response(url)
 

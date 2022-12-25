@@ -7,12 +7,12 @@ class AvailableWebservers:
 def _webservers_classes():
     result = []
     try:
-        from pynanto.webserver.fastapi import WsFastapi
+        from pynanto.webservers.fastapi import WsFastapi
         result.append(WsFastapi)
     except:
         pass
     try:
-        from pynanto.webserver.flask import WsFlask
+        from pynanto.webservers.flask import WsFlask
         result.append(WsFlask)
     except:
         pass
