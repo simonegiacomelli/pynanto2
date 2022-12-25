@@ -1,13 +1,15 @@
+import pytest
 from playwright.sync_api import Page, expect
 
 import pynanto
 import pynanto.server.wait_url
 from pynanto import Response, Routes, Bootstrap
 from pynanto.server.find_port import find_port
-from pynanto.webserver.flask import WsFlask
+from pynanto.test.avaialable_webservers import available_webservers
 
 
-def test_bootstrap(page: Page):
+@pytest.mark.parametrize('webserver_class', available_webservers.classes, ids=available_webservers.ids)
+def test_bootstrap(page: Page, webserver_class):
     bootstrap_javascript = Bootstrap().set_python(
         'from js import document\n' +
         'document.getElementById("tag1").value = "Hello world!"\n'
@@ -19,9 +21,8 @@ def test_bootstrap(page: Page):
     routes = Routes().add_route('/', lambda: response)
 
     port = find_port()
-    ws = WsFlask()
 
-    ws \
+    webserver_class() \
         .set_routes(routes) \
         .set_host('0.0.0.0') \
         .set_port(port) \
