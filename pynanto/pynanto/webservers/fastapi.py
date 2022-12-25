@@ -1,4 +1,3 @@
-from functools import partial
 from threading import Thread
 from typing import Optional
 
@@ -16,12 +15,11 @@ class WsFastapi(Webserver):
         self.app = FastAPI()
         self.thread: Optional[Thread] = None
 
-    def _setup_routes(self):
-        def func(r: Route, *args) -> Response:
-            return self.to_native_response(r.callback())
+    def _setup_route(self, route: Route):
+        def func(*args) -> Response:
+            return self.to_native_response(route.callback())
 
-        for route in self.routes.list:
-            self.app.add_route(route.path, route=partial(func, route))
+        self.app.add_route(route.path, route=func)
 
     def to_native_response(self, pn_response):
         return Response(content=pn_response.content, media_type=pn_response.content_type)

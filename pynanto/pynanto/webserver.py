@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
 
-from pynanto.routes import Routes
+from pynanto.routes import Routes, Route
 
 
 class Webserver(ABC):
@@ -27,7 +27,10 @@ class Webserver(ABC):
         if routes is None:
             raise Exception(f'Parameter routes cannot be None')
         self.routes = routes
-        self._setup_routes()
+
+        for route in self.routes.list:
+            self._setup_route(route)
+
         return self
 
     def start_listen(self) -> 'Webserver':
@@ -35,7 +38,7 @@ class Webserver(ABC):
         return self
 
     @abstractmethod
-    def _setup_routes(self):
+    def _setup_route(self, route: Route):
         pass
 
     @abstractmethod
