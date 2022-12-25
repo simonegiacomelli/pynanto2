@@ -18,7 +18,7 @@ class Test_integration(unittest.TestCase):
         #     .add_bundle(pn.Bundle().add_file(script)) \
         #     .set_main(script)
 
-        remote = pn.Remote().add_bundle(pn.Bundle().add_file(script))
+        remote = pn.Setup().add_bundle(pn.Bundle().add_file(script))
         # remote.attach_webserver(pns.webserver.flask())
         pns.webserver.flask().set_remote(remote).instance() \
             .run(host="0.0.0.0", port=5020, debug=False, use_reloader=True)

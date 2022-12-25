@@ -3,9 +3,10 @@ import urllib
 import urllib.request
 
 import pynanto
-from pynanto.common import Routes, Response
+import pynanto.server.wait_url
+from pynanto import Routes, Response
+from pynanto.flask import WsFlask
 from pynanto.server.find_port import find_port
-from pynanto.server.ws_flask import WsFlask
 
 
 class MyTestCase(unittest.TestCase):
@@ -27,7 +28,7 @@ class MyTestCase(unittest.TestCase):
             .start_listen()
 
         url = f'http://127.0.0.1:{port}'
-        pynanto.server.wait_url(url + '/is_server_running')
+        pynanto.server.wait_url.wait_url(url + '/is_server_running')
 
         actual = get_url_response(url)
 

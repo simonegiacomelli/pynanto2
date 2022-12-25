@@ -4,7 +4,7 @@ import zipfile
 from pathlib import Path
 from typing import Optional, NamedTuple
 
-from pynanto.common.bundle import bundle_definition, Item, default_item_filter, build_archive
+from pynanto.common.bundle import bundle_definition, PathResource, default_item_filter, build_archive
 
 parent = Path(__file__).parent
 
@@ -15,7 +15,7 @@ class Test_bundle_definition(unittest.TestCase):
     def test_one_file(self):
         folder = self.support_data / 'one_file'
         actual = set(bundle_definition(folder))
-        expect = set([Item(folder / 'foo.py', 'foo.py')])
+        expect = set([PathResource('foo.py', folder / 'foo.py')])
         self.assertEqual(expect, actual)
 
     def test_zero_file(self):
@@ -28,7 +28,7 @@ class Test_bundle_definition(unittest.TestCase):
     def test_selective(self):
         folder = self.support_data / 'relative_to'
         actual = set(bundle_definition(folder / 'yes', relative_to=folder))
-        expect = set([Item(folder / 'yes/yes.txt', 'yes/yes.txt')])
+        expect = set([PathResource('yes/yes.txt', folder / 'yes/yes.txt')])
         self.assertEqual(expect, actual)
 
     def test_item_filter(self):
@@ -39,13 +39,13 @@ class Test_bundle_definition(unittest.TestCase):
         pycache.mkdir(exist_ok=True)
         (pycache / 'cache.txt').write_text('some cache')
 
-        def item_filter(item: Item) -> Optional[Item]:
+        def item_filter(item: PathResource) -> Optional[PathResource]:
             if item.filepath == reject:
                 return None
             return default_item_filter(item)
 
         actual = set(bundle_definition(folder, item_filter=item_filter))
-        expect = set([Item(folder / 'yes/yes.txt', 'yes/yes.txt')])
+        expect = set([PathResource('yes/yes.txt', folder / 'yes/yes.txt')])
         self.assertEqual(expect, actual)
 
 
@@ -60,7 +60,7 @@ class Test_build_archive(unittest.TestCase):
         folder = self.support_data / 'simple'
         (folder / 'empty_dir').mkdir(exist_ok=True)  # should be ignored by build_archive
 
-        archive_bytes = build_archive(bundle_definition(folder))
+        archive_bytes = build_archive(list(bundle_definition(folder)))
 
         actual_files = set()
         with zipfile.ZipFile(io.BytesIO(archive_bytes)) as zf:
