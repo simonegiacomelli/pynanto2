@@ -3,8 +3,8 @@ from playwright.sync_api import Page, expect
 import pynanto
 import pynanto.server.wait_url
 from pynanto import Response, Routes, Bootstrap
-from pynanto.flask import WsFlask
 from pynanto.server.find_port import find_port
+from pynanto.webserver.flask import WsFlask
 
 
 def test_bootstrap(page: Page):

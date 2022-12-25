@@ -1,8 +1,8 @@
 from playwright.sync_api import Page, expect
 
-from pynanto.flask import WsFlask
 from pynanto.server.find_port import find_port
 from pynanto.server.wait_url import wait_url
+from pynanto.webserver.flask import WsFlask
 
 
 def test_end2end(page: Page):
