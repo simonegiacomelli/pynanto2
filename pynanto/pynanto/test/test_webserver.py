@@ -10,28 +10,28 @@ from pynanto.test.avaialable_webservers import available_webservers
 
 @pytest.mark.parametrize('webserver_class', available_webservers.classes, ids=available_webservers.ids)
 def test_webserver_implementations(webserver_class):
-    response = Response('<h1>hello</h1>', 'text/html')
+    response_a = Response('a', 'text/plain')
+    response_b = Response('b', 'text/plain]')
 
-    def callback():
-        return response
+    routes = (
+        Routes()
+        .add_route('/b', lambda: response_b)
+        .add_route('/', lambda: response_a)
+    )
 
-    routes = Routes().add_route('/', callback)
+    webserver = webserver_class()
+    (webserver
+     .set_routes(routes)
+     .set_binding(('0.0.0.0', find_port()))
+     .start_listen()
+     )
 
-    port = find_port()
-
-    webserver_class() \
-        .set_routes(routes) \
-        .set_host('0.0.0.0') \
-        .set_port(port) \
-        .start_listen()
-
-    url = f'http://127.0.0.1:{port}'
+    url = f'http://127.0.0.1:{webserver.port}'
 
     wait_url(url + '/is_server_running')
 
-    actual = get_url_response(url)
-
-    assert response == actual
+    assert get_url_response(url) == response_a
+    assert get_url_response(url + '/b') == response_b
 
 
 def get_url_response(url: str) -> Response:

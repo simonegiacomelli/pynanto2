@@ -18,9 +18,10 @@ class Webserver(ABC):
         self.port = port
         return self
 
-    def set_binding(self, binding: Tuple[str, int]):
+    def set_binding(self, binding: Tuple[str, int]) -> 'Webserver':
         self.set_host(binding[0])
         self.set_port(binding[1])
+        return self
 
     def set_routes(self, routes: Routes) -> 'Webserver':
         if routes is None:
