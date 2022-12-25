@@ -2,8 +2,6 @@ import urllib.error
 import urllib.request
 from time import sleep
 
-import webserver
-
 
 def wait_url(url: str):
     for _ in range(300):
