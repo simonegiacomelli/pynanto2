@@ -1,23 +1,21 @@
 from playwright.sync_api import Page, expect
 
 import pynanto
-from pynanto.common import Response, Routes
+from pynanto.common import Response, Routes, Bootstrap
 from pynanto.server.find_port import find_port
 from pynanto.server.ws_flask import WsFlask
 
 
 def test_bootstrap(page: Page):
-    # pynanto.common.bootstrap_javascript
-    bootstrap_javascript = """
-    document.getElementById('tag1').value = 'Hello world!';
-    """
+    bootstrap_javascript = Bootstrap().set_python(
+        'from js import document\n' +
+        'document.getElementById("tag1").value = "Hello world!"\n'
+    ).get_javascript()
+
     response = Response(f'<input id="tag1" value="Hello">'
                         f'<script>{bootstrap_javascript}</script>', 'text/html')
 
-    def callback():
-        return response
-
-    routes = Routes().add_route('/', callback)
+    routes = Routes().add_route('/', lambda: response)
 
     port = find_port()
     ws = WsFlask()

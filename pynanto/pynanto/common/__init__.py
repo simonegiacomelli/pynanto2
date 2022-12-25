@@ -82,3 +82,17 @@ class Remote:
 
     def attach_webserver(self, webserver: Webserver):
         pass
+
+
+class Bootstrap:
+    def __init__(self):
+        self.remote_python = ''
+
+    def set_python(self, remote_python: str) -> 'Bootstrap':
+        self.remote_python = remote_python
+        return self
+
+    def get_javascript(self) -> str:
+        parent = Path(__file__).parent
+        js = parent / 'bootstrap.js'
+        return js.read_text().replace('# python replace marker', self.remote_python)
