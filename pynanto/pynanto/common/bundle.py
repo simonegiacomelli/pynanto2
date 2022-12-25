@@ -71,12 +71,17 @@ def bundle_definition(
     return iter(())
 
 
-def build_archive(item_iterator: Iterator[PathResource]) -> bytes:
+def build_archive(item_iterator: Iterator[Resource]) -> bytes:
     stream = BytesIO()
     zf = zipfile.ZipFile(stream, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=1)
 
     for item in item_iterator:
-        zf.write(item.filepath, item.arcname)
+        if isinstance(item, PathResource):
+            zf.write(item.filepath, item.arcname)
+        elif isinstance(item, StringResource):
+            zf.writestr(item.arcname, item.get_content())
+        else:
+            raise Exception(f'Unhandled class \n  type={type(item).__name__} \n  data={item}')
     zf.close()
 
     stream.seek(0)

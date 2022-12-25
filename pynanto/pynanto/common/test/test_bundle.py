@@ -4,6 +4,7 @@ import zipfile
 from pathlib import Path
 from typing import Optional, NamedTuple
 
+from pynanto import StringResource
 from pynanto.common.bundle import bundle_definition, PathResource, default_item_filter, build_archive
 
 parent = Path(__file__).parent
@@ -60,7 +61,8 @@ class Test_build_archive(unittest.TestCase):
         folder = self.support_data / 'simple'
         (folder / 'empty_dir').mkdir(exist_ok=True)  # should be ignored by build_archive
 
-        archive_bytes = build_archive(list(bundle_definition(folder)))
+        archive_bytes = build_archive(list(bundle_definition(folder)) +
+                                      [StringResource('dir1/baz.txt', "#baz")])
 
         actual_files = set()
         with zipfile.ZipFile(io.BytesIO(archive_bytes)) as zf:
@@ -70,7 +72,8 @@ class Test_build_archive(unittest.TestCase):
 
         expected_files = {
             ZFile('foo.txt', '#foo'.encode()),
-            ZFile('dir1/bar.txt', '#bar'.encode())
+            ZFile('dir1/bar.txt', '#bar'.encode()),
+            ZFile('dir1/baz.txt', '#baz'.encode()),
         }
 
         self.assertEqual(expected_files, actual_files)
