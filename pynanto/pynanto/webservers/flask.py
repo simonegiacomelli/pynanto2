@@ -3,7 +3,7 @@ from typing import Optional
 
 from flask import Flask, Response
 
-import pynanto.response
+import pynanto
 from pynanto import Webserver
 from pynanto.routes import Route
 
@@ -20,7 +20,7 @@ class WsFlask(Webserver):
 
         self.app.add_url_rule(route.path, route.path, func)
 
-    def to_native_response(self, pn_response: pynanto.response.Response) -> Response:
+    def to_native_response(self, pn_response: pynanto.Response) -> Response:
         return Response(pn_response.content, status=200, content_type=pn_response.content_type)
 
     def _start_listen(self):
