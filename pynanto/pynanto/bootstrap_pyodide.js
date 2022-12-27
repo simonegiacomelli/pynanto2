@@ -16,9 +16,9 @@ async function main() {
         await load_script(pyodide_src_url);
     }
     let pyodide = await loadPyodide();
-    await pyodide.loadPackage('micropip')
-    const micropip = pyodide.pyimport("micropip");
-    await micropip.install(['pydantic']);
+    // await pyodide.loadPackage('micropip')
+    // const micropip = pyodide.pyimport("micropip");
+    // await micropip.install(['pydantic']);
     pyodide.runPythonAsync(`
 # python replace marker
   `);

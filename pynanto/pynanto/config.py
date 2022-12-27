@@ -63,9 +63,7 @@ class Config:
 
     def set_main_module(self, main_module: str):
         self.main_module = main_module
-        self.bootstrap.set_python(
-            self.entrypoint_code
-        )
+        self.bootstrap.set_python(self.entrypoint_code)
 
     @property
     def entrypoint_code(self) -> str:
