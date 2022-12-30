@@ -52,10 +52,11 @@ class Config:
             'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip'
         )
 
-    def attach_webserver(self, webserver: Webserver):
+    def attach_webserver(self, webserver: Webserver) -> 'Config':
         self._error_if_attached()
         self._webserver = webserver
         webserver.set_routes(self._routes)
+        return self
 
     def _error_if_attached(self):
         if self._webserver is not None:
