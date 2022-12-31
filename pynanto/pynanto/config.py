@@ -2,6 +2,7 @@ from typing import Optional
 
 from pynanto import Bootstrap, Bundle, Response, Routes, Webserver
 from pynanto.common.bundle import build_archive
+from pynanto.webservers.available_webservers import available_webservers
 
 
 class Config:
@@ -15,11 +16,9 @@ class Config:
 
     @property
     def webserver(self) -> Webserver:
-        result = self._webserver
-        if result is None:
-            raise Exception('')
-
-        return result
+        if self._webserver is None:
+            self._webserver = available_webservers().classes[0]()
+        return self._webserver
 
     def set_routes(self, routes: Routes) -> 'Config':
         if not self._routes.is_empty:
@@ -48,7 +47,7 @@ class Config:
 
     def bundle_to_response(self) -> Response:
         return Response(
-            build_archive(self.bundle.list),
+            build_archive(self.bundle.list()),
             'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip'
         )
 

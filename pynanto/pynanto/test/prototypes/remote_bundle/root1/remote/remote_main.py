@@ -1,3 +1,3 @@
 from js import document
 
-document.body.innerHTML = '<input id="tag1" value="Hello world!">'
+document.body.innerHTML = '<input id="tag1" value="Hello world 3!">'

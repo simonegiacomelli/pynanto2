@@ -31,11 +31,13 @@ def ws_fastapi() -> WsFastapi:
     return WsFastapi()
 
 
-def start_default(webserver_class=None) -> Config:
+def start_default(webserver_class=None, port=None) -> Config:
     if webserver_class is None:
         webserver_class = available_webservers().classes[0]
     cfg = Config().quickstart()
     cfg.attach_webserver(webserver_class())
+    if port is not None:
+        cfg.webserver.set_port(port)
     cfg.webserver.start_listen()
     cfg.webserver.wait_ready()
     return cfg
