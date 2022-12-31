@@ -1,12 +1,12 @@
 import pytest
 from playwright.sync_api import Page, expect
 
+import pynanto
 from pynanto import Bootstrap, Response, Routes
 from pynanto.server import wait_url, find_port
-from pynanto.test.avaialable_webservers import available_webservers
 
 
-@pytest.mark.parametrize('webserver_class', available_webservers.classes, ids=available_webservers.ids)
+@pynanto.test.for_all_webservers()
 def test_bootstrap(page: Page, webserver_class):
     bootstrap_javascript = Bootstrap().set_python(
         'from js import document\n' +

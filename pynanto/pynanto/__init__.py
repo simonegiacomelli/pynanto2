@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from time import sleep
 from typing import TYPE_CHECKING
 
 from pynanto.common.bundle import PathResource, Resource, StringResource
@@ -8,6 +9,7 @@ from .bundle import Bundle
 from .response import Response
 from .routes import Routes, Route
 from .webserver import Webserver
+from .webservers.available_webservers import available_webservers
 
 if True:  # workaround to stop Pycharm reordering Config import
     pass
@@ -27,3 +29,18 @@ def ws_flask() -> WsFlask:
 def ws_fastapi() -> WsFastapi:
     from .webservers.fastapi import WsFastapi
     return WsFastapi()
+
+
+def start_default(webserver_class=None) -> Config:
+    if webserver_class is None:
+        webserver_class = available_webservers().classes[0]
+    cfg = Config().quickstart()
+    cfg.attach_webserver(webserver_class())
+    cfg.webserver.start_listen()
+    cfg.webserver.wait_ready()
+    return cfg
+
+
+def wait_forever():
+    while True:
+        sleep(10)

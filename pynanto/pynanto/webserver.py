@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Tuple
 
 from pynanto.routes import Routes, Route
+from pynanto.server import wait_url
 
 
 class Webserver(ABC):
@@ -44,3 +45,9 @@ class Webserver(ABC):
     @abstractmethod
     def _start_listen(self):
         pass
+
+    def wait_ready(self):
+        wait_url(self.localhost_url() + '/check_if_webserver_is_accepting_requests')
+
+    def localhost_url(self) -> str:
+        return f'http://127.0.0.1:{self.port}'

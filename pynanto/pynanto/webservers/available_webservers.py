@@ -20,4 +20,11 @@ def _webservers_classes():
     return result
 
 
-available_webservers = AvailableWebservers()
+_available_webservers = None
+
+
+def available_webservers() -> AvailableWebservers:
+    global _available_webservers
+    if _available_webservers is None:
+        _available_webservers = AvailableWebservers()
+    return _available_webservers
