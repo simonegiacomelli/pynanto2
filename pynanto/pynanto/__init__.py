@@ -3,9 +3,10 @@ from __future__ import annotations
 from time import sleep
 from typing import TYPE_CHECKING
 
-from pynanto.common.bundle import PathResource, Resource, StringResource
 from .bootstrap import Bootstrap
 from .bundle import Bundle
+from .bundles import Bundles
+from .resource import Resource, StringResource, PathResource
 from .response import Response
 from .routes import Routes, Route
 from .webserver import Webserver

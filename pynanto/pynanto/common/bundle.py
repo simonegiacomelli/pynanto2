@@ -1,40 +1,10 @@
 import zipfile
-from abc import abstractmethod, ABC
 from io import BytesIO
 from pathlib import Path
 from typing import Iterator, Optional, Callable
 
-from attr import dataclass
-
-
-@dataclass(frozen=True)
-class Resource(ABC):
-    arcname: str
-
-    @abstractmethod
-    def get_content(self) -> str:
-        pass
-
-
-@dataclass(frozen=True)
-class PathResource(Resource):
-    filepath: Path
-
-    def get_content(self) -> str:
-        return self.filepath.read_text()
-
-
-@dataclass(frozen=True)
-class StringResource(Resource):
-    content: str
-
-    def get_content(self) -> str:
-        return self.content
-
-
-# class Item(NamedTuple):
-#     arcname: str
-#     filepath: Path
+from pynanto.resource import PathResource
+from pynanto.resource import Resource, StringResource
 
 
 def default_item_filter(item: Resource) -> Optional[Resource]:

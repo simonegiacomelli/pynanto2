@@ -1,24 +1,38 @@
+from abc import ABC, abstractmethod
 from typing import List, Iterable, Callable, Iterator
 
-from pynanto import Resource, StringResource
+from pynanto.common.bundle import build_archive
+from pynanto.resource import Resource
 
-BundleGenerator = Callable[[], Iterator[Resource]]
+ResourceGenerator = Callable[[], Iterator[Resource]]
 
 
-class Bundle:
-    def __init__(self):
-        self._list: List[Resource] = []
-        self._iterators: List[BundleGenerator] = []
+class Bundle(ABC):
 
-    def add_file_content(self, filename: str, content: str):
-        self._list.append(StringResource(filename, content))
+    @abstractmethod
+    def list(self) -> Iterable[Resource]:
+        pass
 
-    def add_resources(self, items: BundleGenerator):
-        self._iterators.append(items)
+
+class WatchableBundle(Bundle, ABC):
+    @abstractmethod
+    def is_changed(self):
+        pass
+
+
+def collect(bundle_list: List[Bundle]) -> Iterable[Resource]:
+    for bundle in bundle_list:
+        yield from bundle.list()
+
+
+class LambdaBundle(Bundle):
+    def __init__(self, resource_generator: ResourceGenerator):
+        self.resource_generator = resource_generator
 
     def list(self) -> Iterable[Resource]:
-        l_list = self._list.copy()
+        gen = self.resource_generator()
+        yield from gen
 
-        yield from l_list
-        for i in self._iterators:
-            yield from i()
+
+def strategy_no_cache(bundles: List[Bundle]) -> bytes:
+    return build_archive(collect(bundles))

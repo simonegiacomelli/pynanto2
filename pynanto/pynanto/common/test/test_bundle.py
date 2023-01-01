@@ -4,8 +4,8 @@ import zipfile
 from pathlib import Path
 from typing import Optional, NamedTuple
 
-from pynanto import StringResource
-from pynanto.common.bundle import bundle_definition, PathResource, default_item_filter, build_archive
+from pynanto import StringResource, PathResource
+from pynanto.common.bundle import bundle_definition, default_item_filter, build_archive
 
 parent = Path(__file__).parent
 

@@ -21,7 +21,7 @@ def test_bootstrap(page: Page, webserver_class):
 @pynanto.test.for_all_webservers()
 def test_bootstrap_bundle(page: Page, webserver_class):
     config = pynanto.start_default(webserver_class=webserver_class, port=find_port())
-    config.bundle.add_file_content(
+    config.bundles.add_file_content(
         'script1.py',
         """from js import document\n"""
         """document.body.innerHTML='<input id="tag1" value="Hello world 2!">'\n"""
@@ -37,7 +37,7 @@ def test_bootstrap_bundle_from_filesystem(page: Page, webserver_class):
     parent = Path(__file__).parent
     for_remote = parent / 'data' / 'for_remote'
     config = pynanto.start_default(webserver_class=webserver_class, port=find_port())
-    config.bundle.add_resources(lambda: bundle_definition(for_remote))
+    config.bundles.add_resources(lambda: bundle_definition(for_remote))
     config.set_main_module('main')
 
     page.goto(config.webserver.localhost_url())

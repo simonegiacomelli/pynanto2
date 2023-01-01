@@ -1,7 +1,10 @@
 from typing import Optional
 
-from pynanto import Bootstrap, Bundle, Response, Routes, Webserver
-from pynanto.common.bundle import build_archive
+from pynanto.bootstrap import Bootstrap
+from pynanto.bundles import Bundles
+from pynanto.response import Response
+from pynanto.routes import Routes
+from pynanto.webserver import Webserver
 from pynanto.webservers.available_webservers import available_webservers
 
 
@@ -9,7 +12,7 @@ class Config:
     def __init__(self):
         self._routes = Routes()
         self.bootstrap = Bootstrap()
-        self.bundle = Bundle()
+        self.bundles = Bundles()
         self.main_module = ''
         self._webserver: Optional[Webserver] = None
         self.bundle_route = '/pynanto/bundle/default.zip'
@@ -31,7 +34,7 @@ class Config:
 
         self.set_routes(
             Routes()
-            .add_route(self.bundle_route, self.bundle_to_response)
+            .add_route(self.bundle_route, self.bundles.to_response)
             .add_route('/', self.quickstart_index_response)
         )
 
@@ -43,12 +46,6 @@ class Config:
             f'<h1>loading...</h1>'
             f'<script>{bootstrap_javascript}</script>'
             , 'text/html'
-        )
-
-    def bundle_to_response(self) -> Response:
-        return Response(
-            build_archive(self.bundle.list()),
-            'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip'
         )
 
     def attach_webserver(self, webserver: Webserver) -> 'Config':
