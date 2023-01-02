@@ -7,9 +7,13 @@ import pynanto as pn
 from pynanto.server import find_port
 
 
+def new_config(webserver_class) -> pn.Config:
+    return pn.Config().quickstart(webserver_instance=webserver_class(), port=find_port(), blocking=False)
+
+
 @pynanto.test.for_all_webservers()
 def test_bootstrap(page: Page, webserver_class):
-    config = pn.start_default(webserver_instance=webserver_class(), port=find_port())
+    config = new_config(webserver_class)
     config.bootstrap.set_python(
         """from js import document\n"""
         """document.body.innerHTML='<input id="tag1" value="Hello world 1!">'\n"""
@@ -20,7 +24,7 @@ def test_bootstrap(page: Page, webserver_class):
 
 @pynanto.test.for_all_webservers()
 def test_bootstrap_bundle(page: Page, webserver_class):
-    config = pn.start_default(webserver_instance=webserver_class(), port=find_port())
+    config = new_config(webserver_class)
     config.bundles.add_file_content(
         'script1.py',
         """from js import document\n"""
@@ -34,7 +38,7 @@ def test_bootstrap_bundle(page: Page, webserver_class):
 
 @pynanto.test.for_all_webservers()
 def test_bootstrap_bundle_from_filesystem(page: Page, webserver_class):
-    config = pn.start_default(webserver_instance=webserver_class(), port=find_port())
+    config = new_config(webserver_class)
     config.bundles.add_flat_folder(Path(__file__).parent / 'data' / 'for_remote')
     config.set_main_module('main')
 

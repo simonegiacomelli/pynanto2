@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from time import sleep
 from typing import Tuple
 
 from pynanto.routes import Routes, Route
@@ -51,3 +52,8 @@ class Webserver(ABC):
 
     def localhost_url(self) -> str:
         return f'http://127.0.0.1:{self.port}'
+
+
+def wait_forever():
+    while True:
+        sleep(10)

@@ -5,6 +5,7 @@ from pynanto.bundles import Bundles
 from pynanto.response import Response
 from pynanto.routes import Routes
 from pynanto.webserver import Webserver
+from pynanto.webserver import wait_forever
 from pynanto.webservers.available_webservers import available_webservers
 
 
@@ -30,13 +31,31 @@ class Config:
         self._routes = routes
         return self
 
-    def quickstart(self) -> 'Config':
+    def quickstart(
+            self,
+            blocking: bool = True,
+            webserver_instance: Optional[Webserver] = None,
+            port: Optional[int] = None
+    ) -> 'Config':
 
         self.set_routes(
             Routes()
             .add_route(self.bundle_route, self.bundles.to_response)
             .add_route('/', self.quickstart_index_response)
         )
+
+        if webserver_instance is None:
+            webserver_instance = available_webservers().new_instance()
+
+        self.attach_webserver(webserver_instance)
+        if port is not None:
+            self.webserver.set_port(port)
+        self.webserver.start_listen()
+
+        if blocking:
+            wait_forever()
+        else:
+            self.webserver.wait_ready()
 
         return self
 
