@@ -7,7 +7,7 @@ install_requires = (Path(__file__).parent / 'requirements.txt').read_text().spli
 setup(
     name='pynanto',
     version='0.1.0',
-    packages=find_packages(),
+    packages=find_packages(include=['pynanto', 'pynanto.*']),
     install_requires=install_requires,
     classifiers=[
     ],
