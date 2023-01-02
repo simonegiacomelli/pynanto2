@@ -50,6 +50,9 @@ class Config:
         root_folder = source_file.parent
         self.bundles.add_flat_folder(root_folder / 'remote', relative_to=root_folder)
 
+        pynanto_remote = Path(__file__).parent
+        self.bundles.add_flat_folder(pynanto_remote / 'remote', relative_to=pynanto_remote.parent)
+
         self.set_main_module('remote')
         if webserver_instance is None:
             webserver_instance = available_webservers().new_instance()

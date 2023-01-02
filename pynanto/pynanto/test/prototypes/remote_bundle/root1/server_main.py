@@ -2,9 +2,7 @@ import pynanto as pn
 
 
 def main():
-    cfg = pn.Config().quickstart()
-    cfg.webserver.start_listen()
-    pn.wait_forever()
+    pn.Config().quickstart()
 
 
 if __name__ == '__main__':
