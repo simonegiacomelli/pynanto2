@@ -2,16 +2,16 @@ from pathlib import Path
 
 from playwright.sync_api import Page, expect
 
-import pynanto
 import pynanto as pn
 from pynanto.server import find_port
+from pynanto_test import for_all_webservers
 
 
 def new_config(webserver_class) -> pn.Config:
     return pn.Config().quickstart(webserver_instance=webserver_class(), port=find_port(), blocking=False)
 
 
-@pynanto.test.for_all_webservers()
+@for_all_webservers()
 def test_bootstrap(page: Page, webserver_class):
     config = new_config(webserver_class)
     config.bootstrap.set_python(
@@ -22,7 +22,7 @@ def test_bootstrap(page: Page, webserver_class):
     expect(page.locator('id=tag1')).to_have_value('Hello world 1!')
 
 
-@pynanto.test.for_all_webservers()
+@for_all_webservers()
 def test_bootstrap_bundle(page: Page, webserver_class):
     config = new_config(webserver_class)
     config.bundles.add_file_content(
@@ -36,7 +36,7 @@ def test_bootstrap_bundle(page: Page, webserver_class):
     expect(page.locator('id=tag1')).to_have_value('Hello world 2!')
 
 
-@pynanto.test.for_all_webservers()
+@for_all_webservers()
 def test_bootstrap_bundle_from_filesystem(page: Page, webserver_class):
     config = new_config(webserver_class)
     config.bundles.add_flat_folder(Path(__file__).parent / 'data' / 'for_remote')

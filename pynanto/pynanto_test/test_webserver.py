@@ -1,12 +1,12 @@
 import urllib
 import urllib.request
 
-import pynanto
 from pynanto import Response, Routes
 from pynanto.server import find_port, wait_url
+from pynanto_test import for_all_webservers
 
 
-@pynanto.test.for_all_webservers()
+@for_all_webservers()
 def test_webserver_implementations(webserver_class):
     response_a = Response('a', 'text/plain')
     response_b = Response('b', 'text/plain]')
