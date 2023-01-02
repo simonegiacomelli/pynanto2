@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from time import sleep
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from .bootstrap import Bootstrap
 from .bundle import Bundle
@@ -32,11 +32,11 @@ def ws_fastapi() -> WsFastapi:
     return WsFastapi()
 
 
-def start_default(webserver_class=None, port=None) -> Config:
-    if webserver_class is None:
-        webserver_class = available_webservers().classes[0]
+def start_default(webserver_instance: Optional[Webserver] = None, port=None) -> Config:
     cfg = Config().quickstart()
-    cfg.attach_webserver(webserver_class())
+    if webserver_instance is None:
+        webserver_instance = available_webservers().new_instance()
+    cfg.attach_webserver(webserver_instance)
     if port is not None:
         cfg.webserver.set_port(port)
     cfg.webserver.start_listen()

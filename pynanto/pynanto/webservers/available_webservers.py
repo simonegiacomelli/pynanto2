@@ -1,7 +1,13 @@
+from pynanto.webserver import Webserver
+
+
 class AvailableWebservers:
     def __init__(self):
         self.classes = _webservers_classes()
         self.ids = map(lambda w: w.__name__, _webservers_classes())
+
+    def new_instance(self) -> Webserver:
+        return self.classes[0]()
 
 
 def _webservers_classes():

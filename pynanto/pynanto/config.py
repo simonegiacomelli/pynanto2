@@ -20,7 +20,7 @@ class Config:
     @property
     def webserver(self) -> Webserver:
         if self._webserver is None:
-            self._webserver = available_webservers().classes[0]()
+            self._webserver = available_webservers().new_instance()
         return self._webserver
 
     def set_routes(self, routes: Routes) -> 'Config':

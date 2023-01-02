@@ -1,14 +1,10 @@
-from time import sleep
-
 import pynanto as pn
 
 
 def main():
     cfg = pn.Config().quickstart()
     cfg.webserver.start_listen()
-
-    while True:
-        sleep(10)
+    pn.wait_forever()
 
 
 if __name__ == '__main__':
