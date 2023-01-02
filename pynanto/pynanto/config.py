@@ -93,7 +93,7 @@ class Config:
         # language=python
         start_main_code = ''
         if self.main_module != '':
-            start_main_code = f'import {self.main_module}'
+            start_main_code = f'import {self.main_module}\nawait {self.main_module}.main()'
         return f"""
 import sys
 
