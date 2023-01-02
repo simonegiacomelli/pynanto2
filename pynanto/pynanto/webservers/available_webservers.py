@@ -23,6 +23,9 @@ def _webservers_classes():
     except:
         pass
 
+    from pynanto.webservers.python_embedded import WsPythonEmbedded
+    result.append(WsPythonEmbedded)
+
     return result
 
 
