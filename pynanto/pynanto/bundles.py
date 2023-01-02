@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from pynanto.bundle import Bundle
 from pynanto.bundle import strategy_no_cache, ResourceGenerator, LambdaBundle
@@ -19,8 +19,8 @@ class Bundles:
     def add_resources(self, items: ResourceGenerator):
         self.list.append(LambdaBundle(items))
 
-    def add_flat_folder(self, folder: Path):
-        self.add_resources(lambda: bundle_definition(folder))
+    def add_flat_folder(self, folder: Path, relative_to: Optional[Path] = None):
+        self.add_resources(lambda: bundle_definition(folder, relative_to=relative_to))
 
     def add_file_content(self, filename: str, content: str):
         resource_list = [StringResource(filename, content)]

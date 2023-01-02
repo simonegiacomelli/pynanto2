@@ -1,3 +1,5 @@
+import inspect
+from pathlib import Path
 from typing import Optional
 
 from pynanto.bootstrap import Bootstrap
@@ -44,6 +46,11 @@ class Config:
             .add_route('/', self.quickstart_index_response)
         )
 
+        source_file = Path(inspect.stack()[1].filename).resolve()
+        root_folder = source_file.parent
+        self.bundles.add_flat_folder(root_folder / 'remote', relative_to=root_folder)
+
+        self.set_main_module('remote')
         if webserver_instance is None:
             webserver_instance = available_webservers().new_instance()
 
