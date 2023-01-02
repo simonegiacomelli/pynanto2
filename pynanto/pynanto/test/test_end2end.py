@@ -3,7 +3,6 @@ from pathlib import Path
 from playwright.sync_api import Page, expect
 
 import pynanto
-from pynanto.common.bundle import bundle_definition
 from pynanto.server import find_port
 
 
@@ -34,10 +33,8 @@ def test_bootstrap_bundle(page: Page, webserver_class):
 
 @pynanto.test.for_all_webservers()
 def test_bootstrap_bundle_from_filesystem(page: Page, webserver_class):
-    parent = Path(__file__).parent
-    for_remote = parent / 'data' / 'for_remote'
     config = pynanto.start_default(webserver_class=webserver_class, port=find_port())
-    config.bundles.add_resources(lambda: bundle_definition(for_remote))
+    config.bundles.add_flat_folder(Path(__file__).parent / 'data' / 'for_remote')
     config.set_main_module('main')
 
     page.goto(config.webserver.localhost_url())
