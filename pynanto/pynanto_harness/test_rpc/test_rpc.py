@@ -10,7 +10,7 @@ def new_config(webserver_class) -> pn.Config:
 
 
 @pynanto.test.for_all_webservers()
-def test_bootstrap(page: Page, webserver_class):
+def test_rpc_1234567890(page: Page, webserver_class):
     config = new_config(webserver_class)
 
     page.goto(config.webserver.localhost_url())
