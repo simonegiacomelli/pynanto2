@@ -48,6 +48,7 @@ class Config:
         ef = external_filename(stack_backtrack)
         if ef is not None:
             self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
+            self.bundles.add_flat_folder(ef.parent / 'common', relative_to=ef.parent)
 
         pynanto_remote = Path(__file__).parent
         self.bundles.add_flat_folder(pynanto_remote / 'remote', relative_to=pynanto_remote.parent)
