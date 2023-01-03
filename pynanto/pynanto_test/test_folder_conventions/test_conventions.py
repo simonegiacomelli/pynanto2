@@ -1,12 +1,6 @@
 from playwright.sync_api import Page, expect
 
-import pynanto as pn
-from pynanto.server import find_port
-from pynanto_test import for_all_webservers
-
-
-def new_config(webserver_class) -> pn.Config:
-    return pn.Config().quickstart(webserver_instance=webserver_class(), port=find_port(), blocking=False)
+from pynanto_test import for_all_webservers, new_config
 
 
 @for_all_webservers()
