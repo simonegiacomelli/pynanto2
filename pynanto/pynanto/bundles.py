@@ -17,8 +17,8 @@ class Bundles:
     def to_response(self) -> Response:
         return Response.application_zip(self.strategy(self.list))
 
-    def add_resources(self, items: ResourceGenerator):
-        self.list.append(LambdaBundle(items))
+    def add_resources(self, resource_generator: ResourceGenerator):
+        self.list.append(LambdaBundle(resource_generator))
 
     def add_flat_folder(self, folder: Path, relative_to: Optional[Path] = None):
         self.add_resources(lambda: bundle_definition(folder, relative_to=relative_to))

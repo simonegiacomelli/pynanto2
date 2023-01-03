@@ -1,8 +1,9 @@
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Iterator
 
 from pynanto.bootstrap import Bootstrap
 from pynanto.bundles import Bundles, external_filename
+from pynanto.resource import Resource, PathResource
 from pynanto.response import Response
 from pynanto.routes import Routes
 from pynanto.webserver import Webserver
@@ -49,6 +50,13 @@ class Config:
         if ef is not None:
             self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
             self.bundles.add_flat_folder(ef.parent / 'common', relative_to=ef.parent)
+            remotepy = ef.parent / 'remote.py'
+
+            def gen_remotepy() -> Iterator[Resource]:
+                if remotepy.exists():
+                    yield PathResource('remote.py', remotepy)
+
+            self.bundles.add_resources(gen_remotepy)
 
         pynanto_remote = Path(__file__).parent
         self.bundles.add_flat_folder(pynanto_remote / 'remote', relative_to=pynanto_remote.parent)
