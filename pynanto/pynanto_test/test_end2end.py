@@ -12,9 +12,9 @@ def new_config(webserver_class) -> pn.Config:
 
 
 @for_all_webservers()
-def test_bootstrap(page: Page, webserver_class):
+def test_quickstart_bootstrap(page: Page, webserver_class):
     config = new_config(webserver_class)
-    config.bootstrap.set_python(
+    config.bootstrap.add_python(
         """from js import document\n"""
         """document.body.innerHTML='<input id="tag1" value="Hello world 1!">'\n"""
     )
@@ -30,7 +30,7 @@ def test_bootstrap_bundle(page: Page, webserver_class):
         """from js import document\n"""
         """document.body.innerHTML='<input id="tag1" value="Hello world 2!">'\n"""
     )
-    config.set_main_module('script1')
+    config.bootstrap.add_python('import script1')
 
     page.goto(config.webserver.localhost_url())
     expect(page.locator('id=tag1')).to_have_value('Hello world 2!')
@@ -40,7 +40,7 @@ def test_bootstrap_bundle(page: Page, webserver_class):
 def test_bootstrap_bundle_from_filesystem(page: Page, webserver_class):
     config = new_config(webserver_class)
     config.bundles.add_flat_folder(Path(__file__).parent / 'data' / 'for_remote')
-    config.set_main_module('main')
+    config.bootstrap.add_python('import main')
 
     page.goto(config.webserver.localhost_url())
     expect(page.locator('id=tag1')).to_have_value('Hello world 3!')

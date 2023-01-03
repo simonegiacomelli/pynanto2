@@ -10,7 +10,7 @@ def new_config(webserver_class) -> pn.Config:
 
 
 @for_all_webservers()
-def test_convention(page: Page, webserver_class):
+def test_convention_remote_async_main(page: Page, webserver_class):
     config = new_config(webserver_class)
 
     page.goto(config.webserver.localhost_url())

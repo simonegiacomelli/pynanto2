@@ -1,3 +1,4 @@
+import inspect
 from pathlib import Path
 from typing import List, Optional
 
@@ -25,3 +26,27 @@ class Bundles:
     def add_file_content(self, filename: str, content: str):
         resource_list = [StringResource(filename, content)]
         self.list.append(LambdaBundle(lambda: resource_list))
+
+
+def external_filename(stack_backtrack=1) -> Optional[Path]:
+    pynanto_root = Path(__file__).resolve().parent
+
+    for stack in inspect.stack():
+        source_path = Path(stack.filename).resolve()
+        if not path_is_contained(source_path, pynanto_root):
+            stack_backtrack -= 1
+            if stack_backtrack == 0:
+                return source_path
+
+    return None
+
+
+def path_is_contained(child: Path, parent: Path):
+    cl = len(child.parts)
+    cp = len(parent.parts)
+    if cl < cp:
+        return False
+    m = min(cl, cp)
+    child_parts = child.parts[:m]
+    parent_parts = parent.parts[:m]
+    return child_parts == parent_parts

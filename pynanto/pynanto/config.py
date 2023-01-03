@@ -1,9 +1,8 @@
-import inspect
 from pathlib import Path
 from typing import Optional
 
 from pynanto.bootstrap import Bootstrap
-from pynanto.bundles import Bundles
+from pynanto.bundles import Bundles, external_filename
 from pynanto.response import Response
 from pynanto.routes import Routes
 from pynanto.webserver import Webserver
@@ -16,7 +15,6 @@ class Config:
         self._routes = Routes()
         self.bootstrap = Bootstrap()
         self.bundles = Bundles()
-        self.main_module = ''
         self._webserver: Optional[Webserver] = None
         self.bundle_route = '/pynanto/bundle/default.zip'
 
@@ -37,7 +35,8 @@ class Config:
             self,
             blocking: bool = True,
             webserver_instance: Optional[Webserver] = None,
-            port: Optional[int] = None
+            port: Optional[int] = None,
+            stack_backtrack=1
     ) -> 'Config':
 
         self.set_routes(
@@ -46,14 +45,26 @@ class Config:
             .add_route('/', self.quickstart_index_response)
         )
 
-        source_file = Path(inspect.stack()[1].filename).resolve()
-        root_folder = source_file.parent
-        self.bundles.add_flat_folder(root_folder / 'remote', relative_to=root_folder)
+        ef = external_filename(stack_backtrack)
+        if ef is not None:
+            self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
 
         pynanto_remote = Path(__file__).parent
         self.bundles.add_flat_folder(pynanto_remote / 'remote', relative_to=pynanto_remote.parent)
-
-        self.set_main_module('remote')
+        # language=python
+        load_default_bundle = f"""
+import sys
+from pyodide.http import pyfetch
+response = await pyfetch('{self.bundle_route}')
+await response.unpack_archive(extract_dir='/default_bundle')
+sys.path.insert(0, '/default_bundle')
+"""
+        self.bootstrap.add_python(load_default_bundle)
+        # language=python
+        self.bootstrap.add_python("""
+import remote
+await remote.main()
+""")
         if webserver_instance is None:
             webserver_instance = available_webservers().new_instance()
 
@@ -86,27 +97,3 @@ class Config:
     def _error_if_attached(self):
         if self._webserver is not None:
             raise Exception('Webserver already attached')
-
-    def set_main_module(self, main_module: str):
-        self.main_module = main_module
-        self.bootstrap.set_python(self.entrypoint_code)
-
-    @property
-    def entrypoint_code(self) -> str:
-        # language=python
-        start_main_code = ''
-        if self.main_module != '':
-            start_main_code = f'import {self.main_module}\nawait {self.main_module}.main()'
-        return f"""
-import sys
-
-from pyodide.http import pyfetch
-
-
-response = await pyfetch('{self.bundle_route}')
-await response.unpack_archive(extract_dir='/default_bundle')
-
-sys.path.insert(0, '/default_bundle')
-
-{start_main_code}
-            """
