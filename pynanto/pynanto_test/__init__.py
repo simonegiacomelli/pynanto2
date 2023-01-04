@@ -6,14 +6,20 @@ import pynanto
 from pynanto.server import find_port
 from pynanto.webservers.available_webservers import available_webservers
 
-for_all_webservers = partial(pytest.mark.parametrize, 'webserver_class', available_webservers().classes,
-                             ids=available_webservers().ids)
+
+def for_all_webservers():
+    return partial(pytest.mark.parametrize, 'webserver', available_webservers().instances(),
+                   ids=available_webservers().ids)()
 
 
-def new_config(webserver_class) -> pynanto.Config:
+def new_config(webserver) -> pynanto.Config:
     return pynanto.Config().quickstart(
-        webserver_instance=webserver_class(),
+        webserver_instance=webserver,
         port=find_port(),
         blocking=False,
         stack_backtrack=2
     )
+
+
+def x():
+    pass

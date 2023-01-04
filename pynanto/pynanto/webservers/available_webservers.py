@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from pynanto.webserver import Webserver
 
 
@@ -8,6 +10,10 @@ class AvailableWebservers:
 
     def new_instance(self) -> Webserver:
         return self.classes[0]()
+
+    def instances(self) -> Iterator[Webserver]:
+        for webserver_class in self.classes:
+            yield webserver_class()
 
 
 def _webservers_classes():

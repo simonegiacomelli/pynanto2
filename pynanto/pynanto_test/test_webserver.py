@@ -1,13 +1,13 @@
 import urllib
 import urllib.request
 
-from pynanto import Response, Routes
+from pynanto import Response, Routes, Webserver
 from pynanto.server import find_port
 from pynanto_test import for_all_webservers
 
 
 @for_all_webservers()
-def test_webserver_implementations(webserver_class):
+def test_webserver_implementations(webserver: Webserver):
     response_a = Response('a', 'text/plain')
     response_b = Response('b', 'text/plain]')
 
@@ -17,13 +17,7 @@ def test_webserver_implementations(webserver_class):
         .add_route('/', lambda: response_a)
     )
 
-    webserver = (
-        webserver_class()
-        .set_routes(routes)
-        .set_binding(('0.0.0.0', find_port()))
-        .start_listen()
-        .wait_ready()
-    )
+    webserver.set_routes(routes).set_port(find_port()).start_listen().wait_ready()
 
     url = webserver.localhost_url()
 
