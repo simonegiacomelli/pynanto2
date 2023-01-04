@@ -2,7 +2,7 @@ import urllib
 import urllib.request
 
 from pynanto import Response, Routes
-from pynanto.server import find_port, wait_url
+from pynanto.server import find_port
 from pynanto_test import for_all_webservers
 
 
@@ -17,16 +17,15 @@ def test_webserver_implementations(webserver_class):
         .add_route('/', lambda: response_a)
     )
 
-    webserver = webserver_class()
-    (webserver
-     .set_routes(routes)
-     .set_binding(('0.0.0.0', find_port()))
-     .start_listen()
-     )
+    webserver = (
+        webserver_class()
+        .set_routes(routes)
+        .set_binding(('0.0.0.0', find_port()))
+        .start_listen()
+        .wait_ready()
+    )
 
-    url = f'http://127.0.0.1:{webserver.port}'
-
-    wait_url(url + '/is_server_running')
+    url = webserver.localhost_url()
 
     assert get_url_response(url) == response_a
     assert get_url_response(url + '/b') == response_b

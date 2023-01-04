@@ -47,8 +47,9 @@ class Webserver(ABC):
     def _start_listen(self):
         pass
 
-    def wait_ready(self):
+    def wait_ready(self) -> 'Webserver':
         wait_url(self.localhost_url() + '/check_if_webserver_is_accepting_requests')
+        return self
 
     def localhost_url(self) -> str:
         return f'http://127.0.0.1:{self.port}'

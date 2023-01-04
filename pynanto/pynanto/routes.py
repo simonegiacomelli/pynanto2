@@ -12,9 +12,6 @@ class Routes:
     def __init__(self):
         self.list: List[Route] = []
 
-    def add_root_index(self) -> 'Routes':
-        return self
-
     def add_route(self, path: str, callback: Callable[[], Response]) -> 'Routes':
         self.list.append(Route(path, callback))
         return self
