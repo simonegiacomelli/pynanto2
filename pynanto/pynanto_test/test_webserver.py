@@ -9,7 +9,7 @@ from pynanto_test import for_all_webservers
 @for_all_webservers()
 def test_webserver_implementations(webserver: Webserver):
     response_a = Response('a', 'text/plain')
-    response_b = Response('b', 'text/plain]')
+    response_b = Response('b', 'text/plain')
 
     routes = (
         Routes()
