@@ -6,7 +6,7 @@ from pynanto.webserver import Webserver
 class AvailableWebservers:
     def __init__(self):
         self.classes = _webservers_classes()
-        self.ids = map(lambda w: w.__name__, _webservers_classes())
+        self.ids = list(map(lambda w: w.__name__, _webservers_classes()))
 
     def new_instance(self) -> Webserver:
         return self.classes[0]()
@@ -26,6 +26,11 @@ def _webservers_classes():
     try:
         from pynanto.webservers.flask import WsFlask
         result.append(WsFlask)
+    except:
+        pass
+    try:
+        from pynanto.webservers.tornado import WsTornado
+        result.append(WsTornado)
     except:
         pass
 
