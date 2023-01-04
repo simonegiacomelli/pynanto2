@@ -6,7 +6,7 @@ from pynanto_test import for_all_webservers, new_config
 
 @for_all_webservers()
 def test_rpc_1234567890(page: Page, webserver: Webserver):
-    config = new_config(webserver)
+    new_config(webserver)
 
-    page.goto(config.webserver.localhost_url())
+    page.goto(webserver.localhost_url())
     expect(page.locator('body')).to_have_text('42')
