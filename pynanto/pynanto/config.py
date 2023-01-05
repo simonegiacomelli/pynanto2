@@ -50,12 +50,15 @@ class Config:
         if ef is not None:
             self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
             self.bundles.add_flat_folder(ef.parent / 'common', relative_to=ef.parent)
+            self.bundles.add_flat_folder(ef.parent / 'server/rpc', relative_to=ef.parent)
             remotepy = ef.parent / 'remote.py'
+            server_rpc = ef.parent / 'server/rpc.py'
 
             def gen_remotepy() -> Iterator[Resource]:
                 if remotepy.exists():
                     yield PathResource('remote.py', remotepy)
-
+                if server_rpc.exists():
+                    yield PathResource('server/rpc.py', server_rpc)
             self.bundles.add_resources(gen_remotepy)
 
         pynanto_remote = Path(__file__).parent
