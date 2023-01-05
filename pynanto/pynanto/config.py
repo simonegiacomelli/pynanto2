@@ -46,11 +46,14 @@ class Config:
             .add_route('/', self.quickstart_index_response)
         )
 
+        # one should be able to import:
+        # - through an 'import module_name'
+        # - through ??
         ef = external_filename(stack_backtrack)
         if ef is not None:
             self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
             self.bundles.add_flat_folder(ef.parent / 'common', relative_to=ef.parent)
-            self.bundles.add_flat_folder(ef.parent / 'server/rpc', relative_to=ef.parent)
+            # self.bundles.add_flat_folder(ef.parent / 'server/rpc', relative_to=ef.parent)
             remotepy = ef.parent / 'remote.py'
             server_rpc = ef.parent / 'server/rpc.py'
 
