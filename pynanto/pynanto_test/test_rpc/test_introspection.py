@@ -1,5 +1,6 @@
 from pynanto.rpc import Introspection
 from pynanto_test.test_rpc import support1
+from pynanto_test.test_rpc import support2
 
 
 def test_introspection_module():
@@ -33,21 +34,19 @@ def test_introspection_function1():
     assert fun.is_coroutine_function
 
 
-def test_introspection_module_name():
-    # WHEN
-    target = Introspection('pynanto_test.test_rpc.support2')
-    from pynanto_test.test_rpc import support2
-    # THEN
-    assert target.name == 'pynanto_test.test_rpc.support2'
-    assert target.module == support2
-    assert len(target.functions) == 1
-
-
-def test_introspection_getitem():
-    # WHEN
-    from pynanto_test.test_rpc import support2
+def test_introspection_getitem_and_invoke():
     target = Introspection(support2)
 
     # THEN
     actual = target['support2_mul'].func(6, 7)
     assert actual == 42
+
+
+async def test_introspection_invoke_async():
+    target = Introspection(support2)
+
+    # THEN
+    function = target['support2_async']
+    assert function.is_coroutine_function
+    actual = await function.func('hello', ' world')
+    assert actual == 'hello world'

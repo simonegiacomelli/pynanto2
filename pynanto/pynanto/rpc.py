@@ -1,7 +1,6 @@
-import importlib
 from inspect import getmembers, isfunction, signature, iscoroutinefunction
 from types import ModuleType, FunctionType
-from typing import NamedTuple, List, Union, Tuple
+from typing import NamedTuple, List, Tuple
 
 
 class Function(NamedTuple):
@@ -12,9 +11,7 @@ class Function(NamedTuple):
 
 
 class Introspection:
-    def __init__(self, module: Union[str, ModuleType]):
-        if isinstance(module, str):
-            module = importlib.import_module(module)
+    def __init__(self, module: ModuleType):
         self.module = module
         self.name = module.__name__
 
