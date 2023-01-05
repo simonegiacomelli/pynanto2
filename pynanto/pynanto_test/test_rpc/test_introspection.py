@@ -43,11 +43,11 @@ def test_introspection_module_name():
     assert len(target.functions) == 1
 
 
-def test_introspection_invoke():
+def test_introspection_getitem():
     # WHEN
     from pynanto_test.test_rpc import support2
     target = Introspection(support2)
 
     # THEN
-    actual = target.invoke('support2_mul', 6, 7)
+    actual = target['support2_mul'].func(6, 7)
     assert actual == 42
