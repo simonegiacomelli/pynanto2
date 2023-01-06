@@ -1,10 +1,13 @@
 import asyncio
 import sys
 import traceback
+from inspect import iscoroutinefunction
 from threading import Thread
 
 
 def unsync(f):
+    if not iscoroutinefunction(f):
+        return f
     result = None
     exc_info = None
     exception = None
