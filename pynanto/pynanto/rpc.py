@@ -87,7 +87,8 @@ class Services:
     def find_module(self, module_name: str) -> Optional[Module]:
         return self._modules.get(module_name, None)
 
-    def dispatch(self, rpc_request: RpcRequest) -> str:
+    def dispatch(self, request: str) -> str:
+        rpc_request = RpcRequest.from_json(request)
         module = self.find_module(rpc_request.module)
         function = module[rpc_request.func]
         result = function.func(*rpc_request.args)

@@ -82,13 +82,13 @@ async def test_rpc_integration():
     services = Services()
     services.add_module(Module(support2))
 
-    async def fake_fetch(rpc_request: RpcRequest) -> str:
+    async def fake_fetch(rpc_request: str) -> str:
         """This makes the server part"""
         result = services.dispatch(rpc_request)
         return result
 
     async def transport(rpc_request: RpcRequest) -> str:
-        return await fake_fetch(rpc_request)
+        return await fake_fetch(rpc_request.json())
 
     proxy = Proxy(support2_module_name, transport)
 
