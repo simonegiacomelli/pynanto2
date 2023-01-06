@@ -1,7 +1,7 @@
 import json
 from inspect import getmembers, isfunction, signature, iscoroutinefunction
 from types import ModuleType, FunctionType
-from typing import NamedTuple, List, Tuple, Any, Optional
+from typing import NamedTuple, List, Tuple, Any, Optional, Dict
 
 
 class Function(NamedTuple):
@@ -11,7 +11,7 @@ class Function(NamedTuple):
     is_coroutine_function: bool
 
 
-class Introspection:
+class Module:
     def __init__(self, module: ModuleType):
         self.module = module
         self.name = module.__name__
@@ -50,3 +50,14 @@ class RpcRequest(NamedTuple):
         obj = json.loads(string)
         request = RpcRequest(*obj)
         return request
+
+
+class Services:
+    def __init__(self):
+        self._modules: Dict[str, Module] = {}
+
+    def add_module(self, module: Module):
+        self._modules[module.name] = module
+
+    def find_module(self, module_name: str) -> Optional[Module]:
+        return self._modules.get(module_name, None)

@@ -1,21 +1,23 @@
-from pynanto.rpc import Introspection, RpcRequest
+from pynanto.rpc import Module, RpcRequest, Services
 from pynanto_test.test_rpc import support1
 from pynanto_test.test_rpc import support2
 from pynanto_test.unsync import unsync
 
+support2_module_name = 'pynanto_test.test_rpc.support2'
 
-def test_introspection_module():
+
+def test_module_module():
     # WHEN
-    target = Introspection(support1)
+    target = Module(support1)
 
     # THEN
     assert target.name == 'pynanto_test.test_rpc.support1'
     assert len(target.functions) == 2
 
 
-def test_introspection_function0():
+def test_module_function0():
     # WHEN
-    target = Introspection(support1)
+    target = Module(support1)
 
     # THEN
     fun = target.functions[0]
@@ -24,9 +26,9 @@ def test_introspection_function0():
     assert not fun.is_coroutine_function
 
 
-def test_introspection_function1():
+def test_module_function1():
     # WHEN
-    target = Introspection(support1)
+    target = Module(support1)
 
     # THEN
     fun = target.functions[1]
@@ -35,8 +37,8 @@ def test_introspection_function1():
     assert fun.is_coroutine_function
 
 
-def test_introspection_getitem_and_invoke():
-    target = Introspection(support2)
+def test_module_getitem_and_invoke():
+    target = Module(support2)
 
     # THEN
     actual = target['support2_mul'].func(6, 7)
@@ -44,8 +46,8 @@ def test_introspection_getitem_and_invoke():
 
 
 @unsync
-async def test_introspection_invoke_async():
-    target = Introspection(support2)
+async def test_module_invoke_async():
+    target = Module(support2)
 
     # THEN
     function = target['support2_concat']
@@ -55,10 +57,22 @@ async def test_introspection_invoke_async():
 
 
 def test_rpc():
-    callable_path = 'pynanto_test.test_rpc.support2.support2_mul'
+    callable_path = support2_module_name + '.support2_mul'
 
     request = RpcRequest.build_request(callable_path, 6, 7)
     restored = RpcRequest.from_json(request.json())
 
     assert restored.callable_path == callable_path
     assert restored.args == [6, 7]
+
+
+def test_services_not_found():
+    target = Services()
+    actual = target.find_module(support2_module_name)
+    assert actual is None
+
+    target.add_module(Module(support2))
+    actual = target.find_module(support2_module_name)
+    assert actual is not None
+    actual: Module
+    assert actual.name == support2_module_name
