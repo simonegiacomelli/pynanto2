@@ -1,4 +1,4 @@
-from pynanto.rpc import Module, RpcRequest, Services
+from pynanto.rpc import Module, RpcRequest, Services, Proxy
 from pynanto_test.test_rpc import support1
 from pynanto_test.test_rpc import support2
 from pynanto_test.unsync import unsync
@@ -57,12 +57,11 @@ async def test_module_invoke_async():
 
 
 def test_rpc():
-    callable_path = support2_module_name + '.support2_mul'
-
-    request = RpcRequest.build_request(callable_path, 6, 7)
+    request = RpcRequest.build_request(support2_module_name, 'support2_mul', 6, 7)
     restored = RpcRequest.from_json(request.json())
 
-    assert restored.callable_path == callable_path
+    assert restored.module == support2_module_name
+    assert restored.func == 'support2_mul'
     assert restored.args == [6, 7]
 
 
@@ -76,3 +75,25 @@ def test_services_not_found():
     assert actual is not None
     actual: Module
     assert actual.name == support2_module_name
+
+
+@unsync
+async def test_rpc_integration():
+    services = Services()
+    services.add_module(Module(support2))
+
+    async def fake_fetch(rpc_request: RpcRequest) -> str:
+        """This makes the server part"""
+        result = services.dispatch(rpc_request)
+        return result
+
+    async def transport(rpc_request: RpcRequest) -> str:
+        return await fake_fetch(rpc_request)
+
+    proxy = Proxy(support2_module_name, transport)
+
+    async def support2_mul_stub(a: int, b: int) -> int:
+        return await proxy.dispatch('support2_mul', a, b)
+
+    target = await support2_mul_stub(3, 4)
+    assert target == 12

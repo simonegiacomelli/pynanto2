@@ -1,7 +1,7 @@
 import json
 from inspect import getmembers, isfunction, signature, iscoroutinefunction
 from types import ModuleType, FunctionType
-from typing import NamedTuple, List, Tuple, Any, Optional, Dict
+from typing import NamedTuple, List, Tuple, Any, Optional, Dict, Callable, Awaitable
 
 
 class Function(NamedTuple):
@@ -34,22 +34,47 @@ def function_list(module) -> List[Function]:
     return list(map(_std_function_to_function, getmembers(module, isfunction)))
 
 
+class RpcResponse:
+    @classmethod
+    def from_json(cls, string: str) -> Any:
+        return json.loads(string)
+
+    @classmethod
+    def to_json(cls, response: Any) -> str:
+        return json.dumps(response)
+
+
 class RpcRequest(NamedTuple):
-    callable_path: str
+    module: str
+    func: str
     args: List[Optional[Any]]
 
     def json(self) -> str:
         return json.dumps(self)
 
     @classmethod
-    def build_request(cls, callable_path: str, *args) -> 'RpcRequest':
-        return RpcRequest(callable_path, args)
+    def build_request(cls, module_name: str, func_name: str, *args) -> 'RpcRequest':
+        return RpcRequest(module_name, func_name, args)
 
     @classmethod
     def from_json(cls, string: str) -> 'RpcRequest':
         obj = json.loads(string)
         request = RpcRequest(*obj)
         return request
+
+
+Transport = Callable[[RpcRequest], Awaitable[str]]
+
+
+class Proxy:
+    def __init__(self, module_name: str, transport: Transport):
+        self.transport = transport
+        self.module_name = module_name
+
+    async def dispatch(self, func_name: str, *args) -> Any:
+        rpc_request = RpcRequest.build_request(self.module_name, func_name, *args)
+        rpc_response = await self.transport(rpc_request)
+        return RpcResponse.from_json(rpc_response)
 
 
 class Services:
@@ -61,3 +86,9 @@ class Services:
 
     def find_module(self, module_name: str) -> Optional[Module]:
         return self._modules.get(module_name, None)
+
+    def dispatch(self, rpc_request: RpcRequest) -> str:
+        module = self.find_module(rpc_request.module)
+        function = module[rpc_request.func]
+        result = function.func(*rpc_request.args)
+        return RpcResponse.to_json(result)
