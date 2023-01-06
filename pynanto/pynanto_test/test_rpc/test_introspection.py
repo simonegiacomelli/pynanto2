@@ -1,3 +1,6 @@
+import asyncio
+from threading import Thread
+
 from pynanto.rpc import Introspection
 from pynanto_test.test_rpc import support1
 from pynanto_test.test_rpc import support2
@@ -42,11 +45,30 @@ def test_introspection_getitem_and_invoke():
     assert actual == 42
 
 
-async def test_introspection_invoke_async():
-    target = Introspection(support2)
+def test_introspection_invoke_async():
+    async def main():
+        target = Introspection(support2)
 
-    # THEN
-    function = target['support2_async']
-    assert function.is_coroutine_function
-    actual = await function.func('hello', ' world')
-    assert actual == 'hello world'
+        # THEN
+        function = target['support2_concat']
+        assert function.is_coroutine_function
+        actual = await function.func('hello', ' world')
+        assert actual == 'hello world'
+
+    async def main_safe():
+        try:
+            return await main()
+        except Exception as ex:
+            return ex
+
+    result = None
+
+    def start():
+        nonlocal result
+        result = asyncio.run(main_safe())
+
+    thread = Thread(target=start)
+    thread.start()
+    thread.join()
+    if result is not None:
+        raise result
