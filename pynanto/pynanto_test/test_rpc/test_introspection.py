@@ -1,7 +1,7 @@
 import asyncio
 from threading import Thread
 
-from pynanto.rpc import Introspection
+from pynanto.rpc import Introspection, RpcRequest
 from pynanto_test.test_rpc import support1
 from pynanto_test.test_rpc import support2
 
@@ -72,3 +72,13 @@ def test_introspection_invoke_async():
     thread.join()
     if result is not None:
         raise result
+
+
+def test_rpc():
+    callable_path = 'pynanto_test.test_rpc.support2.support2_mul'
+
+    request = RpcRequest.build_request(callable_path, 6, 7)
+    restored = RpcRequest.from_json(request.json())
+
+    assert restored.callable_path == callable_path
+    assert restored.args == [6, 7]

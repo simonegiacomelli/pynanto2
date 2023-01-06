@@ -1,6 +1,7 @@
+import json
 from inspect import getmembers, isfunction, signature, iscoroutinefunction
 from types import ModuleType, FunctionType
-from typing import NamedTuple, List, Tuple
+from typing import NamedTuple, List, Tuple, Any, Optional
 
 
 class Function(NamedTuple):
@@ -31,3 +32,21 @@ def _std_function_to_function(fun_tuple: Tuple[str, FunctionType]) -> Function:
 
 def function_list(module) -> List[Function]:
     return list(map(_std_function_to_function, getmembers(module, isfunction)))
+
+
+class RpcRequest(NamedTuple):
+    callable_path: str
+    args: List[Optional[Any]]
+
+    def json(self) -> str:
+        return json.dumps(self)
+
+    @classmethod
+    def build_request(cls, callable_path: str, *args) -> 'RpcRequest':
+        return RpcRequest(callable_path, args)
+
+    @classmethod
+    def from_json(cls, string: str) -> 'RpcRequest':
+        obj = json.loads(string)
+        request = RpcRequest(*obj)
+        return request
