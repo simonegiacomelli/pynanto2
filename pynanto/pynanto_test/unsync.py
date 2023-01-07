@@ -12,20 +12,20 @@ def unsync(f):
     exc_info = None
     exception = None
 
-    async def main_safe():
+    async def main_safe(*args, **kwargs):
         nonlocal result, exc_info, exception
         try:
-            result = await f()
+            result = await f(*args, **kwargs)
         except Exception as ex:
             exception = ex
             exc_info = sys.exc_info()
 
-    def start():
-        asyncio.run(main_safe())
+    def start(*args, **kwargs):
+        asyncio.run(main_safe(*args, **kwargs))
 
-    def wrapper():
+    def wrapper(*args, **kwargs):
         nonlocal result, exc_info, exception
-        thread = Thread(target=start)
+        thread = Thread(target=start, args=args, kwargs=kwargs)
         thread.start()
         thread.join()
         if exc_info is not None:
@@ -44,3 +44,11 @@ def test_unsync():
         return 'ok'
 
     assert fun() == 'ok'
+
+
+def test_unsync_with_args():
+    @unsync
+    async def fun(arg1):
+        return arg1
+
+    assert fun('foo') == 'foo'

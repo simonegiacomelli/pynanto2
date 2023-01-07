@@ -4,7 +4,7 @@ from typing import Optional, Iterator
 from pynanto.bootstrap import Bootstrap
 from pynanto.bundles import Bundles, external_filename
 from pynanto.resource import Resource, PathResource
-from pynanto.response import Response
+from pynanto.response import Response, Request
 from pynanto.routes import Routes
 from pynanto.webserver import Webserver
 from pynanto.webserver import wait_forever
@@ -62,6 +62,7 @@ class Config:
                     yield PathResource('remote.py', remotepy)
                 if server_rpc.exists():
                     yield PathResource('server/rpc.py', server_rpc)
+
             self.bundles.add_resources(gen_remotepy)
 
         pynanto_remote = Path(__file__).parent
@@ -95,7 +96,7 @@ await remote.main()
 
         return self
 
-    def quickstart_index_response(self) -> Response:
+    def quickstart_index_response(self, request: Request) -> Response:
         bootstrap_javascript = self.bootstrap.get_javascript()
         return Response(
             f'<h1>loading...</h1>'

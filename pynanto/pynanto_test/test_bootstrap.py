@@ -16,7 +16,7 @@ def test_bootstrap(page: Page, webserver: Webserver):
     response = Response(f'<input id="tag1" value="Hello">'
                         f'<script>{bootstrap_javascript}</script>', 'text/html')
 
-    routes = Routes().add_route('/', lambda: response)
+    routes = Routes().add_route('/', lambda _: response)
     webserver.set_routes(routes).set_port(find_port()).start_listen().wait_ready()
 
     page.goto(webserver.localhost_url())
@@ -34,8 +34,8 @@ def test_bootstrap_config(page: Page, webserver: Webserver):
 
     cfg.set_routes(Routes().add_route(
         '/',
-        lambda: Response(f'<div id="tag1"></div>'
-                         f'<script>{cfg.bootstrap.get_javascript()}</script>', 'text/html')
+        lambda _: Response(f'<div id="tag1"></div>'
+                           f'<script>{cfg.bootstrap.get_javascript()}</script>', 'text/html')
     ))
 
     cfg.attach_webserver(webserver)

@@ -93,3 +93,7 @@ class Services:
         function = module[rpc_request.func]
         result = function.func(*rpc_request.args)
         return RpcResponse.to_json(result)
+
+
+def generate_stub_source():
+    pass

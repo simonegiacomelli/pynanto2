@@ -5,7 +5,7 @@ from threading import Thread
 from typing import Optional, Callable, Dict
 from urllib.parse import urlparse, parse_qs
 
-from pynanto.response import Response
+from pynanto.response import Response, Request
 from pynanto.routes import Route
 from pynanto.webserver import Webserver
 from pynanto.webserver import wait_forever
@@ -37,7 +37,8 @@ class WsPythonEmbedded(Webserver):
             nf = HTTPStatus.NOT_FOUND
             request.send_bytes(bytes(nf.phrase, 'utf8'), code=nf.value)
         else:
-            resp = route.callback()
+            req = Request(request.command, request.get_body(), request.get_content_type())
+            resp = route.callback(req)
             content = resp.content
             if isinstance(content, str):
                 content = bytes(content, 'utf8')
@@ -58,8 +59,20 @@ class RequestHandler(SimpleHTTPRequestHandler):
         super(RequestHandler, self).__init__(*args, **kwargs)
 
     def do_GET(self):
-        if not self.handler(self):
-            super(RequestHandler, self).do_GET()
+        self.handler(self)
+
+    def do_POST(self):
+        self.handler(self)
+
+    def get_content_type(self) -> str:
+        return self.headers.get('Content-Type')
+
+    def get_body(self):
+        if self.command != 'POST':
+            return None
+        content_len = int(self.headers.get('Content-Length'))
+        body = self.rfile.read(content_len)
+        return body
 
     def decode_request(self):
         p = urlparse(self.path)

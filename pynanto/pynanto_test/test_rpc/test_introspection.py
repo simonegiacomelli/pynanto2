@@ -80,7 +80,8 @@ def test_services_not_found():
 @unsync
 async def test_rpc_integration():
     services = Services()
-    services.add_module(Module(support2))
+    module = Module(support2)
+    services.add_module(module)
 
     async def fake_fetch(rpc_request: str) -> str:
         """This makes the server part"""
@@ -95,5 +96,6 @@ async def test_rpc_integration():
     async def support2_mul_stub(a: int, b: int) -> int:
         return await proxy.dispatch('support2_mul', a, b)
 
+    # stub = generate_stub_source(module, 'pynanto.server.')
     target = await support2_mul_stub(3, 4)
     assert target == 12

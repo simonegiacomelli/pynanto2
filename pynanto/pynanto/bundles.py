@@ -6,7 +6,7 @@ from pynanto.bundle import Bundle
 from pynanto.bundle import strategy_no_cache, ResourceGenerator, LambdaBundle
 from pynanto.common.bundle import bundle_definition
 from pynanto.resource import StringResource
-from pynanto.response import Response
+from pynanto.response import Response, Request
 
 
 class Bundles:
@@ -14,7 +14,7 @@ class Bundles:
         self.list: List[Bundle] = []
         self.strategy = strategy_no_cache
 
-    def to_response(self) -> Response:
+    def to_response(self, request: Request) -> Response:
         return Response.application_zip(self.strategy(self.list))
 
     def add_resources(self, resource_generator: ResourceGenerator):

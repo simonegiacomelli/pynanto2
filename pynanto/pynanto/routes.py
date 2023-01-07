@@ -1,18 +1,19 @@
 from typing import List, Callable, NamedTuple
 
 from pynanto import Response
+from pynanto.response import Request
 
 
 class Route(NamedTuple):
     path: str
-    callback: Callable[[], Response]
+    callback: Callable[[Request], Response]
 
 
 class Routes:
     def __init__(self):
         self.list: List[Route] = []
 
-    def add_route(self, path: str, callback: Callable[[], Response]) -> 'Routes':
+    def add_route(self, path: str, callback: Callable[[Request], Response]) -> 'Routes':
         self.list.append(Route(path, callback))
         return self
 
