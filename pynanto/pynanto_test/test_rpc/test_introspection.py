@@ -1,11 +1,14 @@
-from pynanto import Routes
-from pynanto.rpc import Module, RpcRequest, Services, Proxy
+import importlib.util
+from types import ModuleType
+
+import pynanto
+from pynanto import Routes, Webserver
+from pynanto.rpc import Module, RpcRequest, Services
 from pynanto.server import find_port
-from pynanto.server.fetch import async_fetch_str
-from pynanto.webservers.python_embedded import WsPythonEmbedded
-from pynanto_test.test_rpc import support1
+from pynanto_test import for_all_webservers
+from pynanto_test.test_rpc import support1, support3
 from pynanto_test.test_rpc import support2
-from pynanto_test.unsync import unsync
+from pynanto_test.test_unsync import unsync
 
 support2_module_name = 'pynanto_test.test_rpc.support2'
 
@@ -81,22 +84,38 @@ def test_services_not_found():
     assert actual.name == support2_module_name
 
 
-@unsync
-async def test_rpc_integration():
+@for_all_webservers()
+def test_rpc_integration(webserver: Webserver):
+    """ server part """
     services = Services()
-    module = Module(support2)
+    module = Module(support3)
     services.add_module(module)
 
-    webserver = WsPythonEmbedded()
     webserver.set_routes(Routes().add_route_obj(services.route))
     webserver.set_port(find_port()).start_listen().wait_ready()
 
     rpc_url = webserver.localhost_url() + services.route.path
-    proxy = Proxy(support2_module_name, rpc_url, async_fetch_str)
+    imports = 'from pynanto.server.fetch import async_fetch_str'
+    stub_source = pynanto.rpc.generate_stub_source(module, rpc_url, imports)
+    """ end """
 
-    async def support2_mul_stub(a: int, b: int) -> int:
-        return await proxy.dispatch('support2_mul', a, b)
+    """ client part """
+    client_module = _module_from_source('dynamic_module', stub_source)
 
-    # stub = generate_stub_source(module, 'from pynanto.server.fetch import async_fetch_str')
-    target = await support2_mul_stub(3, 4)
-    assert target == 12
+    @unsync
+    async def verify():
+        target = await client_module.support3_mul(3, 4)
+        assert target == 12
+
+        target = await client_module.support3_concat('foo', 'bar')
+        assert target == 'foobar'
+
+    verify()
+    """ end """
+
+
+def _module_from_source(name: str, source: str) -> ModuleType:
+    spec = importlib.util.spec_from_loader(name, loader=None)
+    module = importlib.util.module_from_spec(spec)
+    exec(source, module.__dict__)
+    return module

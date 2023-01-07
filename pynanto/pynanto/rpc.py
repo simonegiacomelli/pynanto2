@@ -1,5 +1,5 @@
 import json
-from inspect import getmembers, isfunction, signature, iscoroutinefunction
+from inspect import getmembers, isfunction, signature, iscoroutinefunction, Signature
 from types import ModuleType, FunctionType
 from typing import NamedTuple, List, Tuple, Any, Optional, Dict, Callable, Awaitable
 
@@ -7,6 +7,7 @@ from typing_extensions import Protocol
 
 from pynanto.response import Request, Response
 from pynanto.routes import Route
+from pynanto.unsync import unsync
 
 
 class Function(NamedTuple):
@@ -14,6 +15,17 @@ class Function(NamedTuple):
     func: FunctionType
     signature: str
     is_coroutine_function: bool
+    sign: Signature
+    blocking: FunctionType
+
+
+def _std_function_to_function(fun_tuple: Tuple[str, FunctionType]) -> Function:
+    name = fun_tuple[0]
+    func = fun_tuple[1]
+    sign = signature(func)
+    is_coroutine_function = iscoroutinefunction(func)
+    blocking = unsync(func)
+    return Function(name, func, str(sign), is_coroutine_function, signature(func), blocking)
 
 
 class Module:
@@ -28,14 +40,7 @@ class Module:
         return self._funcs.get(name, None)
 
 
-def _std_function_to_function(fun_tuple: Tuple[str, FunctionType]) -> Function:
-    name = fun_tuple[0]
-    func = fun_tuple[1]
-    sign = signature(func)
-    return Function(name, func, str(sign), iscoroutinefunction(func))
-
-
-def function_list(module) -> List[Function]:
+def function_list(module: ModuleType) -> List[Function]:
     return list(map(_std_function_to_function, getmembers(module, isfunction)))
 
 
@@ -102,7 +107,7 @@ class Services:
         rpc_request = RpcRequest.from_json(request)
         module = self.find_module(rpc_request.module)
         function = module[rpc_request.func]
-        result = function.func(*rpc_request.args)
+        result = function.blocking(*rpc_request.args)
         return RpcResponse.to_json(result)
 
     def _route_callback(self, request: Request) -> Response:
@@ -111,5 +116,24 @@ class Services:
         return response
 
 
-def generate_stub_source():
-    pass
+def generate_stub_source(module: Module, rpc_url: str, imports: str):
+    module_name = module.name
+    # language=python
+    stub_header = f"""
+from pynanto.rpc import Proxy
+{imports}
+
+rpc_url = '{rpc_url}'
+module_name = '{module_name}'
+proxy = Proxy(module_name, rpc_url, async_fetch_str)
+    """
+
+    stub_functions = ''
+    for f in module.functions:
+        parameters = f.sign.parameters.values()
+        args_list = ''.join(map(lambda p: ', ' + p, (p.name for p in parameters)))
+        fun_stub = f'\nasync def {f.name}{f.signature}:\n' + \
+                   f'    return await proxy.dispatch("{f.name}"{args_list})\n'
+        stub_functions += fun_stub
+
+    return stub_header + stub_functions
