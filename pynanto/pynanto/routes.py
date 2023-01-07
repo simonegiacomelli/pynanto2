@@ -17,6 +17,10 @@ class Routes:
         self.list.append(Route(path, callback))
         return self
 
+    def add_route_obj(self, route: Route) -> 'Routes':
+        self.list.append(route)
+        return self
+
     @property
     def is_empty(self) -> bool:
         return len(self.list) == 0

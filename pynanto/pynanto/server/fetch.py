@@ -4,9 +4,9 @@ import urllib.request
 from pynanto import Response
 
 
-def js_fetch_str(url: str, method: str = 'GET', body: str = '') -> str:
-    with urllib.request.urlopen(url) as r:
-        return r.read().decode("utf-8")
+async def async_fetch_str(url: str, method: str = 'GET', data: str = '') -> str:
+    response = sync_fetch_response(url, method=method, data=data)
+    return response.content
 
 
 def sync_fetch_response(url: str, method: str = 'GET', data: str = '') -> Response:

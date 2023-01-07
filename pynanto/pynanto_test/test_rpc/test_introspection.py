@@ -1,4 +1,8 @@
+from pynanto import Routes
 from pynanto.rpc import Module, RpcRequest, Services, Proxy
+from pynanto.server import find_port
+from pynanto.server.fetch import async_fetch_str
+from pynanto.webservers.python_embedded import WsPythonEmbedded
 from pynanto_test.test_rpc import support1
 from pynanto_test.test_rpc import support2
 from pynanto_test.unsync import unsync
@@ -83,19 +87,16 @@ async def test_rpc_integration():
     module = Module(support2)
     services.add_module(module)
 
-    async def fake_fetch(rpc_request: str) -> str:
-        """This makes the server part"""
-        result = services.dispatch(rpc_request)
-        return result
+    webserver = WsPythonEmbedded()
+    webserver.set_routes(Routes().add_route_obj(services.route))
+    webserver.set_port(find_port()).start_listen().wait_ready()
 
-    async def transport(rpc_request: RpcRequest) -> str:
-        return await fake_fetch(rpc_request.json())
-
-    proxy = Proxy(support2_module_name, transport)
+    rpc_url = webserver.localhost_url() + services.route.path
+    proxy = Proxy(support2_module_name, rpc_url, async_fetch_str)
 
     async def support2_mul_stub(a: int, b: int) -> int:
         return await proxy.dispatch('support2_mul', a, b)
 
-    # stub = generate_stub_source(module, 'pynanto.server.')
+    # stub = generate_stub_source(module, 'from pynanto.server.fetch import async_fetch_str')
     target = await support2_mul_stub(3, 4)
     assert target == 12

@@ -3,6 +3,11 @@ from inspect import getmembers, isfunction, signature, iscoroutinefunction
 from types import ModuleType, FunctionType
 from typing import NamedTuple, List, Tuple, Any, Optional, Dict, Callable, Awaitable
 
+from typing_extensions import Protocol
+
+from pynanto.response import Request, Response
+from pynanto.routes import Route
+
 
 class Function(NamedTuple):
     name: str
@@ -63,23 +68,29 @@ class RpcRequest(NamedTuple):
         return request
 
 
-Transport = Callable[[RpcRequest], Awaitable[str]]
+Fetch = Callable[[str, str, str], Awaitable[str]]
+
+
+class Fetch(Protocol):
+    def __call__(self, url: str, method: str = '', data: str = '') -> Awaitable[str]: ...
 
 
 class Proxy:
-    def __init__(self, module_name: str, transport: Transport):
-        self.transport = transport
+    def __init__(self, module_name: str, rpc_url: str, fetch: Fetch):
+        self.rpc_url = rpc_url
+        self.fetch = fetch
         self.module_name = module_name
 
     async def dispatch(self, func_name: str, *args) -> Any:
         rpc_request = RpcRequest.build_request(self.module_name, func_name, *args)
-        rpc_response = await self.transport(rpc_request)
-        return RpcResponse.from_json(rpc_response)
+        json_response = await self.fetch(self.rpc_url, method='POST', data=rpc_request.json())
+        return RpcResponse.from_json(json_response)
 
 
 class Services:
     def __init__(self):
         self._modules: Dict[str, Module] = {}
+        self.route = Route('/pynanto/rpc', self._route_callback)
 
     def add_module(self, module: Module):
         self._modules[module.name] = module
@@ -93,6 +104,11 @@ class Services:
         function = module[rpc_request.func]
         result = function.func(*rpc_request.args)
         return RpcResponse.to_json(result)
+
+    def _route_callback(self, request: Request) -> Response:
+        resp = self.dispatch(request.content)
+        response = Response(resp, 'application/json')
+        return response
 
 
 def generate_stub_source():
