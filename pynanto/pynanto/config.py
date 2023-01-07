@@ -1,4 +1,4 @@
-from contextlib import suppress
+import traceback
 from pathlib import Path
 from types import ModuleType
 from typing import Optional, Iterator
@@ -44,9 +44,11 @@ class Config:
             rpc_module: ModuleType = None
     ) -> 'Config':
         if rpc_module is None:
-            with suppress(Exception):
+            try:
                 import server.rpc
                 rpc_module = server.rpc
+            except:
+                traceback.print_exc()
 
         services = Services()
         if rpc_module is not None:

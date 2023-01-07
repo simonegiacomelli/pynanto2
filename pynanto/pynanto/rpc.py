@@ -149,8 +149,9 @@ proxy = Proxy(module_name, rpc_url, async_fetch_str)
     stub_functions = ''
     for f in module.functions:
         parameters = f.sign.parameters.values()
-        args_list = ''.join(map(lambda p: ', ' + p, (p.name for p in parameters)))
-        fun_stub = f'\nasync def {f.name}{f.signature}:\n' + \
+        params_list = ', '.join(p.name for p in parameters)
+        args_list = '' if params_list == '' else ', ' + params_list
+        fun_stub = f'\nasync def {f.name}({params_list}):\n' + \
                    f'    return await proxy.dispatch("{f.name}"{args_list})\n'
         stub_functions += fun_stub
 

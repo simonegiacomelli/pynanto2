@@ -110,6 +110,9 @@ def test_rpc_integration(webserver: Webserver):
         target = await client_module.support3_concat('foo', 'bar')
         assert target == 'foobar'
 
+        target = await client_module.support3_with_typing_import()
+        assert target == {'foo': 'bar'}  # this could fail do to missing 'from typing import Dict'
+
     verify()
     """ end """
 
