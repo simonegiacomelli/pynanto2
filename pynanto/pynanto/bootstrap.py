@@ -33,5 +33,5 @@ try:
     pass
 except Exception as ex:
     import traceback
-    traceback.print_exc(limit=1)            
+    traceback.print_exc()            
 """.replace('pass', '\n' + textwrap.indent(code, ' ' * 4))

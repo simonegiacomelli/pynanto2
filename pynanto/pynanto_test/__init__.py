@@ -1,4 +1,5 @@
 from functools import partial
+from types import ModuleType
 
 import pytest
 
@@ -13,10 +14,11 @@ def for_all_webservers():
                    ids=available_webservers().ids)()
 
 
-def new_config(webserver: Webserver) -> pynanto.Config:
+def new_config(webserver: Webserver, rpc_module: ModuleType = None) -> pynanto.Config:
     return pynanto.Config().quickstart(
         webserver_instance=webserver,
         port=find_port(),
         blocking=False,
-        stack_backtrack=2
+        stack_backtrack=2,
+        rpc_module=rpc_module
     )

@@ -1,4 +1,6 @@
+from contextlib import suppress
 from pathlib import Path
+from types import ModuleType
 from typing import Optional, Iterator
 
 from pynanto.bootstrap import Bootstrap
@@ -6,6 +8,7 @@ from pynanto.bundles import Bundles, external_filename
 from pynanto.resource import Resource, PathResource
 from pynanto.response import Response, Request
 from pynanto.routes import Routes
+from pynanto.rpc import Services, Stubber, Module
 from pynanto.webserver import Webserver
 from pynanto.webserver import wait_forever
 from pynanto.webservers.available_webservers import available_webservers
@@ -37,36 +40,52 @@ class Config:
             blocking: bool = True,
             webserver_instance: Optional[Webserver] = None,
             port: Optional[int] = None,
-            stack_backtrack=1
+            stack_backtrack=1,
+            rpc_module: ModuleType = None
     ) -> 'Config':
+        if rpc_module is None:
+            with suppress(Exception):
+                import server.rpc
+                rpc_module = server.rpc
+
+        services = Services()
+        if rpc_module is not None:
+            rpc_module = Module(rpc_module)
+            services.add_module(rpc_module)
 
         self.set_routes(
             Routes()
             .add_route(self.bundle_route, self.bundles.to_response)
             .add_route('/', self.quickstart_index_response)
+            .add_route_obj(services.route)
         )
+
+        if webserver_instance is None:
+            webserver_instance = available_webservers().new_instance()
+        if port is not None:
+            webserver_instance.set_port(port)
+        rpc_url = services.route.path
+        stubber = Stubber(rpc_url, services, rpc_module)
 
         # one should be able to import:
         # - through an 'import module_name'
         # - through ??
+
         ef = external_filename(stack_backtrack)
         if ef is not None:
             self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
             self.bundles.add_flat_folder(ef.parent / 'common', relative_to=ef.parent)
-            # self.bundles.add_flat_folder(ef.parent / 'server/rpc', relative_to=ef.parent)
             remotepy = ef.parent / 'remote.py'
-            server_rpc = ef.parent / 'server/rpc.py'
 
             def gen_remotepy() -> Iterator[Resource]:
                 if remotepy.exists():
                     yield PathResource('remote.py', remotepy)
-                if server_rpc.exists():
-                    yield PathResource('server/rpc.py', server_rpc)
+                yield from stubber.remote_stub_resources()
 
             self.bundles.add_resources(gen_remotepy)
 
         pynanto_remote = Path(__file__).parent
-        self.bundles.add_flat_folder(pynanto_remote / 'remote', relative_to=pynanto_remote.parent)
+        self.bundles.add_flat_folder(pynanto_remote, relative_to=pynanto_remote.parent)
         # language=python
         load_default_bundle = f"""
 import sys
@@ -81,12 +100,8 @@ sys.path.insert(0, '/default_bundle')
 import remote
 await remote.main()
 """)
-        if webserver_instance is None:
-            webserver_instance = available_webservers().new_instance()
 
         self.attach_webserver(webserver_instance)
-        if port is not None:
-            self.webserver.set_port(port)
         self.webserver.start_listen()
 
         if blocking:

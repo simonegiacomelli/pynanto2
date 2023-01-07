@@ -24,7 +24,9 @@ class WsPythonEmbedded(Webserver):
         httpd = ThreadingHTTPServer((self.host, self.port), partial(RequestHandler, handler=self._handler))
 
         def run():
-            print(f'Starting embedded python web server on http://{self.host}:{self.port}')
+            print(f'Starting embedded python web server on:\n'
+                  f' - http://{self.host}:{self.port}\n'
+                  f' - {self.localhost_url()}\n')
             httpd.serve_forever()
 
         self.thread = Thread(target=run, daemon=True)

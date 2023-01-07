@@ -1,10 +1,14 @@
 import json
 from inspect import getmembers, isfunction, signature, iscoroutinefunction, Signature
 from types import ModuleType, FunctionType
-from typing import NamedTuple, List, Tuple, Any, Optional, Dict, Callable, Awaitable
+from typing import NamedTuple, List, Tuple, Any, Optional, Dict, Callable, Awaitable, Iterable
 
-from typing_extensions import Protocol
+try:
+    from typing_extensions import Protocol
+except:
+    from typing import Protocol
 
+from pynanto import Resource, StringResource
 from pynanto.response import Request, Response
 from pynanto.routes import Route
 from pynanto.unsync import unsync
@@ -114,6 +118,20 @@ class Services:
         resp = self.dispatch(request.content)
         response = Response(resp, 'application/json')
         return response
+
+
+class Stubber:
+    def __init__(self, rpc_url: str, services: Services, rpc_module: Module = None):
+        self._services = services
+        self._rpc_url = rpc_url
+        self._module: Optional[Module] = rpc_module
+
+    def remote_stub_resources(self) -> Iterable[Resource]:
+        if self._module is None:
+            return
+        imports = 'from pynanto.remote.fetch import async_fetch_str'
+        stub_source = generate_stub_source(self._module, self._rpc_url, imports)
+        yield StringResource(self._module.name.replace('.', '/') + '.py', stub_source)
 
 
 def generate_stub_source(module: Module, rpc_url: str, imports: str):

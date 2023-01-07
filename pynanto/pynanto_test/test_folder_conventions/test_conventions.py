@@ -6,6 +6,8 @@ from pynanto_test import for_all_webservers, new_config
 
 @for_all_webservers()
 def test_convention_remote_async_main(page: Page, webserver: Webserver):
-    config = new_config(webserver)
+    from .server import rpc
+    config = new_config(webserver, rpc_module=rpc)
     page.goto(config.webserver.localhost_url())
-    expect(page.locator('body')).to_have_text('remote=hello, common=42')
+    expected = 'remote=hello, common=42, server=42'
+    expect(page.locator('body')).to_have_text(expected)
