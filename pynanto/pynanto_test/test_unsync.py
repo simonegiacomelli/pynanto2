@@ -1,8 +1,8 @@
-from pynanto.unsync import unsync
+from pynanto.unasync import unasync
 
 
 def test_unsync():
-    @unsync
+    @unasync
     async def fun():
         return 'ok'
 
@@ -10,7 +10,7 @@ def test_unsync():
 
 
 def test_unsync_with_args():
-    @unsync
+    @unasync
     async def fun(arg1):
         return arg1
 

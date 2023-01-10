@@ -14,7 +14,7 @@ except:
 from pynanto import Resource, StringResource
 from pynanto.response import Request, Response
 from pynanto.routes import Route
-from pynanto.unsync import unsync
+from pynanto.unasync import unasync
 
 
 class Function(NamedTuple):
@@ -31,7 +31,7 @@ def _std_function_to_function(fun_tuple: Tuple[str, FunctionType]) -> Function:
     func = fun_tuple[1]
     sign = signature(func)
     is_coroutine_function = iscoroutinefunction(func)
-    blocking = unsync(func)
+    blocking = unasync(func)
     return Function(name, func, str(sign), is_coroutine_function, signature(func), blocking)
 
 

@@ -9,7 +9,7 @@ from pynanto.server import find_port
 from pynanto_test import for_all_webservers
 from pynanto_test.test_rpc import support1, support3
 from pynanto_test.test_rpc import support2
-from pynanto_test.test_unsync import unsync
+from pynanto_test.test_unsync import unasync
 
 support2_module_name = 'pynanto_test.test_rpc.support2'
 
@@ -53,7 +53,7 @@ def test_module_getitem_and_invoke():
     assert actual == 42
 
 
-@unsync
+@unasync
 async def test_module_invoke_async():
     target = Module(support2)
 
@@ -103,7 +103,7 @@ def test_rpc_integration(webserver: Webserver):
     """ client part """
     client_module = _module_from_source('dynamic_module', stub_source)
 
-    @unsync
+    @unasync
     async def verify():
         target = await client_module.support3_mul(3, 4)
         assert target == 12
