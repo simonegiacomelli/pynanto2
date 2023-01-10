@@ -14,11 +14,15 @@ def unsync(f):
 
     async def main_safe(*args, **kwargs):
         nonlocal result, exc_info, exception
+        result = None
+        exc_info = None
+        exception = None
         try:
             result = await f(*args, **kwargs)
         except Exception as ex:
             exception = ex
             exc_info = sys.exc_info()
+        print('done ')
 
     def start(*args, **kwargs):
         asyncio.run(main_safe(*args, **kwargs))

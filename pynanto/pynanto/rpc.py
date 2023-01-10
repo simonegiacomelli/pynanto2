@@ -1,7 +1,10 @@
 import json
+import traceback
 from inspect import getmembers, isfunction, signature, iscoroutinefunction, Signature
 from types import ModuleType, FunctionType
 from typing import NamedTuple, List, Tuple, Any, Optional, Dict, Callable, Awaitable, Iterable
+
+from pynanto.exceptions import RemoteException
 
 try:
     from typing_extensions import Protocol
@@ -48,14 +51,18 @@ def function_list(module: ModuleType) -> List[Function]:
     return list(map(_std_function_to_function, getmembers(module, isfunction)))
 
 
-class RpcResponse:
-    @classmethod
-    def from_json(cls, string: str) -> Any:
-        return json.loads(string)
+class RpcResponse(NamedTuple):
+    result: Any
+    exception: str
 
     @classmethod
-    def to_json(cls, response: Any) -> str:
-        return json.dumps(response)
+    def from_json(cls, string: str) -> 'RpcResponse':
+        obj = json.loads(string)
+        response = RpcResponse(*obj)
+        return response
+
+    def to_json(self) -> str:
+        return json.dumps(self)
 
 
 class RpcRequest(NamedTuple):
@@ -93,7 +100,11 @@ class Proxy:
     async def dispatch(self, func_name: str, *args) -> Any:
         rpc_request = RpcRequest.build_request(self.module_name, func_name, *args)
         json_response = await self.fetch(self.rpc_url, method='POST', data=rpc_request.json())
-        return RpcResponse.from_json(json_response)
+        response = RpcResponse.from_json(json_response)
+        ex = response.exception
+        if ex is not None and ex != '':
+            raise RemoteException(ex)
+        return response.result
 
 
 class Services:
@@ -111,8 +122,15 @@ class Services:
         rpc_request = RpcRequest.from_json(request)
         module = self.find_module(rpc_request.module)
         function = module[rpc_request.func]
-        result = function.blocking(*rpc_request.args)
-        return RpcResponse.to_json(result)
+        exception = ''
+        result = None
+        try:
+            result = function.blocking(*rpc_request.args)
+        except Exception:
+            exception = traceback.format_exc()
+
+        response = RpcResponse(result, exception)
+        return response.to_json()
 
     def _route_callback(self, request: Request) -> Response:
         resp = self.dispatch(request.content)

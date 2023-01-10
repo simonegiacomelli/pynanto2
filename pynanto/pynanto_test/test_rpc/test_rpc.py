@@ -3,6 +3,7 @@ from types import ModuleType
 
 import pynanto
 from pynanto import Routes, Webserver
+from pynanto.exceptions import RemoteException
 from pynanto.rpc import Module, RpcRequest, Services
 from pynanto.server import find_port
 from pynanto_test import for_all_webservers
@@ -112,6 +113,18 @@ def test_rpc_integration(webserver: Webserver):
 
         target = await client_module.support3_with_typing_import()
         assert target == {'foo': 'bar'}  # this could fail do to missing 'from typing import Dict'
+
+        # expect errors
+        exception = None
+        try:
+            target = await client_module.support3_throws_error('inducted exception', '')
+        except RemoteException as ex:
+            exception = ex
+        assert exception is not None
+        assert 'inducted exception' in str(exception)
+
+        target = await client_module.support3_throws_error('', 'ok1')
+        assert target == 'ok1'
 
     verify()
     """ end """
