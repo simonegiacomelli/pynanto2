@@ -1,13 +1,18 @@
+class HTMLElement:
+    innerHTML: str
+    onclick: Any
+
+
 class Document:
-    pass
+    body: HTMLElement
+
+    def createElement(self, tag: str) -> HTMLElement: ...
 
 
-class Console:
-    pass
+class Console: ...
 
 
-def fetch(url: str, method: str = 'GET', body=None):
-    pass
+def fetch(url: str, method: str = 'GET', body=None): ...
 
 
 document: Document
