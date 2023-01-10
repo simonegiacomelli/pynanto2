@@ -19,8 +19,8 @@ class WatchableBundle(Bundle, ABC):
     def is_changed(self):
         pass
 
-# this should be called 'flatten'
-def collect(bundle_list: List[Bundle]) -> Iterable[Resource]:
+
+def flatten_bundles(bundle_list: List[Bundle]) -> Iterable[Resource]:
     for bundle in bundle_list:
         yield from bundle.list()
 
@@ -35,4 +35,4 @@ class LambdaBundle(Bundle):
 
 
 def strategy_no_cache(bundles: List[Bundle]) -> bytes:
-    return build_archive(collect(bundles))
+    return build_archive(flatten_bundles(bundles))
