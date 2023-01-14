@@ -1,19 +1,25 @@
+from functools import partial
+
 from js import document
 
 from remote.pn_button import PnButton
+import remote.supertyped as st
 
 
 async def main():
     # import os
     document.body.innerHTML = 'ciaoo3'
 
-    btn = PnButton()
+    btn = st.button('click me', btn_click)
+    sli = st.slider()
 
-    async def btn_click(event):
-        print('ok')
-
-    btn.onclick = btn_click
-    # from js import window
-    # window.pyodide \
-    #         await pyodide.loadPackage("micropip");
-    # print('import ok')
+async def btn_click(event):
+    from js import window
+    await window.pyodide.loadPackage("micropip")
+    import micropip
+    await micropip.install('sqlparse')
+    import sqlparse
+    print('ok')
+    raw = 'select * from foo; select * from bar;'
+    statements = sqlparse.split(raw)
+    print(statements)
