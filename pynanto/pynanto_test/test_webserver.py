@@ -26,6 +26,7 @@ def test_webservers_get(webserver: Webserver):
 
 @for_all_webservers()
 def test_webservers_post(webserver: Webserver):
+    # GIVEN
     response_a = Response('a', 'text/plain')
     actual_request: Request = None
 
@@ -40,7 +41,10 @@ def test_webservers_post(webserver: Webserver):
 
     url = webserver.localhost_url()
 
+    # WHEN
     actual_response = sync_fetch_response(url + '/rpc', method='POST', data='post-body')
+
+    # THEN
     assert actual_response == response_a
     assert actual_request.method == 'POST'
     assert actual_request.content.decode('utf8') == 'post-body'

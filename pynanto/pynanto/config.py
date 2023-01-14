@@ -75,6 +75,7 @@ class Config:
 
         ef = external_filename(stack_backtrack)
         if ef is not None:
+            self.bundles.add_flat_folder(ef.parent / 'app', relative_to=ef.parent)
             self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
             self.bundles.add_flat_folder(ef.parent / 'common', relative_to=ef.parent)
             remotepy = ef.parent / 'remote.py'
