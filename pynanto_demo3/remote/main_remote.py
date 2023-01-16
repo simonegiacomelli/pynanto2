@@ -1,5 +1,5 @@
-from js import document
+from remote.bluetooth import go_bluetooth
 
 
 async def main():
-    document.body.innerHTML = 'ciao'
+    await go_bluetooth()
