@@ -60,8 +60,13 @@ class BluetoothWidget(Widget):
         await characteristic.startNotifications()
         print('startNotifications() done')
 
-    async def write_packet(self, packet_bytes):
-        await self.write_packet_char.writeValue(packet_bytes)
+    async def write_hex_str(self, hex_str: str):
+        await self.write_bytes(bytes.fromhex(hex_str))
+
+    async def write_bytes(self, packet: bytes):
+        from js import Uint8Array
+        arr = Uint8Array.new(packet)
+        await self.write_packet_char.writeValue(arr)
 
     async def valueChanged(self, event):
         raw = event.target.value
@@ -75,13 +80,7 @@ class BluetoothWidget(Widget):
         log = print
         if cmd == 'P':
             log('answering with password')
-            from js import TextEncoder
-            pass_bytes = TextEncoder.new().encode('PD8GnDV5wkp8BeJ58PJ5')
-            await self.write_packet(pass_bytes)
+            await self.write_bytes('PD8GnDV5wkp8BeJ58PJ5'.encode())
         if cmd == 'M':
             log('answering with sending mode')
-            from js import Uint8Array
-            new = Uint8Array.new(bytes.fromhex('4D658E'))
-            console.log(new)
-            await self.write_packet(new)
-            # await self.write_packet(bytes([65, 120, 49 + 128, 16, 99, 101 + 128]))
+            await self.write_hex_str('4D658E')
