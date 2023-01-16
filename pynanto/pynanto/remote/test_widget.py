@@ -1,9 +1,8 @@
 import unittest
 
-from app.browser.html.dom_definitions import HTMLElement
-from app.browser.unittest_fix import unittest_main_fixed
-from app.browser.widget.widget import Widget
-from js import document, window
+from js import document, HTMLElement
+from pynanto.remote.unittest_fix import unittest_main_fixed
+from pynanto.remote.widget import Widget
 
 
 class WidgetTestCase(unittest.TestCase):
@@ -49,7 +48,12 @@ class WidgetTestCase(unittest.TestCase):
 
 
 def main():
-    unittest_main_fixed(__name__)
+    test_result = unittest_main_fixed(__name__)
+    meta = document.createElement('meta')
+    meta.name = 'unittest-result'
+    meta.content = f'wasSuccessful={test_result.wasSuccessful()}'
+    document.head.append(meta)
+    # unittest.main()
 
 
 if __name__ == '__main__':
