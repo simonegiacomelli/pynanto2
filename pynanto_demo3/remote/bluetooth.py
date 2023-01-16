@@ -70,13 +70,13 @@ class BluetoothWidget(Widget):
 
     async def valueChanged(self, event):
         raw = event.target.value
-        str = ''
+        payload = ''
         for idx in range(raw.byteOffset, raw.byteLength):
             ch = raw.getUint8(idx)
-            str += f'{ch:02x}'
+            payload += f'{ch:02x}'
 
         cmd = chr(raw.getUint8(raw.byteOffset))
-        print('cmd', cmd, str)
+        print('cmd', cmd, payload)
         log = print
         if cmd == 'P':
             log('answering with password')
@@ -84,3 +84,5 @@ class BluetoothWidget(Widget):
         if cmd == 'M':
             log('answering with sending mode')
             await self.write_hex_str('4D658E')
+        if cmd == 'X':
+            pass
