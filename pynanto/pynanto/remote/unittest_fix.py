@@ -7,11 +7,22 @@ from unittest import TestResult
 from js import console
 
 
-def unittest_main_fixed(module_name) -> TestResult:
-    module = sys.modules[module_name]
+def unittest_main_fixed(module) -> TestResult:
+    if isinstance(module, str):
+        module = sys.modules[module]
     test_suit = unittest.TestLoader().loadTestsFromModule(module)
 
-    return _test_runner_run(test_suit)
+    result = _test_runner_run(test_suit)
+    attach_result_meta(result)
+    return result
+
+
+def attach_result_meta(test_result: TestResult):
+    from js import document
+    meta = document.createElement('meta')
+    meta.name = 'unittest-result'
+    meta.content = f'wasSuccessful={test_result.wasSuccessful()}'
+    document.head.append(meta)
 
 
 def run_all_tests() -> TestResult:

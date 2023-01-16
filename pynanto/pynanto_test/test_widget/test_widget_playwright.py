@@ -11,6 +11,5 @@ def test_widget_playwright(page: Page):
     page.goto(webserver.localhost_url())
 
     meta = page.locator('meta[name="unittest-result"]')
-    print('wia')
     meta.wait_for(state='attached')
     expect(meta).to_have_attribute('content', 'wasSuccessful=True', timeout=1)

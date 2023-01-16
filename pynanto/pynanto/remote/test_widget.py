@@ -48,11 +48,7 @@ class WidgetTestCase(unittest.TestCase):
 
 
 def main():
-    test_result = unittest_main_fixed(__name__)
-    meta = document.createElement('meta')
-    meta.name = 'unittest-result'
-    meta.content = f'wasSuccessful={test_result.wasSuccessful()}'
-    document.head.append(meta)
+    unittest_main_fixed(__name__)
     # unittest.main()
 
 
