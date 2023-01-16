@@ -9,7 +9,11 @@ from pynanto.exceptions import RemoteException
 try:
     from typing_extensions import Protocol
 except:
-    from typing import Protocol
+    try:
+        from typing import Protocol
+    except:
+        class Protocol:
+            ...
 
 from pynanto import Resource, StringResource
 from pynanto.response import Request, Response
@@ -62,7 +66,7 @@ class RpcResponse(NamedTuple):
         return response
 
     def to_json(self) -> str:
-        return json.dumps(self)
+        return json.dumps(self, default=str)
 
 
 class RpcRequest(NamedTuple):
