@@ -23,10 +23,7 @@ interface Document : Node {
 
 def test_optionals():
     idl = """
-/* https://dom.spec.whatwg.org/#interface-document */
-[Constructor]
 interface Document  {
-  [CEReactions, NewObject, Throws]
   Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);
 }    
     """
