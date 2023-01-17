@@ -4,9 +4,12 @@ from js import document
 
 from remote.pn_button import PnButton
 import remote.supertyped as st
+from remote.try_pytest import try_pytest
 
 
 async def main():
+    await try_pytest()
+    return
     # import os
     document.body.innerHTML = 'ciaoo3'
 
