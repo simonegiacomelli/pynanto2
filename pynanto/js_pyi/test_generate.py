@@ -31,3 +31,15 @@ interface Document  {
             ])), returns='Element'))
         ]
     )]
+
+
+def test_attribute():
+    actual = generate("""
+interface Document  {
+  readonly attribute DOMImplementation implementation;
+}    
+    """)
+    assert actual == [GClassDef(
+        'Document', body=[
+            GAttribute('implementation', annotation='DOMImplementation')
+        ])]

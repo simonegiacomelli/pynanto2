@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import widlparser
-from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType
+from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
+    Attribute, AttributeRest, SingleType
 
 from js_pyi.g_dataclasses import *
 
@@ -24,6 +25,23 @@ class Processor:
         return GClassDef(c.name, bases=self.interface_bases(c), body=members)
 
     def c_InterfaceMember(self, member: InterfaceMember):
+        if member.idl_type == 'method':
+            return self.c_InterfaceMember_method(member)
+        if member.idl_type == 'attribute':
+            return self.c_InterfaceMember_attribute(member)
+        raise Exception(f'todo {member.idl_type}')
+
+    def c_InterfaceMember_attribute(self, member: InterfaceMember):
+        assert isinstance(member.member, Attribute)
+        assert isinstance(member.member.attribute, AttributeRest)
+        assert isinstance(member.member.attribute.type, TypeWithExtendedAttributes)
+        return GAttribute(
+            member.name,
+            self.g_type_with_extended_attributes(member.member.attribute.type)
+        )
+
+    def c_InterfaceMember_method(self, member: InterfaceMember):
+
         args = []
         for a in member.arguments:
             args.append(
@@ -53,14 +71,24 @@ class Processor:
         argument_type = argument.type
         if isinstance(argument_type, TypeWithExtendedAttributes):
             if isinstance(argument_type.type, UnionType):
-                ut: UnionType = argument_type.type
-                ann = [str(a) for a in ut.types]
-                ann = ['None'] + ann
-                return GUnion(ann)
+                return self.g_type_with_extended_attributes(argument_type)
             else:
                 raise Exception('todo')
 
         return str(argument_type.type)
+
+    def g_type_with_extended_attributes(self, argument_type: TypeWithExtendedAttributes):
+        if isinstance(argument_type.type, UnionType):
+            ut: UnionType = argument_type.type
+            ann = [str(a) for a in ut.types]
+            ann = ['None'] + ann
+            g_union = GUnion(ann)
+            return g_union
+        elif isinstance(argument_type.type, SingleType):
+            sg: SingleType = argument_type.type
+            return sg.type_name
+        else:
+            raise Exception(f'todo {argument_type.type}')
 
     def interface_bases(self, interface: Interface):
         if interface.inheritance is None:

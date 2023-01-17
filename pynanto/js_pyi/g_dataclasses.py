@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 from dataclasses import dataclass, field
 from typing import List, Any
 
@@ -36,6 +37,20 @@ class GClassDef:
     body: List[GStmt] = field(default_factory=list)
 
 
+@dataclass()
+class GUnion:
+    annotations: List[str]
+
+
+GAnnotation = typing.Union[str, GUnion]
+
+
+@dataclass()
+class GAttribute(GStmt):
+    name: str
+    annotation: GAnnotation
+
+
 @dataclass
 class GArguments:
     posonlyargs: List[Any] = ()
@@ -47,15 +62,10 @@ class GArguments:
     defaults: List[Any] = ()
 
 
-@dataclass()
-class GUnion:
-    annotations: List[str]
-
-
 @dataclass
 class GArg:
     name: str
-    annotation: str | GUnion
+    annotation: GAnnotation
 
 
 @dataclass
