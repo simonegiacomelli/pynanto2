@@ -103,7 +103,7 @@ def i_interface_member__type_method(member: InterfaceMember):
 
     if isinstance(member.member, widlparser.Operation):
         returns = str(member.member.return_type).strip()
-        return GMethod(member.name, GArguments(args=args), returns=returns)
+        return GMethod(member.name, arguments=args, returns=returns)
 
     _unhandled(member.member)
 

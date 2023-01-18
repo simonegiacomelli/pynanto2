@@ -6,17 +6,7 @@ from js_pyi.generate import g_method, g_attribute
 
 
 @dataclass()
-class GAst:
-    pass
-
-
-@dataclass()
-class GExpr(GAst):
-    pass
-
-
-@dataclass()
-class GStmt(GAst):
+class GStmt:
     pass
 
 
@@ -62,14 +52,9 @@ class GArg(GNamedAnnotation):
 
 
 @dataclass
-class GArguments:
-    args: List[GArg] = ()
-
-
-@dataclass
 class GMethod(GStmt):
     name: str
-    arguments: GArguments
-    returns: str
+    arguments: List[GArg] = field(default_factory=list)
+    returns: Optional[GAnnotation] = None
 
     def __repr__(self): return g_method(self)

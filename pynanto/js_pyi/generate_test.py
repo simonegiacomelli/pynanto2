@@ -7,18 +7,20 @@ def test_attribute():
 
 
 def test_method_1():
-    actual = repr(GMethod('foo', arguments=(GArguments(args=[])), returns='undefined'))
-    assert actual == 'def foo(): ...'
+    expected = 'def foo(): ...'
+
+    assert expected == repr(GMethod('foo'))
+    assert expected == repr(GMethod('foo', returns='undefined'))
 
 
 def test_method_2():
-    actual = repr(GMethod('foo', arguments=(GArguments(args=[])), returns='DOMString'))
+    actual = repr(GMethod('foo', returns='DOMString'))
     assert actual == 'def foo() -> str: ...'
 
 
 def test_method_3():
-    actual = repr(GMethod('foo', arguments=(GArguments(args=[
+    actual = repr(GMethod('foo', arguments=[
         GArg('localName', 'DOMString'),
         GArg('node', 'Node'),
-    ])), returns='undefined'))
+    ], returns='undefined'))
     assert actual == 'def foo(localName: str, node: Node): ...'

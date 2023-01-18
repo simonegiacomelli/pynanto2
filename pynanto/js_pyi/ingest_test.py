@@ -14,7 +14,7 @@ interface Document : Node {
 
     assert actual == [GInterface(
         'Document', bases=['Node'], body=[
-            (GMethod('createElement', arguments=(GArguments(args=[GArg('localName', 'DOMString')])),
+            (GMethod('createElement', arguments=[GArg('localName', 'DOMString')],
                      returns='FooElement'
                      ))]
     )]
@@ -23,18 +23,18 @@ interface Document : Node {
 def test_optionals():
     idl = "Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);"
     actual = _single_construct(idl)
-    assert actual == GMethod('createElement', arguments=(GArguments(args=[
+    assert actual == GMethod('createElement', arguments=[
         GArg('localName', 'DOMString'),
         GArg('options', GOptional(GUnion(['ElementCreationOptions', 'DOMString'])))
-    ])), returns='Element')
+    ], returns='Element')
 
 
 def test_optional_with_default():
     idl = 'undefined time(optional DOMString label = "foobar");'
     actual = _single_construct(idl)
-    assert actual == GMethod('time', arguments=(GArguments(args=[
+    assert actual == GMethod('time', arguments=[
         GArg('label', GOptional('DOMString'), default='"foobar"')
-    ])), returns='undefined')
+    ], returns='undefined')
 
 
 def test_attribute():

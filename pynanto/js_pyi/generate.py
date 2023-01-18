@@ -25,9 +25,9 @@ def g_arg(a: GArg) -> str:
 
 def g_method(m: GMethod) -> str:
     returns = ''
-    if m.returns != 'undefined':
+    if m.returns is not None and m.returns != 'undefined':
         returns = ' -> ' + _to_py_type(m.returns)
 
-    args_arr = [g_arg(a) for a in m.arguments.args]
+    args_arr = [g_arg(a) for a in m.arguments]
     args_str = ', '.join(args_arr)
     return f'def {m.name}({args_str}){returns}: ...'
