@@ -26,18 +26,13 @@ class GInterface:
 
 
 @dataclass()
-class GNotRequired:
-    of: 'GAnnotation'
-
-
-@dataclass()
 class GNullable:
     of: 'GAnnotation'
 
 
 GUnion = typing.NewType('GUnion', list)
 
-GAnnotation = typing.Union[str, GUnion, GNotRequired, GNullable]
+GAnnotation = typing.Union[str, GUnion, GNullable]
 
 
 class GUnion(List[GAnnotation]):
@@ -58,6 +53,8 @@ class GAttribute(GNamedAnnotation):
 @dataclass
 class GArg(GNamedAnnotation):
     default: Optional[str] = None
+    optional: bool = False
+    """`optional` in webidl lingo and not in python sense"""
 
 
 @dataclass

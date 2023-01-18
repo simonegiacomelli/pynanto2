@@ -25,7 +25,7 @@ def test_optionals():
     actual = _single_construct(idl)
     assert actual == GMethod('createElement', arguments=[
         GArg('localName', 'DOMString'),
-        GArg('options', GNotRequired(GUnion(['ElementCreationOptions', 'DOMString'])))
+        GArg('options', GUnion(['ElementCreationOptions', 'DOMString']), optional=True)
     ], returns='Element')
 
 
@@ -33,7 +33,7 @@ def test_optional_with_default():
     idl = 'undefined time(optional DOMString label = "foobar");'
     actual = _single_construct(idl)
     assert actual == GMethod('time', arguments=[
-        GArg('label', GNotRequired('DOMString'), default='"foobar"')
+        GArg('label', 'DOMString', default='"foobar"', optional=True)
     ], returns='undefined')
 
 
@@ -43,6 +43,24 @@ def test_nullable():
     assert actual == GMethod('enableStyleSheetsForSet', arguments=[
         GArg('name', annotation=GNullable('DOMString'))
     ], returns='undefined')
+
+
+def test_compound_nullable():
+    idl = 'undefined foo( (HTMLElement or long)? before );'
+    actual = _single_construct(idl)
+    assert actual == GMethod('foo', arguments=[
+        GArg('before', annotation=GNullable(GUnion(['HTMLElement', 'long'])))
+    ], returns='undefined')
+
+
+# def test_compound_nullable_optional_default():
+#     idl = 'undefined foo( optional (HTMLElement or long)? before = null);'
+#     actual = _single_construct(idl)
+#     assert actual == GMethod('foo', arguments=[
+#         GArg('before', annotation=GNotRequired(GNullable(GUnion(['HTMLElement', 'long']))),
+#              default='null'
+#              )
+#     ], returns='undefined')
 
 
 def test_attribute():

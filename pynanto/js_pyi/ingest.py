@@ -34,10 +34,11 @@ def i_primitive_type(primitive_type: PrimitiveType):
     _unhandled(t)
 
 
-def _is_type_suffix_nullable(suffix: TypeSuffix | None):
-    if suffix is None:
-        return False
-    return True
+def _wrap_if_nullable(o, suffix: TypeSuffix | None):
+    nullable = suffix is not None
+    if nullable:
+        o = GNullable(o)
+    return o
 
 
 def i_non_any_type(non_any_type: NonAnyType):
@@ -54,8 +55,8 @@ def i_non_any_type(non_any_type: NonAnyType):
     else:
         _unhandled(t)
 
-    if _is_type_suffix_nullable(non_any_type.suffix):
-        res = GNullable(res)
+    res = _wrap_if_nullable(res, non_any_type.suffix)
+
     return res
 
 
@@ -94,8 +95,14 @@ def i_type(t: Type):
 
     tt = t.type
     if isinstance(tt, SingleType):
-        return i_single_type(tt)
-    _unhandled(t)
+        res = i_single_type(tt)
+    elif isinstance(tt, UnionType):
+        res = i_union_type(tt)
+    else:
+        _unhandled(tt)
+
+    res = _wrap_if_nullable(res, t.suffix)
+    return res
 
 
 def i_argument(argument: Argument):
@@ -118,9 +125,7 @@ def i_interface_member__type_method(member: InterfaceMember):
         _expect_type(a, Argument)
         a: Argument
         annotation = i_argument(a)
-        if not a.required:
-            annotation = GNotRequired(annotation)
-        g_arg = GArg(a.name, annotation)
+        g_arg = GArg(a.name, annotation, optional=not a.required)
         if a.default is not None:
             g_arg.default = i_default(a.default)
         args.append(g_arg)
