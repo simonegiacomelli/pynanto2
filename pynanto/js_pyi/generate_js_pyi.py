@@ -1,3 +1,4 @@
+from itertools import groupby
 from pathlib import Path
 
 from js_pyi.generate import generate
@@ -11,7 +12,9 @@ def main():
         txt = f.read_text()
         break
 
-    for stmt in generate(txt):
+    statements = generate(txt, throw=False)
+    groupby(statements, )
+    for stmt in statements:
         print(stmt)
 
 

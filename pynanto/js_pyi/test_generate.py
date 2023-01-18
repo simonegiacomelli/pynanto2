@@ -9,11 +9,11 @@ interface Document : Node {
 }    
     """)
 
-    assert actual == [GClassDef(
+    assert actual == [GInterface(
         'Document', bases=['Node'], body=[
-            (GFunctionDef('createElement', arguments=(GArguments(args=[GArg('localName', 'DOMString')])),
-                          returns='FooElement'
-                          ))]
+            (GMethod('createElement', arguments=(GArguments(args=[GArg('localName', 'DOMString')])),
+                     returns='FooElement'
+                     ))]
     )]
 
 
@@ -25,9 +25,9 @@ interface Document  {
     """)
     g_union = GUnion(['ElementCreationOptions', 'DOMString'])
     g_optional = GOptional(g_union)
-    assert actual == [GClassDef(
+    assert actual == [GInterface(
         'Document', body=[
-            GFunctionDef('createElement', arguments=(GArguments(args=[
+            GMethod('createElement', arguments=(GArguments(args=[
                 GArg('localName', 'DOMString'),
                 GArg('options', g_optional)
             ])), returns='Element')
@@ -41,9 +41,9 @@ interface ConsoleInstance  {
     undefined time(optional DOMString label = "foobar");
 }    
     """)
-    assert actual == [GClassDef(
+    assert actual == [GInterface(
         'ConsoleInstance', body=[
-            GFunctionDef('time', arguments=(GArguments(args=[
+            GMethod('time', arguments=(GArguments(args=[
                 GArg('label', GOptional('DOMString'), default='"foobar"')
             ])), returns='undefined')
 
@@ -56,18 +56,31 @@ interface Document  {
   readonly attribute DOMImplementation implementation;
 }    
     """)
-    assert actual == [GClassDef(
+    assert actual == [GInterface(
         'Document', body=[
             GAttribute('implementation', annotation='DOMImplementation')
         ])]
 
 
-def test_unhandled():
-    actual = generate("""
+unhandled_idl = """
 dictionary ConsoleInstanceOptions {
   ConsoleInstanceDumpCallback dump;
 }
-    """)
+"""
+
+
+def test_raise():
+    exception = False
+    try:
+        generate(unhandled_idl)
+    except Exception as ex:
+        exception = True
+
+    assert exception
+
+
+def test_unhandled():
+    actual = generate(unhandled_idl, throw=False)
     assert len(actual) == 1
     a = actual[0]
     assert isinstance(a, GUnhandled)

@@ -27,7 +27,7 @@ class GUnhandled(GStmt):
 
 
 @dataclass()
-class GClassDef:
+class GInterface:
     name: str
     bases: List[str] = field(default_factory=list)
     body: List[GStmt] = field(default_factory=list)
@@ -73,7 +73,7 @@ class GArg:
 
 
 @dataclass
-class GFunctionDef(GStmt):
+class GMethod(GStmt):
     name: str
     arguments: GArguments
     returns: str

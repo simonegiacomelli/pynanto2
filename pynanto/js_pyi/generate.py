@@ -86,7 +86,9 @@ def g_argument(argument: Argument) -> str | GUnion:
     return str(argument_type.type)
 
 
-def c_InterfaceMember_method(member: InterfaceMember):
+def c_interface_member__type_method(member: InterfaceMember):
+    expect_type(member, InterfaceMember)
+
     args = []
     for a in member.arguments:
         expect_type(a, Argument)
@@ -98,50 +100,54 @@ def c_InterfaceMember_method(member: InterfaceMember):
         if a.default is not None:
             g_arg.default = g_default(a.default)
         args.append(g_arg)
+
     if isinstance(member.member, widlparser.Operation):
         returns = str(member.member.return_type).strip()
-    else:
-        todo(member.member)
-    return GFunctionDef(member.name, GArguments(args=args), returns=returns)
+        return GMethod(member.name, GArguments(args=args), returns=returns)
+
+    todo(member.member)
 
 
-def c_InterfaceMember_attribute(member: InterfaceMember):
-    assert isinstance(member.member, Attribute)
-    assert isinstance(member.member.attribute, AttributeRest)
-    assert isinstance(member.member.attribute.type, TypeWithExtendedAttributes)
+def c_interface_member__type_attribute(im: InterfaceMember):
+    expect_type(im, InterfaceMember)
+    expect_type(im.member, Attribute)
+
+    attribute: Attribute = im.member
+
+    expect_type(attribute.attribute, AttributeRest)
+    expect_type(attribute.attribute.type, TypeWithExtendedAttributes)
     return GAttribute(
-        member.name,
-        g_type_with_extended_attributes(member.member.attribute.type)
+        im.name,
+        g_type_with_extended_attributes(attribute.attribute.type)
     )
 
 
-def c_InterfaceMember(member: InterfaceMember):
-    if member.idl_type == 'method':
-        return c_InterfaceMember_method(member)
-    if member.idl_type == 'attribute':
-        return c_InterfaceMember_attribute(member)
-    todo(member.idl_type)
+def g_interface_member(member: InterfaceMember):
+    expect_type(member, InterfaceMember)
+
+    idl_type = member.idl_type
+
+    if idl_type == 'method':
+        return c_interface_member__type_method(member)
+    if idl_type == 'attribute':
+        return c_interface_member__type_attribute(member)
+
+    todo(idl_type)
 
 
-def process_member(member: Construct):
-    if isinstance(member, InterfaceMember):
-        return c_InterfaceMember(member)
-    elif isinstance(member, widlparser.ExtendedAttribute):
-        return None
-    else:
-        todo(member)
-
-
-def c_interface(c: Interface):
-    members = remove_none(process_member(m) for m in c.members)
-    return GClassDef(c.name, bases=interface_bases(c), body=members)
+def g_interface(interface: Interface):
+    expect_type(interface, Interface)
+    members = [g_construct(construct) for construct in interface.members]
+    return GInterface(interface.name, bases=interface_bases(interface), body=members)
 
 
 def g_construct(construct: Construct):
     expect_type(construct, Construct)
 
     if isinstance(construct, Interface):
-        return c_interface(construct)
+        return g_interface(construct)
+    if isinstance(construct, InterfaceMember):
+        return g_interface_member(construct)
 
     todo(construct)
 
@@ -152,16 +158,19 @@ def g_union_type(union_type: UnionType):
     return g_union
 
 
-def generate(idl: str) -> List[GStmt]:
+def generate(idl: str, throw: bool = True) -> List[GStmt]:
     statements: List[GStmt] = []
     parser = widlparser.Parser()
     parser.markup()
     parser.parse(idl)
     for c in parser.constructs:
-        try:
+        if throw:
             construct = g_construct(c)
-        except Exception as ex:
-            construct = GUnhandled(str(c), ex)
+        else:
+            try:
+                construct = g_construct(c)
+            except Exception as ex:
+                construct = GUnhandled(str(c), ex)
         statements.append(construct)
     return statements
 
