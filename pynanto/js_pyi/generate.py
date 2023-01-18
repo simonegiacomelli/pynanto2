@@ -19,9 +19,15 @@ def _to_py_type(s: str) -> str:
     return _types_dict.get(s, s)
 
 
+def g_arg(a: GArg) -> str:
+    return a.name + ': ' + _to_py_type(a.annotation)
+
+
 def g_method(m: GMethod) -> str:
     returns = ''
     if m.returns != 'undefined':
         returns = ' -> ' + _to_py_type(m.returns)
 
-    return f'def {m.name}(){returns}: ...'
+    args_arr = [g_arg(a) for a in m.arguments.args]
+    args_str = ', '.join(args_arr)
+    return f'def {m.name}({args_str}){returns}: ...'

@@ -57,21 +57,21 @@ class GAttribute(GStmt):
 
 
 @dataclass
+class GArg:
+    name: str
+    annotation: GAnnotation
+    default: Optional[str] = None
+
+
+@dataclass
 class GArguments:
     posonlyargs: List[Any] = ()
-    args: List[Any] = ()
+    args: List[GArg] = ()
     vararg: List[Any] = ()
     kwonlyargs: List[Any] = ()
     kw_defaults: List[Any] = ()
     kwarg: List[Any] = ()
     defaults: List[Any] = ()
-
-
-@dataclass
-class GArg:
-    name: str
-    annotation: GAnnotation
-    default: Optional[str] = None
 
 
 @dataclass
