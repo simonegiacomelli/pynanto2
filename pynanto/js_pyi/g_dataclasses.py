@@ -77,7 +77,3 @@ class GFunctionDef(GStmt):
     name: str
     arguments: GArguments
     returns: str
-
-
-class GModule(List[GStmt]):
-    pass

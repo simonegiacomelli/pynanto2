@@ -18,7 +18,6 @@ interface Document : Node {
 
 
 def test_optionals():
-    GUnion
     actual = generate("""
 interface Document  {
   Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);

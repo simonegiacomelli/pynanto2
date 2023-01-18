@@ -12,7 +12,7 @@ def main():
         txt = f.read_text()
         processor.parse(txt)
 
-    print(processor.module)
+    print(processor.statements)
 
 
 if __name__ == '__main__':

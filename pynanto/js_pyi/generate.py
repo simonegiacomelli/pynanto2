@@ -9,7 +9,7 @@ from js_pyi.g_dataclasses import *
 
 class Processor:
     def __init__(self):
-        self.module = GModule()
+        self.statements: List[GStmt] = []
 
     def parse(self, idl: str):
         widl = widlparser.Parser()
@@ -20,8 +20,8 @@ class Processor:
                 construct = self.g_construct(c)
             except Exception as ex:
                 construct = GUnhandled(str(c), ex)
-            self.module.append(construct)
-        return self.module
+            self.statements.append(construct)
+        return self.statements
 
     def c_interface(self, c: Interface):
         members = remove_none(self.process_member(m) for m in c.members)
@@ -158,10 +158,10 @@ class Processor:
         return default.value
 
 
-def generate(idl: str) -> GModule:
+def generate(idl: str) -> List[GStmt]:
     processor = Processor()
     processor.parse(idl)
-    return processor.module
+    return processor.statements
 
 
 def remove_none(param):
