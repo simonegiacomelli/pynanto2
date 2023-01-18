@@ -16,7 +16,11 @@ class Processor:
         widl.markup()
         widl.parse(idl)
         for c in widl.constructs:
-            self.module.append(self.g_construct(c))
+            try:
+                construct = self.g_construct(c)
+            except Exception as ex:
+                construct = GUnhandled(str(c), ex)
+            self.module.append(construct)
         return self.module
 
     def c_interface(self, c: Interface):

@@ -61,3 +61,15 @@ interface Document  {
         'Document', body=[
             GAttribute('implementation', annotation='DOMImplementation')
         ])]
+
+
+def test_unhandled():
+    actual = generate("""
+dictionary ConsoleInstanceOptions {
+  ConsoleInstanceDumpCallback dump;
+}
+    """)
+    assert len(actual) == 1
+    a = actual[0]
+    assert isinstance(a, GUnhandled)
+    assert 'dump' in a.body

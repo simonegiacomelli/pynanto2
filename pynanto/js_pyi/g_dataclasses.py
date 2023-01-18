@@ -7,27 +7,23 @@ from typing import List, Any
 
 @dataclass()
 class GAst:
-    ...
+    pass
 
 
 @dataclass()
 class GExpr(GAst):
-    ...
+    pass
 
 
 @dataclass()
 class GStmt(GAst):
-    ...
+    pass
 
 
 @dataclass()
-class GWithName:
-    name: str
-
-
-@dataclass()
-class GName:
-    name: str
+class GUnhandled(GStmt):
+    body: str
+    exception: Exception
 
 
 @dataclass()
