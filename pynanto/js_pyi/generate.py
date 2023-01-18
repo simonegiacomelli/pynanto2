@@ -30,7 +30,7 @@ def g_primitive_type(primitive_type: PrimitiveType):
     t = primitive_type.type
     if isinstance(t, Symbol):
         return g_symbol(t)
-    todo(t)
+    unhandled(t)
 
 
 def g_non_any_type(non_any_type: NonAnyType):
@@ -43,14 +43,14 @@ def g_non_any_type(non_any_type: NonAnyType):
         return g_type_identifier(t)
     elif isinstance(t, Symbol):
         return g_symbol(t)
-    todo(t)
+    unhandled(t)
 
 
 def g_single_type(single_type: SingleType):
     expect_type(single_type, SingleType)
     t = single_type.type
     if isinstance(t, AnyType):
-        todo(single_type)
+        unhandled(single_type)
     elif isinstance(t, NonAnyType):
         return g_non_any_type(t)
 
@@ -73,7 +73,7 @@ def g_type_with_extended_attributes(twea: TypeWithExtendedAttributes):
     elif isinstance(t, SingleType):
         return g_single_type(t)
 
-    todo(t)
+    unhandled(t)
 
 
 def g_argument(argument: Argument) -> str | GUnion:
@@ -105,7 +105,7 @@ def c_interface_member__type_method(member: InterfaceMember):
         returns = str(member.member.return_type).strip()
         return GMethod(member.name, GArguments(args=args), returns=returns)
 
-    todo(member.member)
+    unhandled(member.member)
 
 
 def c_interface_member__type_attribute(im: InterfaceMember):
@@ -132,7 +132,7 @@ def g_interface_member(member: InterfaceMember):
     if idl_type == 'attribute':
         return c_interface_member__type_attribute(member)
 
-    todo(idl_type)
+    unhandled(idl_type)
 
 
 def g_interface(interface: Interface):
@@ -149,7 +149,7 @@ def g_construct(construct: Construct):
     if isinstance(construct, InterfaceMember):
         return g_interface_member(construct)
 
-    todo(construct)
+    unhandled(construct)
 
 
 def g_union_type(union_type: UnionType):
@@ -175,15 +175,11 @@ def generate(idl: str, throw: bool = True) -> List[GStmt]:
     return statements
 
 
-def remove_none(param):
-    return [m for m in param if m is not None]
-
-
 def expect_type(instance, expected_type):
     if not isinstance(instance, expected_type):
         raise Exception(f' expect instance to be `{expected_type}` '
                         f'but instead found to be `{type(instance)}`')
 
 
-def todo(argument):
+def unhandled(argument):
     raise Exception(f'todo unhandled type={type(argument)} `{argument}`')

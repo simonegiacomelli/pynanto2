@@ -1,8 +1,11 @@
+import widlparser
+from widlparser import Construct
+
 from js_pyi.g_dataclasses import *
-from js_pyi.generate import generate
+from js_pyi.generate import generate, g_construct
 
 
-def test_simple():
+def test_interface():
     actual = generate("""
 interface Document : Node {
   FooElement createElement(DOMString localName);
@@ -18,48 +21,26 @@ interface Document : Node {
 
 
 def test_optionals():
-    actual = generate("""
-interface Document  {
-  Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);
-}    
-    """)
-    g_union = GUnion(['ElementCreationOptions', 'DOMString'])
-    g_optional = GOptional(g_union)
-    assert actual == [GInterface(
-        'Document', body=[
-            GMethod('createElement', arguments=(GArguments(args=[
-                GArg('localName', 'DOMString'),
-                GArg('options', g_optional)
-            ])), returns='Element')
-        ]
-    )]
+    idl = "Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);"
+    actual = _single_construct(idl)
+    assert actual == GMethod('createElement', arguments=(GArguments(args=[
+        GArg('localName', 'DOMString'),
+        GArg('options', GOptional(GUnion(['ElementCreationOptions', 'DOMString'])))
+    ])), returns='Element')
 
 
 def test_optional_with_default():
-    actual = generate("""
-interface ConsoleInstance  {
-    undefined time(optional DOMString label = "foobar");
-}    
-    """)
-    assert actual == [GInterface(
-        'ConsoleInstance', body=[
-            GMethod('time', arguments=(GArguments(args=[
-                GArg('label', GOptional('DOMString'), default='"foobar"')
-            ])), returns='undefined')
-
-        ])]
+    idl = 'undefined time(optional DOMString label = "foobar");'
+    actual = _single_construct(idl)
+    assert actual == GMethod('time', arguments=(GArguments(args=[
+        GArg('label', GOptional('DOMString'), default='"foobar"')
+    ])), returns='undefined')
 
 
 def test_attribute():
-    actual = generate("""
-interface Document  {
-  readonly attribute DOMImplementation implementation;
-}    
-    """)
-    assert actual == [GInterface(
-        'Document', body=[
-            GAttribute('implementation', annotation='DOMImplementation')
-        ])]
+    idl = 'readonly attribute DOMImplementation implementation;'
+    actual = _single_construct(idl)
+    assert actual == GAttribute('implementation', annotation='DOMImplementation')
 
 
 unhandled_idl = """
@@ -85,3 +66,14 @@ def test_unhandled():
     a = actual[0]
     assert isinstance(a, GUnhandled)
     assert 'dump' in a.body
+
+
+def _single_construct(idl_piece: str) -> Construct:
+    parser = widlparser.Parser()
+    idl = 'interface DummyInterface {\n' + idl_piece + '\n}'
+    parser.parse(idl)
+    construct = parser.constructs[0]
+    g = g_construct(construct)
+    assert isinstance(g, GInterface)
+    assert len(g.body) == 1
+    return g.body[0]
