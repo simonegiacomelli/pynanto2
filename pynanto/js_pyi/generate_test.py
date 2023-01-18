@@ -24,3 +24,10 @@ def test_method_3():
         GArg('node', 'Node'),
     ], returns='undefined'))
     assert actual == 'def foo(localName: str, node: Node): ...'
+
+
+def test_method_4():
+    actual = repr(GMethod('foo', arguments=[
+        GArg('name', 'DOMString', '"bar"'),
+    ]))
+    assert actual == 'def foo(name: str = "bar"): ...'

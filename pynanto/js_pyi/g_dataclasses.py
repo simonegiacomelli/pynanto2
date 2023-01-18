@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
@@ -23,16 +25,17 @@ class GInterface:
     body: List[GStmt] = field(default_factory=list)
 
 
-class GUnion(List[str]):
-    pass
-
-
 @dataclass()
 class GOptional:
     of: 'GAnnotation'
 
 
+GUnion = typing.NewType('GUnion', list)
 GAnnotation = typing.Union[str, GUnion, GOptional]
+
+
+class GUnion(List[GAnnotation]):
+    pass
 
 
 @dataclass()

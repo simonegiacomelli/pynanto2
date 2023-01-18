@@ -20,7 +20,10 @@ def _to_py_type(s: str) -> str:
 
 
 def g_arg(a: GArg) -> str:
-    return a.name + ': ' + _to_py_type(a.annotation)
+    default = ''
+    if a.default is not None:
+        default = ' = ' + a.default
+    return a.name + ': ' + _to_py_type(a.annotation) + default
 
 
 def g_method(m: GMethod) -> str:
