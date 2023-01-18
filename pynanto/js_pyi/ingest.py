@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
-    Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default
+    Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type
 
 from js_pyi.g_dataclasses import *
 
@@ -76,11 +76,22 @@ def i_type_with_extended_attributes(twea: TypeWithExtendedAttributes):
     _unhandled(t)
 
 
+def i_type(t: Type):
+    _expect_type(t, Type)
+
+    tt = t.type
+    if isinstance(tt, SingleType):
+        return i_single_type(tt)
+    _unhandled(t)
+
+
 def i_argument(argument: Argument) -> str | GUnion:
     _expect_type(argument, Argument)
 
     argument_type = argument.type
-    if isinstance(argument_type, TypeWithExtendedAttributes):
+    if isinstance(argument_type, Type):
+        return i_type(argument_type)
+    elif isinstance(argument_type, TypeWithExtendedAttributes):
         return i_type_with_extended_attributes(argument_type)
 
     return str(argument_type.type)

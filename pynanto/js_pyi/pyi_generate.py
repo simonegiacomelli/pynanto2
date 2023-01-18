@@ -25,12 +25,7 @@ def main():
         for e in stmt_body:
             stmts.extend(e.body)
         for stmt in stmts:
-            if isinstance(stmt, GAttribute):
-                a: GAttribute = stmt
-                print(f'   {a.name}: {a.annotation}')
-            if isinstance(stmt, GMethod):
-                m: GMethod = stmt
-                print(f'   def {m.name}(): ...')
+            print(f'   ' + repr(stmt))
 
 
 if __name__ == '__main__':
