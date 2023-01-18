@@ -7,7 +7,32 @@ if TYPE_CHECKING:
 
 
 def g_attribute(a: GAttribute) -> str:
-    return a.name + ': ' + a.annotation
+    return g_named_annotation(a)
+
+
+def g_annotation(a: GAnnotation) -> str:
+    return _to_py_type(a)
+
+
+def g_named_annotation(na: GNamedAnnotation) -> str:
+    return na.name + ': ' + g_annotation(na.annotation)
+
+
+def g_arg(a: GArg) -> str:
+    default = ''
+    if a.default is not None:
+        default = ' = ' + a.default
+    return g_named_annotation(a) + default
+
+
+def g_method(m: GMethod) -> str:
+    returns = ''
+    if m.returns is not None and m.returns != 'undefined':
+        returns = ' -> ' + g_annotation(m.returns)
+
+    args_arr = [g_arg(a) for a in m.arguments]
+    args_str = ', '.join(args_arr)
+    return f'def {m.name}({args_str}){returns}: ...'
 
 
 _types_dict = {
@@ -17,20 +42,3 @@ _types_dict = {
 
 def _to_py_type(s: str) -> str:
     return _types_dict.get(s, s)
-
-
-def g_arg(a: GArg) -> str:
-    default = ''
-    if a.default is not None:
-        default = ' = ' + a.default
-    return a.name + ': ' + _to_py_type(a.annotation) + default
-
-
-def g_method(m: GMethod) -> str:
-    returns = ''
-    if m.returns is not None and m.returns != 'undefined':
-        returns = ' -> ' + _to_py_type(m.returns)
-
-    args_arr = [g_arg(a) for a in m.arguments]
-    args_str = ', '.join(args_arr)
-    return f'def {m.name}({args_str}){returns}: ...'
