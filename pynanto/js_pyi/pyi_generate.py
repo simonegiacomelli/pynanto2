@@ -2,7 +2,7 @@ from itertools import groupby
 from pathlib import Path
 
 from js_pyi.g_dataclasses import *
-from js_pyi.generate import generate
+from js_pyi.ingest import ingest
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
         txt = f.read_text()
         break
 
-    statements = generate(txt, throw=False)
+    statements = ingest(txt, throw=False)
     interfaces = [s for s in statements if isinstance(s, GInterface)]
 
     int_by_name = dict({stmt_name: list(stmt_body) for (stmt_name, stmt_body) in groupby(interfaces, lambda i: i.name)})

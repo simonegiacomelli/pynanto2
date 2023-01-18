@@ -2,11 +2,11 @@ import widlparser
 from widlparser import Construct
 
 from js_pyi.g_dataclasses import *
-from js_pyi.generate import generate, g_construct
+from js_pyi.ingest import ingest, i_construct
 
 
 def test_interface():
-    actual = generate("""
+    actual = ingest("""
 interface Document : Node {
   FooElement createElement(DOMString localName);
 }    
@@ -53,7 +53,7 @@ dictionary ConsoleInstanceOptions {
 def test_raise():
     exception = False
     try:
-        generate(unhandled_idl)
+        ingest(unhandled_idl)
     except Exception as ex:
         exception = True
 
@@ -61,7 +61,7 @@ def test_raise():
 
 
 def test_unhandled():
-    actual = generate(unhandled_idl, throw=False)
+    actual = ingest(unhandled_idl, throw=False)
     assert len(actual) == 1
     a = actual[0]
     assert isinstance(a, GUnhandled)
@@ -73,7 +73,7 @@ def _single_construct(idl_piece: str) -> Construct:
     idl = 'interface DummyInterface {\n' + idl_piece + '\n}'
     parser.parse(idl)
     construct = parser.constructs[0]
-    g = g_construct(construct)
+    g = i_construct(construct)
     assert isinstance(g, GInterface)
     assert len(g.body) == 1
     return g.body[0]
