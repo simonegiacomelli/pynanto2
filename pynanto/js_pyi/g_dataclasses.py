@@ -46,7 +46,7 @@ class GNamedAnnotation(GStmt):
 
 @dataclass()
 class GAttribute(GNamedAnnotation):
-    def __repr__(self): return g_attribute(self)
+    def str(self): return g_attribute(self)
 
 
 @dataclass
@@ -60,4 +60,4 @@ class GMethod(GStmt):
     arguments: List[GArg] = field(default_factory=list)
     returns: Optional[GAnnotation] = None
 
-    def __repr__(self): return g_method(self)
+    def str(self): return g_method(self)

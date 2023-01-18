@@ -25,7 +25,7 @@ def main():
         for e in stmt_body:
             stmts.extend(e.body)
         for stmt in stmts:
-            print(f'   ' + repr(stmt))
+            print(f'   ' + stmt.str())
 
 
 if __name__ == '__main__':

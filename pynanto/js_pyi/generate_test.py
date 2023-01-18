@@ -2,32 +2,32 @@ from js_pyi.g_dataclasses import *
 
 
 def test_attribute():
-    actual = repr(GAttribute('implementation', annotation='DOMImplementation'))
+    actual = GAttribute('implementation', annotation='DOMImplementation').str()
     assert actual == 'implementation: DOMImplementation'
 
 
 def test_method_1():
     expected = 'def foo(): ...'
 
-    assert expected == repr(GMethod('foo'))
-    assert expected == repr(GMethod('foo', returns='undefined'))
+    assert expected == GMethod('foo').str()
+    assert expected == GMethod('foo', returns='undefined').str()
 
 
 def test_method_2():
-    actual = repr(GMethod('foo', returns='DOMString'))
+    actual = GMethod('foo', returns='DOMString').str()
     assert actual == 'def foo() -> str: ...'
 
 
 def test_method_3():
-    actual = repr(GMethod('foo', arguments=[
+    actual = GMethod('foo', arguments=[
         GArg('localName', 'DOMString'),
         GArg('node', 'Node'),
-    ], returns='undefined'))
+    ], returns='undefined').str()
     assert actual == 'def foo(localName: str, node: Node): ...'
 
 
 def test_method_4():
-    actual = repr(GMethod('foo', arguments=[
+    actual = GMethod('foo', arguments=[
         GArg('name', 'DOMString', '"bar"'),
-    ]))
+    ]).str()
     assert actual == 'def foo(name: str = "bar"): ...'
