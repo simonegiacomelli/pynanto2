@@ -1,6 +1,7 @@
 from itertools import groupby
 from pathlib import Path
 
+from js_pyi.g_dataclasses import *
 from js_pyi.generate import generate
 
 
@@ -13,9 +14,23 @@ def main():
         break
 
     statements = generate(txt, throw=False)
-    groupby(statements, )
-    for stmt in statements:
-        print(stmt)
+    interfaces = [s for s in statements if isinstance(s, GInterface)]
+
+    int_by_name = dict({stmt_name: list(stmt_body) for (stmt_name, stmt_body) in groupby(interfaces, lambda i: i.name)})
+
+    for stmt_name, stmt_body in int_by_name.items():
+        print(f'class {stmt_name}')
+        stmts: List[GStmt] = []
+        e: GInterface
+        for e in stmt_body:
+            stmts.extend(e.body)
+        for stmt in stmts:
+            if isinstance(stmt, GAttribute):
+                a: GAttribute = stmt
+                print(f'   {a.name}: {a.annotation}')
+            if isinstance(stmt, GMethod):
+                m: GMethod = stmt
+                print(f'   def {m.name}(): ...')
 
 
 if __name__ == '__main__':
