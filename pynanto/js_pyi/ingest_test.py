@@ -53,14 +53,15 @@ def test_compound_nullable():
     ], returns='undefined')
 
 
-# def test_compound_nullable_optional_default():
-#     idl = 'undefined foo( optional (HTMLElement or long)? before = null);'
-#     actual = _single_construct(idl)
-#     assert actual == GMethod('foo', arguments=[
-#         GArg('before', annotation=GNotRequired(GNullable(GUnion(['HTMLElement', 'long']))),
-#              default='null'
-#              )
-#     ], returns='undefined')
+def test_compound_nullable_optional_default():
+    idl = 'undefined foo( optional (HTMLElement or long)? before = null);'
+    actual = _single_construct(idl)
+    assert actual == GMethod('foo', arguments=[
+        GArg('before', annotation=GNullable(GUnion(['HTMLElement', 'long'])),
+             default='null',
+             optional=True
+             )
+    ], returns='undefined')
 
 
 def test_attribute():

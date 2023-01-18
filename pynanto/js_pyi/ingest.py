@@ -81,13 +81,14 @@ def i_type_with_extended_attributes(twea: TypeWithExtendedAttributes):
     _expect_type(twea, TypeWithExtendedAttributes)
 
     t = twea.type
-
     if isinstance(t, UnionType):
-        return i_union_type(t)
+        res = i_union_type(t)
     elif isinstance(t, SingleType):
-        return i_single_type(t)
+        res = i_single_type(t)
+    else:
+        _unhandled(t)
 
-    _unhandled(t)
+    return _wrap_if_nullable(res, twea.suffix)
 
 
 def i_type(t: Type):
