@@ -166,21 +166,31 @@ def i_interface_member(member: InterfaceMember):
     unhandled(idl_type)
 
 
-def i_interface(interface: Interface):
+def i_interface(interface: Interface, throw: bool):
     expect_type(interface, Interface)
-    members = [i_construct(construct) for construct in interface.members]
+    members = [i_construct(construct, throw) for construct in interface.members]
     return GInterface(interface.name, bases=interface_bases(interface), body=members)
 
 
-def i_construct(construct: Construct):
+def i_construct(construct: Construct, throw: bool):
     expect_type(construct, Construct)
 
     if isinstance(construct, Interface):
-        return i_interface(construct)
+        return i_interface(construct, throw)
     if isinstance(construct, InterfaceMember):
-        return i_interface_member(construct)
+        if throw:
+            res = i_interface_member(construct)
+        else:
+            try:
+                res = i_interface_member(construct)
+            except Exception as ex:
+                res = GUnhandled(str(construct), ex)
+        return res
 
-    unhandled(construct)
+    if throw:
+        unhandled(construct)
+    else:
+        return GUnhandled(str(construct), None)
 
 
 def i_union_type(union_type: UnionType):
@@ -196,13 +206,11 @@ def ingest(idl: str, throw: bool = True) -> List[GStmt]:
     parser.parse(idl)
     for c in parser.constructs:
         if throw:
-            construct = i_construct(c)
+            construct = i_construct(c, throw)
         else:
             try:
-                construct = i_construct(c)
+                construct = i_construct(c, throw)
             except Exception as ex:
                 construct = GUnhandled(str(c), ex)
         statements.append(construct)
     return statements
-
-

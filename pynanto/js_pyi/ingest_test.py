@@ -72,29 +72,56 @@ def test_attribute():
     assert actual == GAttribute('implementation', annotation='DOMImplementation')
 
 
-unhandled_idl = """
-dictionary ConsoleInstanceOptions {
-  ConsoleInstanceDumpCallback dump;
-}
-"""
+class Test_root:
+    root_unhandled_idl = """
+    dictionary ConsoleInstanceOptions {
+      ConsoleInstanceDumpCallback dump;
+    }
+    """
+
+    def test_root_raise(self):
+        exception = False
+        try:
+            ingest(self.root_unhandled_idl)
+        except Exception as ex:
+            exception = True
+
+        assert exception
+
+    def test_root_unhandled(self):
+        actual = ingest(self.root_unhandled_idl, throw=False)
+        assert len(actual) == 1
+        a = actual[0]
+        assert isinstance(a, GUnhandled)
+        assert 'dump' in a.body
 
 
-def test_raise():
-    exception = False
-    try:
-        ingest(unhandled_idl)
-    except Exception as ex:
-        exception = True
+class TestInner:
+    inner_unhandled_idl = """
+    interface ConsoleInstanceOptions {
+      undefined foo();
+      ConsoleInstanceDumpCallback <invalid> dump;
+    }
+    """
 
-    assert exception
+    def test_inner_raise(self):
+        exception = False
+        try:
+            ingest(self.inner_unhandled_idl)
+        except Exception as ex:
+            exc = ex
+            exception = True
 
+        assert exception
+        assert 'dump' in str(exc)
 
-def test_unhandled():
-    actual = ingest(unhandled_idl, throw=False)
-    assert len(actual) == 1
-    a = actual[0]
-    assert isinstance(a, GUnhandled)
-    assert 'dump' in a.body
+    def test_inner_unhandled(self):
+        actual = ingest(self.inner_unhandled_idl, throw=False)
+        assert len(actual) == 1
+        a = actual[0]
+        assert isinstance(a, GInterface)
+        a: GInterface
+        assert len(a.body) == 2
 
 
 def _single_construct(idl_piece: str) -> GMethod | GAttribute:
@@ -102,7 +129,7 @@ def _single_construct(idl_piece: str) -> GMethod | GAttribute:
     idl = 'interface DummyInterface {\n' + idl_piece + '\n}'
     parser.parse(idl)
     construct = parser.constructs[0]
-    g = i_construct(construct)
+    g = i_construct(construct, True)
     assert isinstance(g, GInterface)
     assert len(g.body) == 1
     return g.body[0]

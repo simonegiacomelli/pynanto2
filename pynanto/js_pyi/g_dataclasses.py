@@ -15,7 +15,7 @@ class GStmt:
 @dataclass()
 class GUnhandled(GStmt):
     body: str
-    exception: Exception
+    exception: Exception | None
 
 
 @dataclass()

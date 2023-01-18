@@ -14,6 +14,8 @@ def main():
         break
 
     statements = ingest(txt, throw=False)
+    for s in statements:
+        print(s)
     interfaces = [s for s in statements if isinstance(s, GInterface)]
 
     int_by_name = dict({stmt_name: list(stmt_body) for (stmt_name, stmt_body) in groupby(interfaces, lambda i: i.name)})
