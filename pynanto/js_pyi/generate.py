@@ -16,7 +16,7 @@ class Processor:
         widl.markup()
         widl.parse(idl)
         for c in widl.constructs:
-            self.module.append(self.process(c))
+            self.module.append(self.g_construct(c))
         return self.module
 
     def c_interface(self, c: Interface):
@@ -46,7 +46,7 @@ class Processor:
         for a in member.arguments:
             expect_type(a, Argument)
             a: Argument
-            annotation = self.g_arg_annotation(a)
+            annotation = self.g_argument(a)
             if not a.required:
                 annotation = GOptional(annotation)
             g_arg = GArg(a.name, annotation)
@@ -67,13 +67,15 @@ class Processor:
         else:
             todo(member)
 
-    def process(self, construct: Construct):
+    def g_construct(self, construct: Construct):
+        expect_type(construct, Construct)
+
         if isinstance(construct, Interface):
             return self.c_interface(construct)
-        else:
-            return None
 
-    def g_arg_annotation(self, argument: Argument) -> str | GUnion:
+        todo(construct)
+
+    def g_argument(self, argument: Argument) -> str | GUnion:
         expect_type(argument, Argument)
 
         argument_type = argument.type
@@ -82,19 +84,23 @@ class Processor:
 
         return str(argument_type.type)
 
-    def g_type_with_extended_attributes(self, argument_type: TypeWithExtendedAttributes):
-        expect_type(argument_type, TypeWithExtendedAttributes)
-        if isinstance(argument_type.type, UnionType):
-            ut: UnionType = argument_type.type
-            ann = [str(a) for a in ut.types]
-            # ann = ['None'] + ann
-            g_union = GUnion(ann)
-            return g_union
-        elif isinstance(argument_type.type, SingleType):
-            sg: SingleType = argument_type.type
-            return self.g_single_type(sg)
-        else:
-            todo(argument_type.type)
+    def g_type_with_extended_attributes(self, twea: TypeWithExtendedAttributes):
+        expect_type(twea, TypeWithExtendedAttributes)
+
+        t = twea.type
+
+        if isinstance(t, UnionType):
+            return self.g_union_type(t)
+        elif isinstance(t, SingleType):
+            return self.g_single_type(t)
+
+        todo(t)
+
+    def g_union_type(self, union_type: UnionType):
+        ann = [str(a) for a in union_type.types]
+        # ann = ['None'] + ann
+        g_union = GUnion(ann)
+        return g_union
 
     def interface_bases(self, interface: Interface):
         if interface.inheritance is None:
