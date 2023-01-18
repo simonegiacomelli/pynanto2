@@ -1,8 +1,8 @@
-from __future__ import annotations
-
 import typing
 from dataclasses import dataclass, field
-from typing import List, Any
+from typing import List, Any, Optional
+
+from js_pyi.generate import g_method, g_attribute
 
 
 @dataclass()
@@ -53,6 +53,8 @@ class GAttribute(GStmt):
     name: str
     annotation: GAnnotation
 
+    def __repr__(self): return g_attribute(self)
+
 
 @dataclass
 class GArguments:
@@ -69,7 +71,7 @@ class GArguments:
 class GArg:
     name: str
     annotation: GAnnotation
-    default: str | None = None
+    default: Optional[str] = None
 
 
 @dataclass
@@ -77,3 +79,5 @@ class GMethod(GStmt):
     name: str
     arguments: GArguments
     returns: str
+
+    def __repr__(self): return g_method(self)
