@@ -18,16 +18,19 @@ interface Document : Node {
 
 
 def test_optionals():
+    GUnion
     actual = generate("""
 interface Document  {
   Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);
 }    
     """)
+    g_union = GUnion(['ElementCreationOptions', 'DOMString'])
+    g_optional = GOptional(g_union)
     assert actual == [GClassDef(
         'Document', body=[
             GFunctionDef('createElement', arguments=(GArguments(args=[
                 GArg('localName', 'DOMString'),
-                GArg('options', GUnion(['None', 'ElementCreationOptions', 'DOMString']))
+                GArg('options', g_optional)
             ])), returns='Element')
         ]
     )]
@@ -35,16 +38,15 @@ interface Document  {
 
 def test_optional_with_default():
     actual = generate("""
-interface Document  {
-    Node importNode(Node node, optional boolean deep = false);
+interface ConsoleInstance  {
+    undefined time(optional DOMString label = "foobar");
 }    
     """)
     assert actual == [GClassDef(
-        'Document', body=[
-            GFunctionDef('importNode', arguments=(GArguments(args=[
-                GArg('node', 'Node'),
-                GArg('deep', GUnion(['None', 'bool']), default='False')
-            ])), returns='Node')
+        'ConsoleInstance', body=[
+            GFunctionDef('time', arguments=(GArguments(args=[
+                GArg('label', GOptional('DOMString'), default='"foobar"')
+            ])), returns='undefined')
 
         ])]
 

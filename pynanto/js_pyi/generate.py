@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
-    Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol
+    Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default
 
 from js_pyi.g_dataclasses import *
 
@@ -44,9 +44,15 @@ class Processor:
 
         args = []
         for a in member.arguments:
-            args.append(
-                GArg(a.name, self.g_arg_annotation(a))
-            )
+            expect_type(a, Argument)
+            a: Argument
+            annotation = self.g_arg_annotation(a)
+            if not a.required:
+                annotation = GOptional(annotation)
+            g_arg = GArg(a.name, annotation)
+            if a.default is not None:
+                g_arg.default = self.g_default(a.default)
+            args.append(g_arg)
         if isinstance(member.member, widlparser.Operation):
             returns = str(member.member.return_type).strip()
         else:
@@ -68,8 +74,8 @@ class Processor:
             return None
 
     def g_arg_annotation(self, argument: Argument) -> str | GUnion:
-        if not isinstance(argument, Argument):
-            todo(argument)
+        expect_type(argument, Argument)
+
         argument_type = argument.type
         if isinstance(argument_type, TypeWithExtendedAttributes):
             return self.g_type_with_extended_attributes(argument_type)
@@ -77,12 +83,11 @@ class Processor:
         return str(argument_type.type)
 
     def g_type_with_extended_attributes(self, argument_type: TypeWithExtendedAttributes):
-        if not isinstance(argument_type, TypeWithExtendedAttributes):
-            todo(argument_type)
+        expect_type(argument_type, TypeWithExtendedAttributes)
         if isinstance(argument_type.type, UnionType):
             ut: UnionType = argument_type.type
             ann = [str(a) for a in ut.types]
-            ann = ['None'] + ann
+            # ann = ['None'] + ann
             g_union = GUnion(ann)
             return g_union
         elif isinstance(argument_type.type, SingleType):
@@ -97,8 +102,7 @@ class Processor:
         return [str(interface.inheritance.base)]
 
     def g_single_type(self, single_type: SingleType):
-        if not isinstance(single_type, SingleType):
-            todo(single_type)
+        expect_type(single_type, SingleType)
         t = single_type.type
         if isinstance(t, AnyType):
             todo(single_type)
@@ -108,22 +112,40 @@ class Processor:
         return single_type.type_name
 
     def g_non_any_type(self, non_any_type: NonAnyType):
-        if not isinstance(non_any_type, NonAnyType):
-            todo(non_any_type)
+        expect_type(non_any_type, NonAnyType)
 
         t = non_any_type.type
         if isinstance(t, PrimitiveType):
             return self.g_primitive_type(t)
-
+        elif isinstance(t, TypeIdentifier):
+            return self.g_type_identifier(t)
+        elif isinstance(t, Symbol):
+            return self.g_symbol(t)
         todo(t)
 
     def g_primitive_type(self, primitive_type: PrimitiveType):
-        if not isinstance(primitive_type, PrimitiveType):
-            todo(primitive_type)
+        expect_type(primitive_type, PrimitiveType)
+
         t = primitive_type.type
         if isinstance(t, Symbol):
-            return t.symbol
+            return self.g_symbol(t)
         todo(t)
+
+    def g_type_identifier(self, ti: TypeIdentifier):
+        expect_type(ti, TypeIdentifier)
+        return ti.name
+
+    def g_symbol(self, symbol: Symbol):
+        expect_type(symbol, Symbol)
+        s = symbol.symbol
+        # if s == 'boolean':
+        #     return 'bool'
+
+        return s
+
+    def g_default(self, default: Default):
+        expect_type(default, Default)
+        return default.value
 
 
 def generate(idl: str) -> GModule:
@@ -134,6 +156,12 @@ def generate(idl: str) -> GModule:
 
 def remove_none(param):
     return [m for m in param if m is not None]
+
+
+def expect_type(instance, expected_type):
+    if not isinstance(instance, expected_type):
+        raise Exception(f' expect instance to be `{expected_type}` '
+                        f'but instead found to be `{type(instance)}`')
 
 
 def todo(argument):

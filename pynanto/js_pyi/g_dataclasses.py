@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+from collections import UserList
 from dataclasses import dataclass, field
 from typing import List, Any
 
@@ -37,12 +38,20 @@ class GClassDef:
     body: List[GStmt] = field(default_factory=list)
 
 
+class GUnion(UserList):
+    pass
+    # annotations: List[str]
+
+
+GType = typing.Union[str, GUnion]
+
+
 @dataclass()
-class GUnion:
-    annotations: List[str]
+class GOptional:
+    of: GType
 
 
-GAnnotation = typing.Union[str, GUnion]
+GAnnotation = typing.Union[GType, GOptional]
 
 
 @dataclass()
