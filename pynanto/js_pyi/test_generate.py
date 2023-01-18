@@ -25,12 +25,28 @@ interface Document  {
     """)
     assert actual == [GClassDef(
         'Document', body=[
-            (GFunctionDef('createElement', arguments=(GArguments(args=[
+            GFunctionDef('createElement', arguments=(GArguments(args=[
                 GArg('localName', 'DOMString'),
                 GArg('options', GUnion(['None', 'ElementCreationOptions', 'DOMString']))
-            ])), returns='Element'))
+            ])), returns='Element')
         ]
     )]
+
+
+def test_optional_with_default():
+    actual = generate("""
+interface Document  {
+    Node importNode(Node node, optional boolean deep = false);
+}    
+    """)
+    assert actual == [GClassDef(
+        'Document', body=[
+            GFunctionDef('importNode', arguments=(GArguments(args=[
+                GArg('node', 'Node'),
+                GArg('deep', GUnion(['None', 'bool']), default='False')
+            ])), returns='Node')
+
+        ])]
 
 
 def test_attribute():

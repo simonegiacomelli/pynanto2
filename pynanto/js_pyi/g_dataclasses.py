@@ -66,6 +66,7 @@ class GArguments:
 class GArg:
     name: str
     annotation: GAnnotation
+    default: str | None = None
 
 
 @dataclass
