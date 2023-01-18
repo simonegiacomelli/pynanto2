@@ -37,7 +37,7 @@ def test_optional_with_default():
     ], returns='undefined')
 
 
-def x_test_nullable():
+def test_nullable():
     idl = 'undefined enableStyleSheetsForSet (DOMString? name);'
     actual = _single_construct(idl)
     assert actual == GMethod('enableStyleSheetsForSet', arguments=[

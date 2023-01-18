@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
-    Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type
+    Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
+    TypeSuffix
 
 from js_pyi.g_dataclasses import *
 
@@ -33,17 +34,29 @@ def i_primitive_type(primitive_type: PrimitiveType):
     _unhandled(t)
 
 
+def _is_type_suffix_nullable(suffix: TypeSuffix | None):
+    if suffix is None:
+        return False
+    return True
+
+
 def i_non_any_type(non_any_type: NonAnyType):
     _expect_type(non_any_type, NonAnyType)
 
+    res = None
     t = non_any_type.type
     if isinstance(t, PrimitiveType):
-        return i_primitive_type(t)
+        res = i_primitive_type(t)
     elif isinstance(t, TypeIdentifier):
-        return i_type_identifier(t)
+        res = i_type_identifier(t)
     elif isinstance(t, Symbol):
-        return i_symbol(t)
-    _unhandled(t)
+        res = i_symbol(t)
+    else:
+        _unhandled(t)
+
+    if _is_type_suffix_nullable(non_any_type.suffix):
+        res = GNullable(res)
+    return res
 
 
 def i_single_type(single_type: SingleType):
