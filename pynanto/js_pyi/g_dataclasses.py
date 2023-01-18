@@ -26,12 +26,18 @@ class GInterface:
 
 
 @dataclass()
-class GOptional:
+class GNotRequired:
+    of: 'GAnnotation'
+
+
+@dataclass()
+class GNullable:
     of: 'GAnnotation'
 
 
 GUnion = typing.NewType('GUnion', list)
-GAnnotation = typing.Union[str, GUnion, GOptional]
+
+GAnnotation = typing.Union[str, GUnion, GNotRequired, GNullable]
 
 
 class GUnion(List[GAnnotation]):

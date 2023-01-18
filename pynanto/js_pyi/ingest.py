@@ -85,7 +85,7 @@ def i_type(t: Type):
     _unhandled(t)
 
 
-def i_argument(argument: Argument) -> str | GUnion:
+def i_argument(argument: Argument):
     _expect_type(argument, Argument)
 
     argument_type = argument.type
@@ -106,7 +106,7 @@ def i_interface_member__type_method(member: InterfaceMember):
         a: Argument
         annotation = i_argument(a)
         if not a.required:
-            annotation = GOptional(annotation)
+            annotation = GNotRequired(annotation)
         g_arg = GArg(a.name, annotation)
         if a.default is not None:
             g_arg.default = i_default(a.default)

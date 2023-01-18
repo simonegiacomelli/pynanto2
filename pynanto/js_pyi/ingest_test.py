@@ -25,7 +25,7 @@ def test_optionals():
     actual = _single_construct(idl)
     assert actual == GMethod('createElement', arguments=[
         GArg('localName', 'DOMString'),
-        GArg('options', GOptional(GUnion(['ElementCreationOptions', 'DOMString'])))
+        GArg('options', GNotRequired(GUnion(['ElementCreationOptions', 'DOMString'])))
     ], returns='Element')
 
 
@@ -33,15 +33,15 @@ def test_optional_with_default():
     idl = 'undefined time(optional DOMString label = "foobar");'
     actual = _single_construct(idl)
     assert actual == GMethod('time', arguments=[
-        GArg('label', GOptional('DOMString'), default='"foobar"')
+        GArg('label', GNotRequired('DOMString'), default='"foobar"')
     ], returns='undefined')
 
 
-def disabled_test_nullable():
+def x_test_nullable():
     idl = 'undefined enableStyleSheetsForSet (DOMString? name);'
     actual = _single_construct(idl)
     assert actual == GMethod('enableStyleSheetsForSet', arguments=[
-        GArg('name', annotation='DOMString?')
+        GArg('name', annotation=GNullable('DOMString'))
     ], returns='undefined')
 
 
