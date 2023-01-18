@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import widlparser
-from widlparser import Construct
 
 from js_pyi.g_dataclasses import *
 from js_pyi.ingest import ingest, i_construct
@@ -62,6 +63,7 @@ def test_compound_nullable_optional_default():
              optional=True
              )
     ], returns='undefined')
+    assert actual.str() == "def foo(before: HTMLElement | int | None = None): ..."
 
 
 def test_attribute():
@@ -95,7 +97,7 @@ def test_unhandled():
     assert 'dump' in a.body
 
 
-def _single_construct(idl_piece: str) -> Construct:
+def _single_construct(idl_piece: str) -> GMethod | GAttribute:
     parser = widlparser.Parser()
     idl = 'interface DummyInterface {\n' + idl_piece + '\n}'
     parser.parse(idl)
