@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass, field
-from typing import List, Any, Optional
+from typing import List, Optional
 
 from js_pyi.generate import g_method, g_attribute
 
@@ -37,41 +37,33 @@ class GUnion(List[str]):
     pass
 
 
-GType = typing.Union[str, GUnion]
-
-
 @dataclass()
 class GOptional:
-    of: GType
+    of: 'GAnnotation'
 
 
-GAnnotation = typing.Union[GType, GOptional]
+GAnnotation = typing.Union[str, GUnion, GOptional]
 
 
 @dataclass()
-class GAttribute(GStmt):
+class GNamedAnnotation(GStmt):
     name: str
     annotation: GAnnotation
 
+
+@dataclass()
+class GAttribute(GNamedAnnotation):
     def __repr__(self): return g_attribute(self)
 
 
 @dataclass
-class GArg:
-    name: str
-    annotation: GAnnotation
+class GArg(GNamedAnnotation):
     default: Optional[str] = None
 
 
 @dataclass
 class GArguments:
-    posonlyargs: List[Any] = ()
     args: List[GArg] = ()
-    vararg: List[Any] = ()
-    kwonlyargs: List[Any] = ()
-    kw_defaults: List[Any] = ()
-    kwarg: List[Any] = ()
-    defaults: List[Any] = ()
 
 
 @dataclass
