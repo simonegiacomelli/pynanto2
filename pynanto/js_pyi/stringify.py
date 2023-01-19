@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from js_pyi.translation import to_py_type, to_py_value
+
 if TYPE_CHECKING:
     from js_pyi.datamodel import *
 
@@ -17,7 +19,7 @@ def g_named_annotation(na: GNamedAnnotation) -> str:
 def g_arg(a: GArg) -> str:
     default = ''
     if a.default is not None:
-        default = ' = ' + _to_py_value(a.default)
+        default = ' = ' + to_py_value(a.default)
     return g_named_annotation(a) + default
 
 
@@ -47,7 +49,7 @@ def g_annotation(a: GAnnotation) -> str:
     if isinstance(a, str):
         return g_annotation([a])
     if isinstance(a, list):
-        return ' | '.join([_to_py_type(e) for e in a])
+        return ' | '.join([to_py_type(e) for e in a])
 
     from js_pyi.datamodel import GOptional
     if isinstance(a, GOptional):
@@ -56,20 +58,3 @@ def g_annotation(a: GAnnotation) -> str:
     unhandled(a)
 
 
-_types_dict = {
-    'DOMString': 'str',
-    'long': 'int'
-}
-
-
-def _to_py_type(s) -> str:
-    return _types_dict.get(s, s)
-
-
-_values_dict = {
-    'null': 'None',
-}
-
-
-def _to_py_value(s) -> str:
-    return _values_dict.get(s, s)
