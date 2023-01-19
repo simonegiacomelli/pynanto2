@@ -8,6 +8,8 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_type
 
+_none = 'None'
+
 
 def i_symbol(symbol: Symbol):
     expect_type(symbol, Symbol)
@@ -33,13 +35,6 @@ def i_primitive_type(primitive_type: PrimitiveType):
     if isinstance(t, Symbol):
         return i_symbol(t)
     unhandled(t)
-
-
-def _wrap_if_nullable(o, suffix: TypeSuffix | None):
-    nullable = suffix is not None
-    if nullable:
-        o = GOptional(o)
-    return o
 
 
 def i_non_any_type(non_any_type: NonAnyType):
@@ -119,30 +114,36 @@ def i_argument(argument: Argument):
     return str(argument_type.type)
 
 
-def _add_annotation_type(annotation, param):
+def _put_annotation_type(annotation, param):
     if isinstance(annotation, list):
-        assert None not in annotation
-        annotation.append(param)
+        if param not in annotation:
+            annotation.append(param)
     else:
-        annotation = _add_annotation_type([annotation], param)
+        annotation = _put_annotation_type([annotation], param)
     return annotation
+
+
+def _wrap_if_nullable(o, suffix: TypeSuffix | None):
+    nullable = suffix is not None
+    if nullable:
+        o = _put_annotation_type(o, _none)
+    return o
 
 
 def i_interface_member__type_method(member: InterfaceMember):
     expect_type(member, InterfaceMember)
-    none = 'None'
     args = []
     for a in member.arguments:
         expect_type(a, Argument)
         a: Argument
         annotation = i_argument(a)
         if not a.required:
-            annotation = _add_annotation_type(annotation, none)
+            annotation = _put_annotation_type(annotation, _none)
         g_arg = GArg(a.name, annotation)
         if a.default is not None:
             g_arg.default = i_default(a.default)
         elif not a.required:
-            g_arg.default = none
+            g_arg.default = _none
         args.append(g_arg)
 
     if isinstance(member.member, widlparser.Operation):
@@ -208,8 +209,7 @@ def i_construct(construct: Construct, throw: bool):
 
 def i_union_type(union_type: UnionType):
     ann = [str(a) for a in union_type.types]
-    g_union = GUnion(ann)
-    return g_union
+    return ann
 
 
 def ingest(idl: str, throw: bool = True) -> List[GStmt]:

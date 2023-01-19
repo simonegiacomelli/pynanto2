@@ -27,7 +27,7 @@ def test_nullable():
     _verify_2nd_level_construct(
         'undefined foo (DOMString? name);',
         'def foo(self, name: str | None): ...',
-        GMethod('foo', [GArg('name', GOptional('DOMString'))])
+        GMethod('foo', [GArg('name', ['DOMString', 'None'])])
     )
 
 
@@ -35,7 +35,7 @@ def test_compound_nullable():
     _verify_2nd_level_construct(
         'undefined foo( (HTMLElement or long)? before );',
         'def foo(self, before: HTMLElement | int | None): ...',
-        GMethod('foo', [GArg('before', GOptional(GUnion(['HTMLElement', 'long'])))])
+        GMethod('foo', [GArg('before', ['HTMLElement', 'long', 'None'])])
     )
 
 
@@ -43,7 +43,7 @@ def test_optional():
     _verify_2nd_level_construct(
         'undefined foo(optional Node label);',
         'def foo(self, label: Node | None = None): ...',
-        GMethod('foo', [GArg('label', GUnion(['Node', 'None']), 'None')])
+        GMethod('foo', [GArg('label', ['Node', 'None'], 'None')])
     )
 
 

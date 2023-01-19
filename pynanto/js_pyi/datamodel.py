@@ -25,18 +25,7 @@ class GInterface:
     body: List[GStmt] = field(default_factory=list)
 
 
-@dataclass()
-class GOptional:
-    of: 'GAnnotation'
-
-
-GUnion = typing.NewType('GUnion', list)
-
 GAnnotation = typing.Union[str, List[str]]
-
-
-class GUnion(List[GAnnotation]):
-    pass
 
 
 @dataclass()
