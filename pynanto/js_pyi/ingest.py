@@ -160,6 +160,8 @@ def i_interface_member__type_attribute(im: InterfaceMember):
 
     expect_type(attribute.attribute, AttributeRest)
     expect_type(attribute.attribute.type, TypeWithExtendedAttributes)
+    if im.name == 'global':
+        unhandled('The keyword `global` cannot be used as a variable name ')
     return GAttribute(
         im.name,
         i_type_with_extended_attributes(attribute.attribute.type)

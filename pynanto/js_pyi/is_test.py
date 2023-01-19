@@ -45,6 +45,12 @@ def test_generics_are_not_unsupported_yet():
     assert GUnhandled == type(actual_model)
 
 
+def test_root_global_atribute_not_supported():
+    idl = 'attribute object global;'
+    actual_model = _2nd_level_construct(idl, throw=False)
+    assert GUnhandled == type(actual_model)
+
+
 def test_nullable_result():
     _verify_2nd_level_construct(
         'Node? foo();',
@@ -83,6 +89,16 @@ def test_compound_nullable_optional_default():
         'def foo(self, before: HTMLElement | int | None = None): ...',
         GMethod('foo', [
             GArg('before', ['HTMLElement', 'long', 'None'], 'null')
+        ]),
+    )
+
+
+def test_comments():
+    _verify_2nd_level_construct(
+        'Node foo(Node type /* XPathResult.ANY_TYPE */ );',
+        'def foo(self, node: Node): ...',
+        GMethod('foo', [
+            GArg('node', ['Node'])
         ]),
     )
 
@@ -187,16 +203,18 @@ ConsoleInstanceDumpCallback <invalid> dump;
 
 def _verify_2nd_level_construct(idl, expected_python, expected_model):
     actual_model = _2nd_level_construct(idl)
+    assert actual_model is not None
     assert actual_model == expected_model
     assert actual_model.to_python() == expected_python
 
 
-def _2nd_level_construct(idl_piece: str, throw=True) -> GMethod | GAttribute:
+def _2nd_level_construct(idl_piece: str, throw=True) -> GMethod | GAttribute | None:
     parser = widlparser.Parser()
     idl = 'interface DummyInterface {\n' + idl_piece + '\n}'
     parser.parse(idl)
     construct = parser.constructs[0]
     g = i_construct(construct, throw)
     assert isinstance(g, GInterface)
-    assert len(g.body) == 1
-    return g.body[0]
+    if len(g.body) == 1:
+        return g.body[0]
+    return None
