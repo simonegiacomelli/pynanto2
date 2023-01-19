@@ -26,7 +26,7 @@ def g_method(m: GMethod) -> str:
     if m.returns is not None and m.returns != 'undefined':
         returns = ' -> ' + g_annotation(m.returns)
 
-    args_arr = [g_arg(a) for a in m.arguments]
+    args_arr = ['self'] + [g_arg(a) for a in m.arguments]
     args_str = ', '.join(args_arr)
     return f'def {m.name}({args_str}){returns}: ...'
 

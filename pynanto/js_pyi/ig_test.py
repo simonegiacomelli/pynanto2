@@ -21,6 +21,13 @@ interface Document : Node {
     )]
 
 
+def test_method_no_params():
+    idl = "undefined foo();"
+    actual = _single_construct(idl)
+    assert actual == GMethod('foo', returns='undefined')
+    assert actual.str() == 'def foo(self): ...'
+
+
 def test_optionals():
     idl = "Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);"
     actual = _single_construct(idl)
@@ -44,7 +51,7 @@ def test_nullable():
     assert actual == GMethod('bar', arguments=[
         GArg('name', annotation=GNullable('DOMString'))
     ], returns='undefined')
-    assert actual.str() == "def bar(name: str | None): ..."
+    assert actual.str() == "def bar(self, name: str | None): ..."
 
 
 def test_compound_nullable():
@@ -53,7 +60,7 @@ def test_compound_nullable():
     assert actual == GMethod('foo', arguments=[
         GArg('before', annotation=GNullable(GUnion(['HTMLElement', 'long'])))
     ], returns='undefined')
-    assert actual.str() == 'def foo(before: HTMLElement | int | None): ...'
+    assert actual.str() == 'def foo(self, before: HTMLElement | int | None): ...'
 
 
 def test_compound_nullable_optional_default():
@@ -65,7 +72,7 @@ def test_compound_nullable_optional_default():
              optional=True
              )
     ], returns='undefined')
-    assert actual.str() == "def foo(before: HTMLElement | int | None = None): ..."
+    assert actual.str() == "def foo(self, before: HTMLElement | int | None = None): ..."
 
 
 def test_attribute():
