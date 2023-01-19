@@ -32,7 +32,7 @@ class GOptional:
 
 GUnion = typing.NewType('GUnion', list)
 
-GAnnotation = typing.Union[str, GUnion, GOptional, None]
+GAnnotation = typing.Union[str, List[str]]
 
 
 class GUnion(List[GAnnotation]):

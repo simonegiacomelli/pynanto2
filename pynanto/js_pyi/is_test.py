@@ -50,8 +50,8 @@ def test_optional():
 def test_optional_with_default():
     _verify_2nd_level_construct(
         'undefined foo(optional DOMString label = "foobar");',
-        'def foo(self, label: str = "foobar"): ...',
-        GMethod('foo', [GArg('label', 'DOMString', '"foobar"', optional=True)])
+        'def foo(self, label: str | None = "foobar"): ...',
+        GMethod('foo', [GArg('label', ['DOMString', 'None'], '"foobar"')])
     )
 
 
@@ -60,7 +60,7 @@ def test_compound_nullable_optional_default():
         'undefined foo( optional (HTMLElement or long)? before = null);',
         'def foo(self, before: HTMLElement | int | None = None): ...',
         GMethod('foo', [
-            GArg('before', GOptional(GUnion(['HTMLElement', 'long'])), 'null', optional=True)
+            GArg('before', ['HTMLElement', 'long', 'None'], 'null')
         ]),
     )
 
