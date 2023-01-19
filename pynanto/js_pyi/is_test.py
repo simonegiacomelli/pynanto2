@@ -45,8 +45,12 @@ def test_unsupported__generics():
     assert GUnhandled == type(actual_model)
 
 
-def test_unsupported__root_global_atribute():
+def test_unsupported__attribute_names():
     idl = 'attribute object global;'
+    actual_model = _2nd_level_construct(idl, throw=False)
+    assert GUnhandled == type(actual_model)
+
+    idl = 'attribute object as;'
     actual_model = _2nd_level_construct(idl, throw=False)
     assert GUnhandled == type(actual_model)
 
