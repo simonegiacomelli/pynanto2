@@ -2,14 +2,21 @@ from __future__ import annotations
 
 from io import StringIO
 from pathlib import Path
+from typing import List
 
 from js_pyi.ingest import ingest, merge, discard_unhandled_inplace
+from js_pyi.webidls import find_all
 
 
-def produce(webidl: Path) -> str:
-    txt = webidl.read_text()
+def produce(files: List[Path] | None = None) -> str:
+    if files is None:
+        files = find_all()
 
-    statements = merge(ingest(txt, throw=False))
+    statements = []
+    for file in files:
+        statements.extend(ingest(file.read_text(), throw=False))
+
+    statements = merge(statements)
 
     discard_unhandled_inplace(statements)
     res = StringIO()
