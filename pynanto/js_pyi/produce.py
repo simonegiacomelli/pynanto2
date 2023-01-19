@@ -1,7 +1,9 @@
+from __future__ import annotations
+
+from io import StringIO
 from pathlib import Path
 
 from js_pyi.ingest import ingest, merge, discard_unhandled_inplace
-from js_pyi.tee import Tee
 
 
 def produce(webidl: Path) -> str:
@@ -10,10 +12,8 @@ def produce(webidl: Path) -> str:
     statements = merge(ingest(txt, throw=False))
 
     discard_unhandled_inplace(statements)
-
-    tee = Tee(output=None)
-
+    res = StringIO()
     for st in statements:
-        tee.appendln(st.to_python())
+        res.write(st.to_python() + '\n')
 
-    return str(tee)
+    return res.getvalue()
