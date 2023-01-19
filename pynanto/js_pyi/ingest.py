@@ -23,7 +23,10 @@ def i_symbol(symbol: Symbol):
 
 def i_default(default: Default):
     expect_type(default, Default)
-    return default.value
+    value = default.value
+    if '/*' in value:
+        unhandled(default)
+    return value
 
 
 def i_type_identifier(ti: TypeIdentifier):

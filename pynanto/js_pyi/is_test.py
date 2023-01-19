@@ -39,14 +39,20 @@ def test_nullable():
     )
 
 
-def test_generics_are_not_unsupported_yet():
+def test_unsupported__generics():
     idl = 'Node foo ((Node or sequence<Node>) bar);'
     actual_model = _2nd_level_construct(idl, throw=False)
     assert GUnhandled == type(actual_model)
 
 
-def test_root_global_atribute_not_supported():
+def test_unsupported__root_global_atribute():
     idl = 'attribute object global;'
+    actual_model = _2nd_level_construct(idl, throw=False)
+    assert GUnhandled == type(actual_model)
+
+
+def test_unsupported__comments():
+    idl = 'Node foo(optional Node bar = 0  /* comment */ );'
     actual_model = _2nd_level_construct(idl, throw=False)
     assert GUnhandled == type(actual_model)
 
@@ -89,16 +95,6 @@ def test_compound_nullable_optional_default():
         'def foo(self, before: HTMLElement | int | None = None): ...',
         GMethod('foo', [
             GArg('before', ['HTMLElement', 'long', 'None'], 'null')
-        ]),
-    )
-
-
-def test_comments():
-    _verify_2nd_level_construct(
-        'Node foo(Node type /* XPathResult.ANY_TYPE */ );',
-        'def foo(self, node: Node): ...',
-        GMethod('foo', [
-            GArg('node', ['Node'])
         ]),
     )
 
