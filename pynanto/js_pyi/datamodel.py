@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.generate import g_method, g_attribute
+from js_pyi.stringify import g_method, g_attribute
 
 
 @dataclass()

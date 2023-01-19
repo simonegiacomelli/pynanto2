@@ -1,7 +1,9 @@
+from io import StringIO
 from itertools import groupby
 from pathlib import Path
 
-from js_pyi.g_dataclasses import *
+from js_pyi.clipboard import clip_copy
+from js_pyi.datamodel import *
 from js_pyi.ingest import ingest
 
 
@@ -20,8 +22,10 @@ def main():
 
     int_by_name = dict({stmt_name: list(stmt_body) for (stmt_name, stmt_body) in groupby(interfaces, lambda i: i.name)})
 
+    tee = Tee()
+
     for stmt_name, stmt_body in int_by_name.items():
-        print(f'class {stmt_name}')
+        tee.println(f'class {stmt_name}')
         stmts: List[GStmt] = []
         e: GInterface
         for e in stmt_body:
@@ -29,7 +33,21 @@ def main():
         for stmt in stmts:
             if isinstance(stmt, GUnhandled):
                 continue
-            print(f'   ' + stmt.str())
+            tee.println(f'   ' + stmt.str())
+
+    clip_copy(str(tee))
+
+
+class Tee:
+    def __init__(self):
+        self.buf = StringIO()
+
+    def println(self, param):
+        print(param)
+        self.buf.write(param + '\n')
+
+    def __str__(self):
+        return self.buf.getvalue()
 
 
 if __name__ == '__main__':

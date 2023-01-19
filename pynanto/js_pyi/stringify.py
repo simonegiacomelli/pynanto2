@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from js_pyi.g_dataclasses import *
+    from js_pyi.datamodel import *
 
 
 def g_attribute(a: GAttribute) -> str:
@@ -37,7 +37,7 @@ def g_annotation(a: GAnnotation) -> str:
     if isinstance(a, list):
         return ' | '.join([_to_py_type(e) for e in a])
 
-    from js_pyi.g_dataclasses import GNullable
+    from js_pyi.datamodel import GNullable
     if isinstance(a, GNullable):
         return g_annotation(a.of) + ' | None'
 

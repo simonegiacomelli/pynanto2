@@ -1,8 +1,9 @@
+"""ingest and stringify tests"""
 from __future__ import annotations
 
 import widlparser
 
-from js_pyi.g_dataclasses import *
+from js_pyi.datamodel import *
 from js_pyi.ingest import ingest, i_construct
 
 

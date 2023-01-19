@@ -5,8 +5,8 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix
 
-from js_pyi.g_dataclasses import *
-from js_pyi.g_dataclasses import unhandled, expect_type
+from js_pyi.datamodel import *
+from js_pyi.datamodel import unhandled, expect_type
 
 
 def i_symbol(symbol: Symbol):
