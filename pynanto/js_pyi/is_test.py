@@ -31,6 +31,12 @@ def test_nullable():
     )
 
 
+def test_generics_are_not_unsupported_yet():
+    idl = 'Node foo ((Node or sequence<Node>) bar);'
+    actual_model = _2nd_level_construct(idl, throw=False)
+    assert GUnhandled == type(actual_model)
+
+
 def test_nullable_result():
     _verify_2nd_level_construct(
         'Node? foo();',
@@ -177,12 +183,12 @@ def _verify_2nd_level_construct(idl, expected_python, expected_model):
     assert actual_model.to_python() == expected_python
 
 
-def _2nd_level_construct(idl_piece: str) -> GMethod | GAttribute:
+def _2nd_level_construct(idl_piece: str, throw=True) -> GMethod | GAttribute:
     parser = widlparser.Parser()
     idl = 'interface DummyInterface {\n' + idl_piece + '\n}'
     parser.parse(idl)
     construct = parser.constructs[0]
-    g = i_construct(construct, True)
+    g = i_construct(construct, throw)
     assert isinstance(g, GInterface)
     assert len(g.body) == 1
     return g.body[0]

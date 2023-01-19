@@ -5,7 +5,7 @@ from itertools import groupby
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
-    TypeSuffix, Operation
+    TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType
 
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_type
@@ -37,6 +37,9 @@ def i_primitive_type(primitive_type: PrimitiveType):
     t = primitive_type.type
     if isinstance(t, Symbol):
         return i_symbol(t)
+    if isinstance(t, UnsignedIntegerType):
+        s = str(t)
+        return s
     unhandled(t)
 
 
@@ -51,6 +54,10 @@ def i_non_any_type(non_any_type: NonAnyType):
         res = i_type_identifier(t)
     elif isinstance(t, Symbol):
         res = i_symbol(t)
+    elif isinstance(t, TypeWithExtendedAttributes):
+        # generics
+        unhandled(t)
+        # res = i_type_with_extended_attributes(t)
     else:
         unhandled(t)
 
@@ -199,8 +206,20 @@ def i_construct(construct: Construct, throw: bool):
         return GUnhandled(str(construct), None)
 
 
+def i_union_member_types(umt: UnionMemberType):
+    expect_type(umt, UnionMemberType)
+    assert umt.suffix is None
+    t = umt.type
+    if isinstance(t, NonAnyType):
+        return i_non_any_type(t)
+    elif isinstance(t, UnionType):
+        return i_union_type(t)
+
+    unhandled(t)
+
+
 def i_union_type(union_type: UnionType):
-    ann = [str(a) for a in union_type.types]
+    ann = [i_union_member_types(a) for a in union_type.types]
     return ann
 
 

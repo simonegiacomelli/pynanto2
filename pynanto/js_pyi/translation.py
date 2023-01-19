@@ -2,7 +2,11 @@ from __future__ import annotations
 
 _types_dict = {
     'DOMString': 'str',
-    'long': 'int'
+    'long': 'int',
+    'long long': 'int',
+    'unsigned long': 'int',
+    'unsigned long long': 'int',
+    'unsigned short': 'int',
 }
 
 

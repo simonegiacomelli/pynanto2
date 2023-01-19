@@ -20,6 +20,12 @@ class GUnhandled(GStmt):
 
 
 @dataclass()
+class GGeneric:
+    type: str
+    gen_type: str
+
+
+@dataclass()
 class GInterface(GStmt):
     name: str
     bases: List[str] = field(default_factory=list)
@@ -28,7 +34,8 @@ class GInterface(GStmt):
     def to_python(self): return g_interface(self)
 
 
-GAnnotation = typing.Union[str, List[str]]
+GType = typing.Union[str, GGeneric]
+GAnnotation = typing.Union[GType, List[GType]]
 
 
 @dataclass()
@@ -57,7 +64,7 @@ class GMethod(GStmt):
 
 
 def unhandled(argument):
-    raise Exception(f'todo unhandled type={type(argument)} `{argument}`')
+    raise Exception(f'unhandled type={type(argument)} `{argument}`')
 
 
 def expect_type(instance, expected_type):
