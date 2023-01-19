@@ -1,12 +1,15 @@
 from typing import Any, Callable
 
 
+class Node: ...
+
+
 class HTMLElement:
     innerHTML: str
     onclick: Any
 
 
-class Document:
+class Document(Node):
     body: HTMLElement
 
     def createElement(self, tag: str) -> HTMLElement: ...
@@ -33,3 +36,6 @@ def fetch(url: str, method: str = 'GET', body=None): ...
 document: Document
 console: Console
 window: Window
+
+
+def alert(msg: str): ...
