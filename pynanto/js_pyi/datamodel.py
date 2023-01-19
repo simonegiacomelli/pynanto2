@@ -53,8 +53,6 @@ class GAttribute(GNamedAnnotation):
 @dataclass
 class GArg(GNamedAnnotation):
     default: Optional[str] = None
-    optional: bool = False
-    """`optional` in webidl lingo and not in python sense"""
 
 
 @dataclass

@@ -138,7 +138,7 @@ def i_interface_member__type_method(member: InterfaceMember):
         annotation = i_argument(a)
         if not a.required:
             annotation = _add_annotation_type(annotation, none)
-        g_arg = GArg(a.name, annotation, optional=not a.required)
+        g_arg = GArg(a.name, annotation)
         if a.default is not None:
             g_arg.default = i_default(a.default)
         elif not a.required:

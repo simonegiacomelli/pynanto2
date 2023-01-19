@@ -43,7 +43,7 @@ def test_optional():
     _verify_2nd_level_construct(
         'undefined foo(optional Node label);',
         'def foo(self, label: Node | None = None): ...',
-        GMethod('foo', [GArg('label', GUnion(['Node', 'None']), 'None', optional=True)])
+        GMethod('foo', [GArg('label', GUnion(['Node', 'None']), 'None')])
     )
 
 
