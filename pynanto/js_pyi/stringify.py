@@ -37,8 +37,8 @@ def g_annotation(a: GAnnotation) -> str:
     if isinstance(a, list):
         return ' | '.join([_to_py_type(e) for e in a])
 
-    from js_pyi.datamodel import GNullable
-    if isinstance(a, GNullable):
+    from js_pyi.datamodel import GOptional
+    if isinstance(a, GOptional):
         return g_annotation(a.of) + ' | None'
 
     unhandled(a)

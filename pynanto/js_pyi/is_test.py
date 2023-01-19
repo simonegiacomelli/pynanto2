@@ -7,12 +7,62 @@ from js_pyi.datamodel import *
 from js_pyi.ingest import ingest, i_construct
 
 
+def test_nullable():
+    _verify_2nd_level_construct(
+        'undefined bar (DOMString? name);',
+        'def bar(self, name: str | None): ...',
+        GMethod('bar', [GArg('name', GOptional('DOMString'))], 'undefined')
+    )
+
+
+def test_method_no_params():
+    _verify_2nd_level_construct(
+        'undefined foo();',
+        'def foo(self): ...',
+        GMethod('foo', returns='undefined'),
+    )
+
+
+def test_optional_with_default():
+    _verify_2nd_level_construct(
+        'undefined time(optional DOMString label = "foobar");',
+        'def time(self, label: str = "foobar"): ...',
+        GMethod('time', [GArg('label', 'DOMString', '"foobar"', optional=True)], 'undefined')
+    )
+
+
+def test_attribute():
+    _verify_2nd_level_construct(
+        'attribute DOMImplementation xyz;',
+        'xyz: DOMImplementation',
+        GAttribute('xyz', 'DOMImplementation'),
+    )
+
+
+def test_compound_nullable():
+    _verify_2nd_level_construct(
+        'undefined foo( (HTMLElement or long)? before );',
+        'def foo(self, before: HTMLElement | int | None): ...',
+        GMethod('foo', [GArg('before', GOptional(GUnion(['HTMLElement', 'long'])))], 'undefined')
+    )
+
+
+def test_compound_nullable_optional_default():
+    _verify_2nd_level_construct(
+        'undefined foo( optional (HTMLElement or long)? before = null);',
+        'def foo(self, before: HTMLElement | int | None = None): ...',
+        GMethod('foo', [
+            GArg('before', GOptional(GUnion(['HTMLElement', 'long'])), 'null', optional=True)
+        ], 'undefined'),
+    )
+
+
 def test_interface():
     actual = ingest("""
 interface Document : Node {
-  FooElement createElement(DOMString localName);
+FooElement createElement(DOMString localName);
 }    
-    """)
+""")
 
     assert actual == [GInterface(
         'Document', bases=['Node'], body=[
@@ -22,73 +72,26 @@ interface Document : Node {
     )]
 
 
-def test_method_no_params():
-    idl = "undefined foo();"
-    actual = _single_construct(idl)
-    assert actual == GMethod('foo', returns='undefined')
-    assert actual.str() == 'def foo(self): ...'
-
-
-def test_optionals():
+def test_optionals_no_default():
     idl = "Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);"
-    actual = _single_construct(idl)
+    actual = _2nd_level_construct(idl)
     assert actual == GMethod('createElement', arguments=[
         GArg('localName', 'DOMString'),
         GArg('options', GUnion(['ElementCreationOptions', 'DOMString']), optional=True)
     ], returns='Element')
 
-
-def test_optional_with_default():
-    idl = 'undefined time(optional DOMString label = "foobar");'
-    actual = _single_construct(idl)
-    assert actual == GMethod('time', arguments=[
-        GArg('label', 'DOMString', default='"foobar"', optional=True)
-    ], returns='undefined')
-
-
-def test_nullable():
-    idl = 'undefined bar (DOMString? name);'
-    actual = _single_construct(idl)
-    assert actual == GMethod('bar', arguments=[
-        GArg('name', annotation=GNullable('DOMString'))
-    ], returns='undefined')
-    assert actual.str() == "def bar(self, name: str | None): ..."
-
-
-def test_compound_nullable():
-    idl = 'undefined foo( (HTMLElement or long)? before );'
-    actual = _single_construct(idl)
-    assert actual == GMethod('foo', arguments=[
-        GArg('before', annotation=GNullable(GUnion(['HTMLElement', 'long'])))
-    ], returns='undefined')
-    assert actual.str() == 'def foo(self, before: HTMLElement | int | None): ...'
-
-
-def test_compound_nullable_optional_default():
-    idl = 'undefined foo( optional (HTMLElement or long)? before = null);'
-    actual = _single_construct(idl)
-    assert actual == GMethod('foo', arguments=[
-        GArg('before', annotation=GNullable(GUnion(['HTMLElement', 'long'])),
-             default='null',
-             optional=True
-             )
-    ], returns='undefined')
-    assert actual.str() == "def foo(self, before: HTMLElement | int | None = None): ..."
-
-
-def test_attribute():
-    idl = 'attribute DOMImplementation xyz;'
-    actual = _single_construct(idl)
-    assert actual == GAttribute('xyz', annotation='DOMImplementation')
-    assert actual.str() == 'xyz: DOMImplementation'
+    return
+    assert actual.as_python() == (
+        'def createElement(self, localName: str, '
+        'options: ElementCreationOptions | str | None = None) -> Element: ...')
 
 
 class Test_root:
     root_unhandled_idl = """
-    dictionary ConsoleInstanceOptions {
-      ConsoleInstanceDumpCallback dump;
-    }
-    """
+dictionary ConsoleInstanceOptions {
+  ConsoleInstanceDumpCallback dump;
+}
+"""
 
     def test_root_raise(self):
         exception = False
@@ -109,11 +112,11 @@ class Test_root:
 
 class TestInner:
     inner_unhandled_idl = """
-    interface ConsoleInstanceOptions {
-      undefined foo();
-      ConsoleInstanceDumpCallback <invalid> dump;
-    }
-    """
+interface ConsoleInstanceOptions {
+  undefined foo();
+  ConsoleInstanceDumpCallback <invalid> dump;
+}
+"""
 
     def test_inner_raise(self):
         exception = False
@@ -135,7 +138,13 @@ class TestInner:
         assert len(a.body) == 2
 
 
-def _single_construct(idl_piece: str) -> GMethod | GAttribute:
+def _verify_2nd_level_construct(idl, expected_python, expected_model):
+    actual_model = _2nd_level_construct(idl)
+    assert actual_model == expected_model
+    assert actual_model.as_python() == expected_python
+
+
+def _2nd_level_construct(idl_piece: str) -> GMethod | GAttribute:
     parser = widlparser.Parser()
     idl = 'interface DummyInterface {\n' + idl_piece + '\n}'
     parser.parse(idl)

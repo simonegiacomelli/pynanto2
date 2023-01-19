@@ -38,7 +38,7 @@ def i_primitive_type(primitive_type: PrimitiveType):
 def _wrap_if_nullable(o, suffix: TypeSuffix | None):
     nullable = suffix is not None
     if nullable:
-        o = GNullable(o)
+        o = GOptional(o)
     return o
 
 

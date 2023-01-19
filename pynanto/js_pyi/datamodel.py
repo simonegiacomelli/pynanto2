@@ -26,13 +26,13 @@ class GInterface:
 
 
 @dataclass()
-class GNullable:
+class GOptional:
     of: 'GAnnotation'
 
 
 GUnion = typing.NewType('GUnion', list)
 
-GAnnotation = typing.Union[str, GUnion, GNullable]
+GAnnotation = typing.Union[str, GUnion, GOptional]
 
 
 class GUnion(List[GAnnotation]):
@@ -47,7 +47,7 @@ class GNamedAnnotation(GStmt):
 
 @dataclass()
 class GAttribute(GNamedAnnotation):
-    def str(self): return g_attribute(self)
+    def as_python(self): return g_attribute(self)
 
 
 @dataclass
@@ -63,7 +63,7 @@ class GMethod(GStmt):
     arguments: List[GArg] = field(default_factory=list)
     returns: Optional[GAnnotation] = None
 
-    def str(self): return g_method(self)
+    def as_python(self): return g_method(self)
 
 
 def unhandled(argument):
