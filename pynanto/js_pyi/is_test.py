@@ -4,7 +4,7 @@ from __future__ import annotations
 import widlparser
 
 from js_pyi.datamodel import *
-from js_pyi.ingest import ingest, i_construct
+from js_pyi.ingest import ingest, i_construct, merge, discard_unhandled_inplace
 
 
 def test_attribute():
@@ -94,10 +94,27 @@ def test_complete_interface():
     assert actual.to_python() == 'class Doc(Node):\n    ' + attr.to_python()
 
 
+def test_merge():
+    piece1 = ingest('interface Doc : Node  { attribute Node foo; }')
+    piece2 = ingest('partial interface Doc  { attribute Element bar; }')
+
+    expected = ingest('interface Doc : Node {  attribute Node foo; attribute Element bar; }')
+
+    actual = merge(piece1 + piece2)
+    assert actual == expected
+
+
+def test_discard_unhandled():
+    input = [GUnhandled('un1'),
+             GInterface('Doc', body=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Node')])]
+    actual = discard_unhandled_inplace(input)
+    assert actual == [GInterface('Doc', body=[GAttribute('attr1', 'Node')])]
+
+
 class Test_root:
     root_unhandled_idl = """
 dictionary ConsoleInstanceOptions {
-  ConsoleInstanceDumpCallback dump;
+ConsoleInstanceDumpCallback dump;
 }
 """
 
@@ -121,8 +138,8 @@ dictionary ConsoleInstanceOptions {
 class TestInner:
     inner_unhandled_idl = """
 interface ConsoleInstanceOptions {
-  undefined foo();
-  ConsoleInstanceDumpCallback <invalid> dump;
+undefined foo();
+ConsoleInstanceDumpCallback <invalid> dump;
 }
 """
 

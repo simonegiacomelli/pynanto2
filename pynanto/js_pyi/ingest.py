@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from itertools import groupby
+from typing import Dict
+
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
@@ -226,4 +229,73 @@ def ingest(idl: str, throw: bool = True) -> List[GStmt]:
             except Exception as ex:
                 construct = GUnhandled(str(c), ex)
         statements.append(construct)
+    return statements
+
+
+def _groupby(iterable, key) -> Dict:
+    return {k: list(v) for (k, v) in groupby(iterable, key)}
+
+
+def _partition(iterable, key):
+    sx = []
+    dx = []
+    for item in iterable:
+        if key(item):
+            sx.append(item)
+        else:
+            dx.append(item)
+    return sx, dx
+
+
+def _m_interface(statements: List[GInterface]) -> GInterface:
+    # check pre-conditions
+    name = None
+    for st in statements:
+        expect_type(st, GInterface)
+        if name is None:
+            name = st.name
+        else:
+            assert st.name == name
+
+    result = GInterface(name)
+    for st in statements:
+        result.bases.extend(st.bases)
+        result.body.extend(st.body)
+    return result
+
+
+def merge(statements: List[GStmt]) -> List[GStmt]:
+    unhandled, handled = _partition(statements, lambda e: isinstance(e, GUnhandled))
+    result: List[GStmt] = []
+    by_name = _groupby(handled, lambda stmt: stmt.name)
+    # { 'Doc' : [ GInterface('Doc', ... ), GInterface('Doc', ...), GSomething('Doc', ...) ] , ... }
+    for name, sts_for_name in by_name.items():
+        by_type = _groupby(sts_for_name, lambda s: type(s))
+        # { GInterface : [ ... ] , GSomething : [ ... ] }
+        for typ, sts_for_type in by_type.items():
+            if typ == GInterface:
+                mi = _m_interface(sts_for_type)
+                result.append(mi)
+            else:
+                # don't know how to merge
+                result.extend(sts_for_type)
+    return result + unhandled
+
+
+def _remove_inplace(array, key):
+    for idx in reversed(range(len(array))):
+        st = array[idx]
+        if key(st):
+            del array[idx]
+
+
+def discard_unhandled_inplace(statements: List[GStmt]) -> List[GStmt]:
+    def if_unhandled(e):
+        return isinstance(e, GUnhandled)
+
+    _remove_inplace(statements, if_unhandled)
+
+    for st in statements:
+        _remove_inplace(st.body, if_unhandled)
+
     return statements
