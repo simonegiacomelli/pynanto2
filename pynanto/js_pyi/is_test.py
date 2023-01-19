@@ -31,6 +31,14 @@ def test_nullable():
     )
 
 
+def test_nullable_result():
+    _verify_2nd_level_construct(
+        'Node? foo();',
+        'def foo(self) -> Node | None: ...',
+        GMethod('foo', returns=['Node', 'None'])
+    )
+
+
 def test_compound_nullable():
     _verify_2nd_level_construct(
         'undefined foo( (HTMLElement or long)? before );',

@@ -6,7 +6,7 @@ from typing import Dict
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
-    TypeSuffix
+    TypeSuffix, Operation
 
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_type
@@ -117,20 +117,9 @@ def i_argument(argument: Argument):
     return str(argument_type.type)
 
 
-def _put_annotation_type(annotation, param):
-    if isinstance(annotation, list):
-        if param not in annotation:
-            annotation.append(param)
-    else:
-        annotation = _put_annotation_type([annotation], param)
-    return annotation
-
-
-def _wrap_if_nullable(o, suffix: TypeSuffix | None):
-    nullable = suffix is not None
-    if nullable:
-        o = _put_annotation_type(o, _none)
-    return o
+def i_operation(o: Operation):
+    expect_type(o, Operation)
+    return i_type(o.return_type)
 
 
 def i_interface_member__type_method(member: InterfaceMember):
@@ -149,8 +138,8 @@ def i_interface_member__type_method(member: InterfaceMember):
             g_arg.default = _none
         args.append(g_arg)
 
-    if isinstance(member.member, widlparser.Operation):
-        returns = str(member.member.return_type).strip()
+    if isinstance(member.member, Operation):
+        returns = i_operation(member.member)
         return GMethod(member.name, arguments=args, returns=returns)
 
     unhandled(member.member)
@@ -262,6 +251,22 @@ def _m_interface(statements: List[GInterface]) -> GInterface:
         result.bases.extend(st.bases)
         result.body.extend(st.body)
     return result
+
+
+def _put_annotation_type(annotation, param):
+    if isinstance(annotation, list):
+        if param not in annotation:
+            annotation.append(param)
+    else:
+        annotation = _put_annotation_type([annotation], param)
+    return annotation
+
+
+def _wrap_if_nullable(o, suffix: TypeSuffix | None):
+    nullable = suffix is not None
+    if nullable:
+        o = _put_annotation_type(o, _none)
+    return o
 
 
 def merge(statements: List[GStmt]) -> List[GStmt]:
