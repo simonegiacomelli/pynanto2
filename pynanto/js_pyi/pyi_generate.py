@@ -1,10 +1,9 @@
 from js_pyi.clipboard import clip_copy
 from js_pyi.produce import produce
-from js_pyi.webidls import find
 
 
 def main():
-    code = produce(find('Document.webidl'))
+    code = produce()
     print(code)
     clip_copy(code)
 

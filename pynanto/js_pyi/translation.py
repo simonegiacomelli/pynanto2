@@ -7,6 +7,7 @@ _types_dict = {
     'unsigned long': 'int',
     'unsigned long long': 'int',
     'unsigned short': 'int',
+    'boolean': 'bool',
 }
 
 
