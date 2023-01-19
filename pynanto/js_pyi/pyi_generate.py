@@ -27,6 +27,8 @@ def main():
         for e in stmt_body:
             stmts.extend(e.body)
         for stmt in stmts:
+            if isinstance(stmt, GUnhandled):
+                continue
             print(f'   ' + stmt.str())
 
 

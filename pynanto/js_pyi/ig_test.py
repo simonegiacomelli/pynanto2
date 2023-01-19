@@ -39,11 +39,12 @@ def test_optional_with_default():
 
 
 def test_nullable():
-    idl = 'undefined enableStyleSheetsForSet (DOMString? name);'
+    idl = 'undefined bar (DOMString? name);'
     actual = _single_construct(idl)
-    assert actual == GMethod('enableStyleSheetsForSet', arguments=[
+    assert actual == GMethod('bar', arguments=[
         GArg('name', annotation=GNullable('DOMString'))
     ], returns='undefined')
+    assert actual.str() == "def bar(name: str | None): ..."
 
 
 def test_compound_nullable():
@@ -52,6 +53,7 @@ def test_compound_nullable():
     assert actual == GMethod('foo', arguments=[
         GArg('before', annotation=GNullable(GUnion(['HTMLElement', 'long'])))
     ], returns='undefined')
+    assert actual.str() == 'def foo(before: HTMLElement | int | None): ...'
 
 
 def test_compound_nullable_optional_default():
@@ -67,9 +69,10 @@ def test_compound_nullable_optional_default():
 
 
 def test_attribute():
-    idl = 'readonly attribute DOMImplementation implementation;'
+    idl = 'attribute DOMImplementation xyz;'
     actual = _single_construct(idl)
-    assert actual == GAttribute('implementation', annotation='DOMImplementation')
+    assert actual == GAttribute('xyz', annotation='DOMImplementation')
+    assert actual.str() == 'xyz: DOMImplementation'
 
 
 class Test_root:
