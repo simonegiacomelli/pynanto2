@@ -7,30 +7,6 @@ from js_pyi.datamodel import *
 from js_pyi.ingest import ingest, i_construct
 
 
-def test_nullable():
-    _verify_2nd_level_construct(
-        'undefined bar (DOMString? name);',
-        'def bar(self, name: str | None): ...',
-        GMethod('bar', [GArg('name', GOptional('DOMString'))], 'undefined')
-    )
-
-
-def test_method_no_params():
-    _verify_2nd_level_construct(
-        'undefined foo();',
-        'def foo(self): ...',
-        GMethod('foo', returns='undefined'),
-    )
-
-
-def test_optional_with_default():
-    _verify_2nd_level_construct(
-        'undefined time(optional DOMString label = "foobar");',
-        'def time(self, label: str = "foobar"): ...',
-        GMethod('time', [GArg('label', 'DOMString', '"foobar"', optional=True)], 'undefined')
-    )
-
-
 def test_attribute():
     _verify_2nd_level_construct(
         'attribute DOMImplementation xyz;',
@@ -39,11 +15,43 @@ def test_attribute():
     )
 
 
+def test_method_no_params():
+    _verify_2nd_level_construct(
+        'undefined foo();',
+        'def foo(self): ...',
+        GMethod('foo'),
+    )
+
+
+def test_nullable():
+    _verify_2nd_level_construct(
+        'undefined foo (DOMString? name);',
+        'def foo(self, name: str | None): ...',
+        GMethod('foo', [GArg('name', GOptional('DOMString'))])
+    )
+
+
 def test_compound_nullable():
     _verify_2nd_level_construct(
         'undefined foo( (HTMLElement or long)? before );',
         'def foo(self, before: HTMLElement | int | None): ...',
-        GMethod('foo', [GArg('before', GOptional(GUnion(['HTMLElement', 'long'])))], 'undefined')
+        GMethod('foo', [GArg('before', GOptional(GUnion(['HTMLElement', 'long'])))])
+    )
+
+
+def test_optional():
+    _verify_2nd_level_construct(
+        'undefined foo(optional Node label);',
+        'def foo(self, label: Node | None = None): ...',
+        GMethod('foo', [GArg('label', GUnion(['Node', 'None']), 'None', optional=True)])
+    )
+
+
+def test_optional_with_default():
+    _verify_2nd_level_construct(
+        'undefined foo(optional DOMString label = "foobar");',
+        'def foo(self, label: str = "foobar"): ...',
+        GMethod('foo', [GArg('label', 'DOMString', '"foobar"', optional=True)])
     )
 
 
@@ -53,7 +61,7 @@ def test_compound_nullable_optional_default():
         'def foo(self, before: HTMLElement | int | None = None): ...',
         GMethod('foo', [
             GArg('before', GOptional(GUnion(['HTMLElement', 'long'])), 'null', optional=True)
-        ], 'undefined'),
+        ]),
     )
 
 
@@ -70,20 +78,6 @@ FooElement createElement(DOMString localName);
                      returns='FooElement'
                      ))]
     )]
-
-
-def test_optionals_no_default():
-    idl = "Element createElement(DOMString localName, optional (ElementCreationOptions or DOMString) options);"
-    actual = _2nd_level_construct(idl)
-    assert actual == GMethod('createElement', arguments=[
-        GArg('localName', 'DOMString'),
-        GArg('options', GUnion(['ElementCreationOptions', 'DOMString']), optional=True)
-    ], returns='Element')
-
-    return
-    assert actual.as_python() == (
-        'def createElement(self, localName: str, '
-        'options: ElementCreationOptions | str | None = None) -> Element: ...')
 
 
 class Test_root:

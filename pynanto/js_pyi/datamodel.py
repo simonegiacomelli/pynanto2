@@ -32,7 +32,7 @@ class GOptional:
 
 GUnion = typing.NewType('GUnion', list)
 
-GAnnotation = typing.Union[str, GUnion, GOptional]
+GAnnotation = typing.Union[str, GUnion, GOptional, None]
 
 
 class GUnion(List[GAnnotation]):
@@ -61,7 +61,7 @@ class GArg(GNamedAnnotation):
 class GMethod(GStmt):
     name: str
     arguments: List[GArg] = field(default_factory=list)
-    returns: Optional[GAnnotation] = None
+    returns: Optional[GAnnotation] = 'undefined'
 
     def as_python(self): return g_method(self)
 
