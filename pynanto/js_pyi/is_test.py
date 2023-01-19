@@ -23,6 +23,14 @@ def test_method_no_params():
     )
 
 
+def test_name_clash_async():
+    _verify_2nd_level_construct(
+        'undefined foo (Node async);',
+        'def foo(self, async_: Node): ...',
+        GMethod('foo', [GArg('async', 'Node')])
+    )
+
+
 def test_nullable():
     _verify_2nd_level_construct(
         'undefined foo (DOMString? name);',

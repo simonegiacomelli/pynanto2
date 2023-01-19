@@ -21,3 +21,12 @@ _values_dict = {
 
 def to_py_value(s) -> str:
     return _values_dict.get(s, s)
+
+
+_names_dict = {
+    'async': 'async_',
+}
+
+
+def to_py_name(s) -> str:
+    return _names_dict.get(s, s)

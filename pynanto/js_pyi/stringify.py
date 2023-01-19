@@ -2,25 +2,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from js_pyi.translation import to_py_type, to_py_value
+from js_pyi.translation import to_py_type, to_py_value, to_py_name
 
 if TYPE_CHECKING:
     from js_pyi.datamodel import *
 
 
 def g_attribute(a: GAttribute) -> str:
-    return g_named_annotation(a)
-
-
-def g_named_annotation(na: GNamedAnnotation) -> str:
-    return na.name + ': ' + g_annotation(na.annotation)
+    return to_py_name(a.name) + ': ' + g_annotation(a.annotation)
 
 
 def g_arg(a: GArg) -> str:
     default = ''
     if a.default is not None:
         default = ' = ' + to_py_value(a.default)
-    return g_named_annotation(a) + default
+    return to_py_name(a.name) + ': ' + g_annotation(a.annotation) + default
 
 
 def g_interface(i: GInterface) -> str:
@@ -42,7 +38,8 @@ def g_method(m: GMethod) -> str:
 
     args_arr = ['self'] + [g_arg(a) for a in m.arguments]
     args_str = ', '.join(args_arr)
-    return f'def {m.name}({args_str}){returns}: ...'
+    name = m.name
+    return f'def {name}({args_str}){returns}: ...'
 
 
 def g_annotation(a: GAnnotation) -> str:
@@ -56,5 +53,3 @@ def g_annotation(a: GAnnotation) -> str:
         return g_annotation(a.of) + ' | None'
 
     unhandled(a)
-
-
