@@ -4,12 +4,13 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import g_method, g_attribute
+from js_pyi.stringify import g_method, g_attribute, g_interface
 
 
 @dataclass()
 class GStmt:
-    pass
+    def to_python(self) -> str:
+        raise Exception(f'not implemented {type(self)}')
 
 
 @dataclass()
@@ -19,10 +20,12 @@ class GUnhandled(GStmt):
 
 
 @dataclass()
-class GInterface:
+class GInterface(GStmt):
     name: str
     bases: List[str] = field(default_factory=list)
     body: List[GStmt] = field(default_factory=list)
+
+    def to_python(self): return g_interface(self)
 
 
 GAnnotation = typing.Union[str, List[str]]
@@ -36,7 +39,7 @@ class GNamedAnnotation(GStmt):
 
 @dataclass()
 class GAttribute(GNamedAnnotation):
-    def as_python(self): return g_attribute(self)
+    def to_python(self): return g_attribute(self)
 
 
 @dataclass
@@ -50,7 +53,7 @@ class GMethod(GStmt):
     arguments: List[GArg] = field(default_factory=list)
     returns: Optional[GAnnotation] = 'undefined'
 
-    def as_python(self): return g_method(self)
+    def to_python(self): return g_method(self)
 
 
 def unhandled(argument):

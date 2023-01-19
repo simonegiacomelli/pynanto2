@@ -28,6 +28,6 @@ def produce(webidl: Path) -> str:
         for stmt in stmts:
             if isinstance(stmt, GUnhandled):
                 continue
-            tee.appendln(f'   ' + stmt.str())
+            tee.appendln(f'   ' + stmt.to_python())
 
     return str(tee)

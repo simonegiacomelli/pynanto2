@@ -9,9 +9,9 @@ from js_pyi.ingest import ingest, i_construct
 
 def test_attribute():
     _verify_2nd_level_construct(
-        'attribute DOMImplementation xyz;',
-        'xyz: DOMImplementation',
-        GAttribute('xyz', 'DOMImplementation'),
+        'attribute Node foo;',
+        'foo: Node',
+        GAttribute('foo', 'Node'),
     )
 
 
@@ -80,6 +80,20 @@ FooElement createElement(DOMString localName);
     )]
 
 
+def test_empty_interface():
+    actual = ingest("interface Foo {\n}")[0]
+    assert actual == GInterface('Foo')
+    assert actual.to_python() == 'class Foo: ...'
+
+
+def test_complete_interface():
+    actual = ingest("interface Doc : Node  { attribute Node baz; } ")[0]
+
+    attr = GAttribute('baz', 'Node')
+    assert actual == GInterface('Doc', bases=['Node'], body=[attr])
+    assert actual.to_python() == 'class Doc(Node):\n    ' + attr.to_python()
+
+
 class Test_root:
     root_unhandled_idl = """
 dictionary ConsoleInstanceOptions {
@@ -135,7 +149,7 @@ interface ConsoleInstanceOptions {
 def _verify_2nd_level_construct(idl, expected_python, expected_model):
     actual_model = _2nd_level_construct(idl)
     assert actual_model == expected_model
-    assert actual_model.as_python() == expected_python
+    assert actual_model.to_python() == expected_python
 
 
 def _2nd_level_construct(idl_piece: str) -> GMethod | GAttribute:

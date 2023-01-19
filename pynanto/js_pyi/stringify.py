@@ -21,6 +21,18 @@ def g_arg(a: GArg) -> str:
     return g_named_annotation(a) + default
 
 
+def g_interface(i: GInterface) -> str:
+    bases = ''
+    if len(i.bases) > 0:
+        bases = '(' + ', '.join(i.bases) + ')'
+    decl = f'class {i.name}{bases}:'
+    if len(i.body) == 0:
+        return decl + ' ...'
+    for b in i.body:
+        decl += '\n' + (' ' * 4) + b.to_python()
+    return decl
+
+
 def g_method(m: GMethod) -> str:
     returns = ''
     if m.returns is not None and m.returns != 'undefined':
