@@ -1,28 +1,23 @@
 from itertools import groupby
 from pathlib import Path
+from typing import List
 
-from js_pyi.clipboard import clip_copy
-from js_pyi.datamodel import *
+from js_pyi.datamodel import GInterface, GStmt, GUnhandled
 from js_pyi.ingest import ingest
 from js_pyi.tee import Tee
 
 
-def main():
-    webidls_path = Path(__file__).parent / 'webidls'
-    txt = ''
-    for f in webidls_path.glob('enabled/Document.webidl'):
-        print(f'file {f}')
-        txt = f.read_text()
-        break
+def produce(webidl: Path) -> str:
+    txt = webidl.read_text()
 
     statements = ingest(txt, throw=False)
-    for s in statements:
-        print(s)
+    # for s in statements:
+    #     print(s)
     interfaces = [s for s in statements if isinstance(s, GInterface)]
 
     int_by_name = dict({stmt_name: list(stmt_body) for (stmt_name, stmt_body) in groupby(interfaces, lambda i: i.name)})
 
-    tee = Tee()
+    tee = Tee(output=None)
 
     for stmt_name, stmt_body in int_by_name.items():
         tee.appendln(f'class {stmt_name}')
@@ -35,8 +30,4 @@ def main():
                 continue
             tee.appendln(f'   ' + stmt.str())
 
-    clip_copy(str(tee))
-
-
-if __name__ == '__main__':
-    main()
+    return str(tee)
