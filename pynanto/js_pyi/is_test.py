@@ -154,32 +154,33 @@ def test_compound_nullable_optional_default():
 
 
 def test_interface():
-    actual = ingest("""
-interface Document : Blob {
-FooElement createElement(DOMString localName);
-}    
-""")
+    actual = ingest(
+        "interface Document : Blob {\n"
+        "FooElement createElement(DOMString localName);\n"
+        "}"
+    )
 
-    assert actual == [GInterface(
-        'Document', bases=['Blob'], body=[
-            (GMethod('createElement', arguments=[GArg('localName', 'DOMString')],
-                     returns='FooElement'
-                     ))]
-    )]
+    assert actual == [GInterface('Document', bases=['Blob'], body=[
+        (GMethod('createElement',
+                 arguments=[GArg('localName', 'DOMString')],
+                 returns='FooElement'))]
+                                 )]
 
 
 def test_empty_interface():
-    actual = ingest("interface Foo {\n}")[0]
-    assert actual == GInterface('Foo')
-    assert actual.to_python() == 'class Foo: ...'
+    _verify_root_stmt(
+        'interface Foo {\n}',
+        'class Foo: ...',
+        GInterface('Foo')
+    )
 
 
 def test_complete_interface():
-    actual = ingest("interface Doc : Blob  { attribute Blob baz; } ")[0]
-
-    attr = GAttribute('baz', 'Blob')
-    assert actual == GInterface('Doc', bases=['Blob'], body=[attr])
-    assert actual.to_python() == 'class Doc(Blob):\n    ' + attr.to_python()
+    _verify_root_stmt(
+        'interface Doc : Blob  { attribute Blob baz; } ',
+        'class Foo:\n    baz: Blob',
+        GInterface('Doc', bases=['Blob'], body=[(GAttribute('baz', 'Blob'))])
+    )
 
 
 def test_merge():
