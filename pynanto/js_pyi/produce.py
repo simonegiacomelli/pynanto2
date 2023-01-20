@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import ast
+import traceback
 from io import StringIO
 from pathlib import Path
 from typing import List
@@ -25,3 +27,21 @@ def produce(files: List[Path] | None = None) -> str:
         res.write(st.to_python() + '\n')
 
     return res.getvalue()
+
+
+def parse_product() -> bool:
+    exceptions = []
+    for file in find_all():
+        actual = produce([file])
+        try:
+            ast.parse(actual)
+        except Exception as ex:
+            exceptions.append((file, traceback.format_exc()))
+    print()
+    for file, ex in exceptions:
+        print('=' * 50)
+        print(file)
+        print(ex)
+
+    success = len(exceptions) == 0
+    return success
