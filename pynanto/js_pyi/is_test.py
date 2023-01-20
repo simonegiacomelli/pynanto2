@@ -170,7 +170,7 @@ ConsoleInstanceDumpCallback dump;
         assert len(actual) == 1
         a = actual[0]
         assert isinstance(a, GUnhandled)
-        assert 'dump' in a.body
+        assert 'dump' in a.body_str
 
 
 class TestInner:

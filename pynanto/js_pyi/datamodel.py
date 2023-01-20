@@ -15,7 +15,7 @@ class GStmt:
 
 @dataclass()
 class GUnhandled(GStmt):
-    body: str
+    body_str: str
     exception: Exception | None = None
 
     def to_python(self): return s_unhandled(self)

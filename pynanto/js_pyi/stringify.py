@@ -58,7 +58,7 @@ def s_unhandled(u: GUnhandled) -> str:
     if u.exception is not None:
         ex_str = ''.join(traceback.TracebackException.from_exception(u.exception).format())
         ex_str += '\n' + ('-' * 50) + '\n'
-    return ex_str + u.body
+    return ex_str + u.body_str
 
 
 def s_statements(statements: List[GStmt]) -> str:
