@@ -18,6 +18,7 @@ def test_correctness_quick_0():
 
 def test_correctness_quick_1():
     actual = produce([find('Document.webidl')])
+    assert 'class Document(Node' in actual
     ast.parse(actual)
 
 

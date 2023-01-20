@@ -167,11 +167,11 @@ def test_interface():
                              )]
 
 
-def test_empty_interface():
+def test_empty_interface_with_constructor():
     _verify_root_stmt(
-        'interface Foo {\n}',
+        '[Constructor]\ninterface Foo {\n}',
         'class Foo: ...',
-        GClass('Foo')
+        GClass('Foo', body=[GIgnoredStmt(body_str='Constructor')])
     )
 
 
@@ -277,5 +277,3 @@ def _root_stmt(idl, throw=False) -> GRootStmt:
     o_type = GRootStmt
     expect_isinstance(st, o_type)
     return st
-
-

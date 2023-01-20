@@ -19,6 +19,11 @@ class GStmt:
 
 
 @dataclass()
+class GIgnoredStmt(GStmt):
+    body_str: str
+
+
+@dataclass()
 class GRootStmt(GStmt):
     pass
 

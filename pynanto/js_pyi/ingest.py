@@ -4,7 +4,7 @@ import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
-    IncludesStatement, Typedef
+    IncludesStatement, Typedef, ExtendedAttribute
 
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_isinstance
@@ -210,6 +210,11 @@ def i_typedef(td: Typedef):
     return GTypedef(td.name, ann)
 
 
+def i_extended_attribute(construct: ExtendedAttribute):
+    expect_isinstance(construct, ExtendedAttribute)
+    return GIgnoredStmt(str(construct))
+
+
 def i_construct(construct: Construct, throw: bool):
     expect_isinstance(construct, Construct)
 
@@ -221,6 +226,8 @@ def i_construct(construct: Construct, throw: bool):
         return i_typedef(construct)
     if isinstance(construct, IncludesStatement):
         return i_include_statement(construct)
+    if isinstance(construct, ExtendedAttribute):
+        return i_extended_attribute(construct)
     if isinstance(construct, InterfaceMember):
         if throw:
             res = i_interface_member(construct)
