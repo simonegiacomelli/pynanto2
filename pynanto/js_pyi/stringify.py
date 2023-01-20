@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from js_pyi.translation import to_py_type, to_py_value, to_py_name
+from js_pyi.conversion import to_py_type, to_py_value, to_py_name
 
 if TYPE_CHECKING:
     from js_pyi.datamodel import *
