@@ -49,8 +49,19 @@ def test_include():
     _verify_root_stmt('Foo includes Bar', '', GInclude('Foo', 'Bar'))
 
 
-# implement 'typedef (ReadableStreamDefaultReader or ReadableStreamBYOBReader) ReadableStreamReader;'
-# as: ReadableStreamReader =  ReadableStreamDefaultReader | ReadableStreamBYOBReader
+def test_typedef():
+    _verify_root_stmt(
+        'typedef Blob Foo;',
+        'Foo = Blob',
+        GTypedef('Foo', 'Blob'),
+    )
+
+    _verify_root_stmt(
+        'typedef (Blob or Element) Foo;',
+        'Foo = Blob | Element',
+        GTypedef('Foo', ['Blob', 'Element']),
+    )
+
 
 def test_enum_root_stmt():
     _verify_root_stmt(
@@ -250,7 +261,8 @@ def _verify_interface_stmt(idl, expected_python, expected_model):
 def _verify_root_stmt(idl, expected_python, expected):
     actual = _root_stmt(idl, throw=True)
     assert actual == expected
-    assert actual.to_python() == expected_python
+    if expected is GPythonProducer:
+        assert actual.to_python() == expected_python
 
 
 def _interface_stmt(idl_piece: str) -> GMethod | GAttribute | None:

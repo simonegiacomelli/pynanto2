@@ -86,6 +86,10 @@ def s_enum(e: GEnum) -> str:
     return s_interface(proxy)
 
 
+def s_typedef(td: GTypedef) -> str:
+    return td.name + ' = ' + s_annotation(td.annotation)
+
+
 def s_unhandled(u: GUnhandled) -> str:
     ex_str = '<<<\n'
     if u.exception is not None:

@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import s_method, s_attribute, s_interface, s_unhandled, s_enum, s_arg
+from js_pyi.stringify import s_method, s_attribute, s_interface, s_unhandled, s_enum, s_arg, s_typedef
 
 
 class GPythonProducer:
@@ -96,7 +96,13 @@ class GInclude(GRootStmt):
     name: str
     includes: str
 
-    def to_python(self): return ''
+
+@dataclass()
+class GTypedef(GRootStmt, GPythonProducer):
+    name: str
+    annotation: GAnnotation = field(default_factory=list)
+
+    def to_python(self): return s_typedef(self)
 
 
 @dataclass

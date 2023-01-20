@@ -6,7 +6,7 @@ import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
-    IncludesStatement
+    IncludesStatement, Typedef
 
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_type
@@ -88,7 +88,7 @@ def interface_bases(interface: Interface):
     return [str(interface.inheritance.base)]
 
 
-def i_type_with_extended_attributes(twea: TypeWithExtendedAttributes):
+def i_type_with_extended_attributes(twea: TypeWithExtendedAttributes) -> GType:
     expect_type(twea, TypeWithExtendedAttributes)
 
     t = twea.type
@@ -207,6 +207,12 @@ def i_enum(enum: Enum):
     return GEnum(enum.name, body=members)
 
 
+def i_typedef(td: Typedef):
+    expect_type(td, Typedef)
+    ann = i_type_with_extended_attributes(td.type)
+    return GTypedef(td.name, ann)
+
+
 def i_construct(construct: Construct, throw: bool):
     expect_type(construct, Construct)
 
@@ -214,6 +220,8 @@ def i_construct(construct: Construct, throw: bool):
         return i_interface(construct, throw)
     if isinstance(construct, Enum):
         return i_enum(construct)
+    if isinstance(construct, Typedef):
+        return i_typedef(construct)
     if isinstance(construct, IncludesStatement):
         return i_include_statement(construct)
     if isinstance(construct, InterfaceMember):
@@ -321,7 +329,8 @@ def keep_python_producer(statements: List[GStmt]) -> List[GStmt]:
     statements = filter_pp(statements)
 
     for st in statements:
-        st.body = filter_pp(st.body)
+        if hasattr(st, 'body'):
+            st.body = filter_pp(st.body)
 
     return statements
 
