@@ -103,6 +103,6 @@ def s_unhandled(u: GUnhandled) -> str:
 def s_statements(statements: List[GStmt]) -> str:
     res = StringIO()
     for st in statements:
-        res.write(st.to_python() + '\n')
+        res.write(st.to_python() + '\n\n')
     getvalue = res.getvalue()
     return getvalue
