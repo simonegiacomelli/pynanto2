@@ -3,10 +3,19 @@ from js_pyi.produce import produce
 
 
 def main():
-    code = produce()
+    code = _head + produce() + _tail
     print(code)
     clip_copy(code)
 
 
+_head = """# @formatter:off
+"""
+_tail = """
+
+document: Document
+window: Window
+navigator: Navigator
+
+"""
 if __name__ == '__main__':
     main()
