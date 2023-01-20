@@ -39,6 +39,14 @@ def test_nullable():
     )
 
 
+def test_float():
+    _verify_2nd_level_construct(
+        'undefined foo (float x);',
+        'def foo(self, x: float): ...',
+        GMethod('foo', [GArg('x', 'float')])
+    )
+
+
 def test_unsupported__generics():
     idl = 'Node foo ((Node or sequence<Node>) bar);'
     actual_model = _2nd_level_construct(idl, throw=False)

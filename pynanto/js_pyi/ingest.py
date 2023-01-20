@@ -5,7 +5,7 @@ from itertools import groupby
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
-    TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType
+    TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType
 
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_type
@@ -40,7 +40,8 @@ def i_primitive_type(primitive_type: PrimitiveType):
     t = primitive_type.type
     if isinstance(t, Symbol):
         return i_symbol(t)
-    if isinstance(t, UnsignedIntegerType):
+    if isinstance(t, UnsignedIntegerType) or \
+            isinstance(t, UnrestrictedFloatType):
         s = str(t)
         return s
     unhandled(t)

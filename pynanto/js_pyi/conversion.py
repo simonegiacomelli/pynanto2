@@ -8,6 +8,9 @@ _types_dict = {
     'unsigned long long': 'int',
     'unsigned short': 'int',
     'boolean': 'bool',
+    'double': 'float',
+    'unrestricted double': 'float',
+    'unrestricted float': 'float',
 }
 
 
