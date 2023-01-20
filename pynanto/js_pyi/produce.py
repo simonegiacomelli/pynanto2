@@ -46,8 +46,11 @@ def parse_product() -> bool:
     return success
 
 
-def develop():
-    for file in find_all():
+def develop(files: List[Path] | None = None) -> bool:
+    if files is None:
+        files = find_all()
+
+    for file in files:
         sts = ingest(file.read_text(), throw=False)
         sts = keep_unhandled(sts)
         if len(sts) > 0:

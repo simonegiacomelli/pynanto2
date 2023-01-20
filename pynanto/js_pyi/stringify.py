@@ -54,11 +54,13 @@ def s_annotation(a: GAnnotation) -> str:
 
 
 def s_unhandled(u: GUnhandled) -> str:
-    ex_str = ''
+    ex_str = '<<<\n'
     if u.exception is not None:
-        ex_str = ''.join(traceback.TracebackException.from_exception(u.exception).format())
+        ex_str += 'exception: ' + ''.join(traceback.TracebackException.from_exception(u.exception).format())
         ex_str += '\n' + ('-' * 50) + '\n'
-    return ex_str + u.body_str
+    else:
+        ex_str += 'no exception but unhandled:\n'
+    return ex_str + u.body_str + '\n>>>\n'
 
 
 def s_statements(statements: List[GStmt]) -> str:
