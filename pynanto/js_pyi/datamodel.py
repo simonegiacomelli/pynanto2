@@ -14,11 +14,27 @@ class GStmt:
 
 
 @dataclass()
+class GRootStmt(GStmt):
+    pass
+
+
+@dataclass()
 class GUnhandled(GStmt):
     body_str: str
     exception: Exception | None = None
 
     def to_python(self): return s_unhandled(self)
+
+
+@dataclass()
+class GUnhandledRoot(GUnhandled):
+    pass
+
+
+@dataclass()
+class GUnhandledNested(GUnhandled):
+    pass
+
 
 @dataclass()
 class GGeneric:
@@ -27,7 +43,7 @@ class GGeneric:
 
 
 @dataclass()
-class GInterface(GStmt):
+class GInterface(GRootStmt):
     name: str
     bases: List[str] = field(default_factory=list)
     body: List[GStmt] = field(default_factory=list)
@@ -62,6 +78,12 @@ class GMethod(GStmt):
     returns: Optional[GAnnotation] = 'undefined'
 
     def to_python(self): return s_method(self)
+
+
+@dataclass
+class GEnum(GRootStmt):
+    name: str
+    body: List[GArg]
 
 
 def unhandled(argument):

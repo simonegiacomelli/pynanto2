@@ -203,7 +203,7 @@ def i_construct(construct: Construct, throw: bool):
             try:
                 res = i_interface_member(construct)
             except Exception as ex:
-                res = GUnhandled(str(construct), ex)
+                res = GUnhandledNested(str(construct), ex)
         return res
 
     if throw:
@@ -241,7 +241,7 @@ def ingest(idl: str, throw: bool = True) -> List[GStmt]:
             try:
                 construct = i_construct(c, throw)
             except Exception as ex:
-                construct = GUnhandled(str(c), ex)
+                construct = GUnhandledRoot(str(c), ex)
         statements.append(construct)
     return statements
 
