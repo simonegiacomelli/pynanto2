@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from io import StringIO
+from typing import TYPE_CHECKING, List
 
 from js_pyi.conversion import to_py_type, to_py_value, to_py_name
 
@@ -8,18 +9,18 @@ if TYPE_CHECKING:
     from js_pyi.datamodel import *
 
 
-def g_attribute(a: GAttribute) -> str:
-    return to_py_name(a.name) + ': ' + g_annotation(a.annotation)
+def s_attribute(a: GAttribute) -> str:
+    return to_py_name(a.name) + ': ' + s_annotation(a.annotation)
 
 
-def g_arg(a: GArg) -> str:
+def s_arg(a: GArg) -> str:
     default = ''
     if a.default is not None:
         default = ' = ' + to_py_value(a.default)
-    return to_py_name(a.name) + ': ' + g_annotation(a.annotation) + default
+    return to_py_name(a.name) + ': ' + s_annotation(a.annotation) + default
 
 
-def g_interface(i: GInterface) -> str:
+def s_interface(i: GInterface) -> str:
     bases = ''
     if len(i.bases) > 0:
         bases = '(' + ', '.join(i.bases) + ')'
@@ -31,25 +32,29 @@ def g_interface(i: GInterface) -> str:
     return decl
 
 
-def g_method(m: GMethod) -> str:
+def s_method(m: GMethod) -> str:
     returns = ''
     if m.returns is not None and m.returns != 'undefined':
-        returns = ' -> ' + g_annotation(m.returns)
+        returns = ' -> ' + s_annotation(m.returns)
 
-    args_arr = ['self'] + [g_arg(a) for a in m.arguments]
+    args_arr = ['self'] + [s_arg(a) for a in m.arguments]
     args_str = ', '.join(args_arr)
     name = m.name
     return f'def {name}({args_str}){returns}: ...'
 
 
-def g_annotation(a: GAnnotation) -> str:
+def s_annotation(a: GAnnotation) -> str:
     if isinstance(a, str):
-        return g_annotation([a])
+        return s_annotation([a])
     if isinstance(a, list):
         return ' | '.join([to_py_type(e) for e in a])
 
-    from js_pyi.datamodel import GOptional
-    if isinstance(a, GOptional):
-        return g_annotation(a.of) + ' | None'
-
     unhandled(a)
+
+
+def s_statements(statements: List[GStmt]) -> str:
+    res = StringIO()
+    for st in statements:
+        res.write(st.to_python() + '\n')
+    getvalue = res.getvalue()
+    return getvalue

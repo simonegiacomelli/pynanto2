@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import ast
 import traceback
-from io import StringIO
 from pathlib import Path
 from typing import List
 
 from js_pyi.ingest import ingest, merge, discard_unhandled
+from js_pyi.stringify import s_statements
 from js_pyi.webidls import find_all
 
 
@@ -22,11 +22,9 @@ def produce(files: List[Path] | None = None) -> str:
 
     statements = merge(statements)
 
-    res = StringIO()
-    for st in statements:
-        res.write(st.to_python() + '\n')
+    python_code = s_statements(statements)
 
-    return res.getvalue()
+    return python_code
 
 
 def parse_product() -> bool:

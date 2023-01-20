@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import g_method, g_attribute, g_interface
+from js_pyi.stringify import s_method, s_attribute, s_interface
 
 
 @dataclass()
@@ -31,7 +31,7 @@ class GInterface(GStmt):
     bases: List[str] = field(default_factory=list)
     body: List[GStmt] = field(default_factory=list)
 
-    def to_python(self): return g_interface(self)
+    def to_python(self): return s_interface(self)
 
 
 GType = typing.Union[str, GGeneric]
@@ -46,7 +46,7 @@ class GNamedAnnotation(GStmt):
 
 @dataclass()
 class GAttribute(GNamedAnnotation):
-    def to_python(self): return g_attribute(self)
+    def to_python(self): return s_attribute(self)
 
 
 @dataclass
@@ -60,7 +60,7 @@ class GMethod(GStmt):
     arguments: List[GArg] = field(default_factory=list)
     returns: Optional[GAnnotation] = 'undefined'
 
-    def to_python(self): return g_method(self)
+    def to_python(self): return s_method(self)
 
 
 def unhandled(argument):
