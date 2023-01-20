@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import traceback
 from io import StringIO
 from typing import TYPE_CHECKING, List
 
@@ -50,6 +51,14 @@ def s_annotation(a: GAnnotation) -> str:
         return ' | '.join([to_py_type(e) for e in a])
 
     unhandled(a)
+
+
+def s_unhandled(u: GUnhandled) -> str:
+    ex_str = ''
+    if u.exception is not None:
+        ex_str = ''.join(traceback.TracebackException.from_exception(u.exception).format())
+        ex_str += '\n' + ('-' * 50) + '\n'
+    return ex_str + u.body
 
 
 def s_statements(statements: List[GStmt]) -> str:

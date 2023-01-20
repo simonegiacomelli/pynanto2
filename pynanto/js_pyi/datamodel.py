@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import s_method, s_attribute, s_interface
+from js_pyi.stringify import s_method, s_attribute, s_interface, s_unhandled
 
 
 @dataclass()
@@ -18,6 +18,7 @@ class GUnhandled(GStmt):
     body: str
     exception: Exception | None = None
 
+    def to_python(self): return s_unhandled(self)
 
 @dataclass()
 class GGeneric:

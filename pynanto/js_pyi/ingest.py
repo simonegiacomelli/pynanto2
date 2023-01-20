@@ -306,3 +306,15 @@ def discard_unhandled(statements: List[GStmt]) -> List[GStmt]:
         st.body = keep_handled(st.body)
 
     return statements
+
+
+def keep_unhandled(statements: List[GStmt]) -> List[GStmt]:
+    def keep_unhandled(iterable):
+        return list(filter(lambda e: isinstance(e, GUnhandled), iterable))
+
+    for st in statements:
+        st.body = keep_unhandled(st.body)
+
+    statements = list(filter(lambda e: isinstance(e, GUnhandled) or len(e.body) > 0, statements))
+
+    return statements
