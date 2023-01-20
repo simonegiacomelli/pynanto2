@@ -5,7 +5,7 @@ import traceback
 from pathlib import Path
 from typing import List
 
-from js_pyi.ingest import ingest, merge, discard_unhandled, keep_unhandled
+from js_pyi.ingest import ingest, merge, keep_python_producer, keep_unhandled
 from js_pyi.stringify import s_statements
 from js_pyi.webidls import find_all
 
@@ -17,7 +17,7 @@ def produce(files: List[Path] | None = None) -> str:
     statements = []
     for file in files:
         sts = ingest(file.read_text(), throw=False)
-        sts = discard_unhandled(sts)
+        sts = keep_python_producer(sts)
         statements.extend(sts)
 
     statements = merge(statements)

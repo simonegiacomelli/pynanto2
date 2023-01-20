@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from js_pyi.datamodel import *
-from js_pyi.ingest import ingest, merge, discard_unhandled
+from js_pyi.ingest import ingest, merge, keep_python_producer
 
 
 def test_attribute():
@@ -181,10 +181,10 @@ def test_merge():
     assert actual == expected
 
 
-def test_discard_unhandled():
-    input = [GUnhandled('un1'),
+def test_keep_python_producer():
+    stmts = [GUnhandled('un1'),
              GInterface('Doc', body=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Blob')])]
-    actual = discard_unhandled(input)
+    actual = keep_python_producer(stmts)
     assert actual == [GInterface('Doc', body=[GAttribute('attr1', 'Blob')])]
 
 

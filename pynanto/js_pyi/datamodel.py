@@ -7,10 +7,15 @@ from typing import List, Optional
 from js_pyi.stringify import s_method, s_attribute, s_interface, s_unhandled, s_enum, s_arg
 
 
-@dataclass()
-class GStmt:
+class GPythonProducer:
+
     def to_python(self) -> str:
         raise Exception(f'not implemented {type(self)}')
+
+
+@dataclass()
+class GStmt:
+    pass
 
 
 @dataclass()
@@ -49,7 +54,7 @@ class GGeneric:
 
 
 @dataclass()
-class GInterface(GNameAndBody, GRootStmt):
+class GInterface(GNameAndBody, GRootStmt, GPythonProducer):
     bases: List[str] = field(default_factory=list)
 
     def to_python(self): return s_interface(self)
@@ -66,19 +71,19 @@ class GNamedAnnotation(GStmt):
 
 
 @dataclass()
-class GAttribute(GNamedAnnotation):
+class GAttribute(GNamedAnnotation, GPythonProducer):
     def to_python(self): return s_attribute(self)
 
 
 @dataclass
-class GArg(GNamedAnnotation):
+class GArg(GNamedAnnotation, GPythonProducer):
     default: Optional[str] = None
 
     def to_python(self): return s_arg(self)
 
 
 @dataclass
-class GMethod(GStmt):
+class GMethod(GStmt, GPythonProducer):
     name: str
     arguments: List[GArg] = field(default_factory=list)
     returns: Optional[GAnnotation] = 'undefined'
@@ -95,7 +100,7 @@ class GInclude(GRootStmt):
 
 
 @dataclass
-class GEnum(GNameAndBody, GRootStmt):
+class GEnum(GNameAndBody, GRootStmt, GPythonProducer):
     def to_python(self): return s_enum(self)
 
 

@@ -314,14 +314,14 @@ def merge(statements: List[GStmt]) -> List[GStmt]:
     return result + unhandled
 
 
-def discard_unhandled(statements: List[GStmt]) -> List[GStmt]:
-    def keep_handled(iterable):
-        return list(filter(lambda e: not isinstance(e, GUnhandled), iterable))
+def keep_python_producer(statements: List[GStmt]) -> List[GStmt]:
+    def filter_pp(iterable):
+        return list(filter(lambda e: isinstance(e, GPythonProducer), iterable))
 
-    statements = keep_handled(statements)
+    statements = filter_pp(statements)
 
     for st in statements:
-        st.body = keep_handled(st.body)
+        st.body = filter_pp(st.body)
 
     return statements
 
