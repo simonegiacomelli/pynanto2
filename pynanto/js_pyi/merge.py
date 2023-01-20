@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from itertools import groupby
 from typing import List
 
 from js_pyi.datamodel import GStmt, GUnhandled, GClass, GInclude, expect_isinstance, GEnum
-from js_pyi.itertools import partition, groupby
+from js_pyi.itertools import partition, groupby as groupby2
 
 
 def merge(statements: List[GStmt]) -> List[GStmt]:
@@ -12,10 +11,10 @@ def merge(statements: List[GStmt]) -> List[GStmt]:
     enums: List[GStmt] = []
     classes: List[GStmt] = []
     the_rest: List[GStmt] = []
-    by_name = groupby(handled, lambda stmt: stmt.name)
+    by_name = groupby2(handled, lambda stmt: stmt.name)
     # { 'Doc' : [ GClass('Doc', ... ), GClass('Doc', ...), GInclude('Doc', ...) ] , ... }
     for name, sts_for_name in by_name.items():
-        by_type = groupby(sts_for_name, lambda s: type(s))
+        by_type = groupby2(sts_for_name, lambda s: type(s))
         if GClass in by_type:
             mi = _m_class(by_type)
             classes.append(mi)

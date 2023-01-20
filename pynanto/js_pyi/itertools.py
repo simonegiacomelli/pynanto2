@@ -1,11 +1,18 @@
 from __future__ import annotations
 
-import itertools
 from typing import Dict
 
 
 def groupby(iterable, key) -> Dict:
-    return {k: list(v) for (k, v) in itertools.groupby(iterable, key)}
+    result = dict()
+    for item in iterable:
+        k = key(item)
+        array = result.get(k, None)
+        if array is None:
+            array = []
+            result[k] = array
+        array.append(item)
+    return result
 
 
 def partition(iterable, key):

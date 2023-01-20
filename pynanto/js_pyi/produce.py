@@ -18,10 +18,10 @@ def produce(files: List[Path] | None = None) -> str:
     statements = []
     for file in files:
         sts = ingest(file.read_text(), throw=False)
-        sts = keep_python_producer(sts)
         statements.extend(sts)
 
     statements = merge(statements)
+    statements = keep_python_producer(statements)
 
     python_code = s_statements(statements)
 

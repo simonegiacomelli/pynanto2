@@ -111,7 +111,7 @@ class GEnum(GNameAndBody, GRootStmt, GPythonProducer):
 
 
 @dataclass()
-class GEnumValue(GStmt):
+class GEnumValue(GStmt, GPythonProducer):
     value: str
 
 
