@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from js_pyi.datamodel import *
-from js_pyi.ingest import ingest, merge, keep_python_producer
+from js_pyi.ingest import ingest, keep_python_producer
 
 
 def test_attribute():
@@ -181,30 +181,6 @@ def test_complete_interface():
         'class Foo:\n    baz: Blob',
         GClass('Doc', bases=['Blob'], body=[(GAttribute('baz', 'Blob'))])
     )
-
-
-def test_merge():
-    piece1 = ingest('interface Doc : Blob  { attribute Blob foo; }')
-    piece2 = ingest('partial interface Doc  { attribute Element bar; }')
-
-    expected = ingest('interface Doc : Blob {  attribute Blob foo; attribute Element bar; }')
-
-    actual = merge(piece1 + piece2)
-    assert actual == expected
-
-
-def test_merge_include():
-    piece1 = ingest('interface Doc : Blob  { attribute Blob foo; }')
-    piece2 = ingest('partial interface Doc  { attribute Element bar; }')
-    piece3 = ingest('Doc includes Bar; Doc includes Baz')
-
-    actual = merge(piece1 + piece2 + piece3)
-
-    expected = ingest('interface Doc : Blob {  attribute Blob foo; attribute Element bar; }')
-    _append_base(expected[0], 'Bar')
-    _append_base(expected[0], 'Baz')
-
-    assert actual == expected
 
 
 def _append_base(cl: GClass, base: str):

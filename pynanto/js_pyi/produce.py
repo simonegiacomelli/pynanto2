@@ -5,7 +5,8 @@ import traceback
 from pathlib import Path
 from typing import List
 
-from js_pyi.ingest import ingest, merge, keep_python_producer, keep_unhandled
+from js_pyi.ingest import ingest, keep_python_producer, keep_unhandled
+from js_pyi.merge import merge
 from js_pyi.stringify import s_statements
 from js_pyi.webidls import find_all
 
