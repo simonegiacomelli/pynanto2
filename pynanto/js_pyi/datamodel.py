@@ -15,7 +15,8 @@ class GStmt:
 
 @dataclass()
 class GRootStmt(GStmt):
-    pass
+    name: str
+    body: List[GStmt] = field(default_factory=list)
 
 
 @dataclass()
@@ -44,9 +45,7 @@ class GGeneric:
 
 @dataclass()
 class GInterface(GRootStmt):
-    name: str
     bases: List[str] = field(default_factory=list)
-    body: List[GStmt] = field(default_factory=list)
 
     def to_python(self): return s_interface(self)
 
