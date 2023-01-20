@@ -9,9 +9,9 @@ from js_pyi.ingest import ingest, i_construct, merge, discard_unhandled
 
 def test_attribute():
     _verify_2nd_level_construct(
-        'attribute Node foo;',
-        'foo: Node',
-        GAttribute('foo', 'Node'),
+        'attribute Blob foo;',
+        'foo: Blob',
+        GAttribute('foo', 'Blob'),
     )
 
 
@@ -25,9 +25,9 @@ def test_method_no_params():
 
 def test_name_clash_async():
     _verify_2nd_level_construct(
-        'undefined foo (Node async);',
-        'def foo(self, async_: Node): ...',
-        GMethod('foo', [GArg('async', 'Node')])
+        'undefined foo (Blob async);',
+        'def foo(self, async_: Blob): ...',
+        GMethod('foo', [GArg('async', 'Blob')])
     )
 
 
@@ -48,7 +48,7 @@ def test_float():
 
 
 def test_unsupported__generics():
-    idl = 'Node foo ((Node or sequence<Node>) bar);'
+    idl = 'Blob foo ((Blob or sequence<Blob>) bar);'
     actual_model = _2nd_level_construct(idl, throw=False)
     assert GUnhandled == type(actual_model)
 
@@ -64,16 +64,16 @@ def test_unsupported__attribute_names():
 
 
 def test_unsupported__comments():
-    idl = 'Node foo(optional Node bar = 0  /* comment */ );'
+    idl = 'Blob foo(optional Blob bar = 0  /* comment */ );'
     actual_model = _2nd_level_construct(idl, throw=False)
     assert GUnhandled == type(actual_model)
 
 
 def test_nullable_result():
     _verify_2nd_level_construct(
-        'Node? foo();',
-        'def foo(self) -> Node | None: ...',
-        GMethod('foo', returns=['Node', 'None'])
+        'Blob? foo();',
+        'def foo(self) -> Blob | None: ...',
+        GMethod('foo', returns=['Blob', 'None'])
     )
 
 
@@ -87,9 +87,9 @@ def test_compound_nullable():
 
 def test_optional():
     _verify_2nd_level_construct(
-        'undefined foo(optional Node label);',
-        'def foo(self, label: Node | None = None): ...',
-        GMethod('foo', [GArg('label', ['Node', 'None'], 'None')])
+        'undefined foo(optional Blob label);',
+        'def foo(self, label: Blob | None = None): ...',
+        GMethod('foo', [GArg('label', ['Blob', 'None'], 'None')])
     )
 
 
@@ -113,13 +113,13 @@ def test_compound_nullable_optional_default():
 
 def test_interface():
     actual = ingest("""
-interface Document : Node {
+interface Document : Blob {
 FooElement createElement(DOMString localName);
 }    
 """)
 
     assert actual == [GInterface(
-        'Document', bases=['Node'], body=[
+        'Document', bases=['Blob'], body=[
             (GMethod('createElement', arguments=[GArg('localName', 'DOMString')],
                      returns='FooElement'
                      ))]
@@ -133,18 +133,18 @@ def test_empty_interface():
 
 
 def test_complete_interface():
-    actual = ingest("interface Doc : Node  { attribute Node baz; } ")[0]
+    actual = ingest("interface Doc : Blob  { attribute Blob baz; } ")[0]
 
-    attr = GAttribute('baz', 'Node')
-    assert actual == GInterface('Doc', bases=['Node'], body=[attr])
-    assert actual.to_python() == 'class Doc(Node):\n    ' + attr.to_python()
+    attr = GAttribute('baz', 'Blob')
+    assert actual == GInterface('Doc', bases=['Blob'], body=[attr])
+    assert actual.to_python() == 'class Doc(Blob):\n    ' + attr.to_python()
 
 
 def test_merge():
-    piece1 = ingest('interface Doc : Node  { attribute Node foo; }')
+    piece1 = ingest('interface Doc : Blob  { attribute Blob foo; }')
     piece2 = ingest('partial interface Doc  { attribute Element bar; }')
 
-    expected = ingest('interface Doc : Node {  attribute Node foo; attribute Element bar; }')
+    expected = ingest('interface Doc : Blob {  attribute Blob foo; attribute Element bar; }')
 
     actual = merge(piece1 + piece2)
     assert actual == expected
@@ -152,9 +152,9 @@ def test_merge():
 
 def test_discard_unhandled():
     input = [GUnhandled('un1'),
-             GInterface('Doc', body=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Node')])]
+             GInterface('Doc', body=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Blob')])]
     actual = discard_unhandled(input)
-    assert actual == [GInterface('Doc', body=[GAttribute('attr1', 'Node')])]
+    assert actual == [GInterface('Doc', body=[GAttribute('attr1', 'Blob')])]
 
 
 class Test_root:
