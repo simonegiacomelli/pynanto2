@@ -1706,6 +1706,11 @@ BluetoothCharacteristicUUID = str | int
 BluetoothDescriptorUUID = str | int
 
 
+class MediaQueryListEvent(Event):
+    media: str
+    matches: bool
+
+
 class FrameLoader(WebBrowserPersistable):
     docShell: nsIDocShell | None
     tabParent: TabParent | None
@@ -1723,13 +1728,16 @@ class FrameLoader(WebBrowserPersistable):
     def activateFrameEvent(self, aType: str, capture: bool): ...
 
     messageManager: MessageSender | None
+
     def requestNotifyAfterRemotePaint(self): ...
+
     def requestFrameLoaderClose(self): ...
 
     def requestUpdatePosition(self): ...
 
     def print(self, aOuterWindowID: int, aPrintSettings: nsIPrintSettings,
               aProgressListener: nsIWebProgressListener | None = None): ...
+
     clipSubdocument: bool
     clampScrollPosition: bool
     ownerElement: Element | None
@@ -1738,6 +1746,7 @@ class FrameLoader(WebBrowserPersistable):
     lazyWidth: int
     lazyHeight: int
     isDead: bool
+
 
 class HTMLOutputElement(HTMLElement):
     htmlFor: DOMTokenList
@@ -1749,26 +1758,47 @@ class HTMLOutputElement(HTMLElement):
     willValidate: bool
     validity: ValidityState
     validationMessage: str
+
     def checkValidity(self) -> bool: ...
+
     def reportValidity(self) -> bool: ...
+
     def setCustomValidity(self, error: str): ...
+
     labels: NodeList
+
 
 class PerformanceEntry:
     name: str
     entryType: str
     startTime: DOMHighResTimeStamp
     duration: DOMHighResTimeStamp
+
     def toJSON(self) -> object: ...
+
+
+class PluginCrashedEvent(Event):
+    pluginID: int
+    pluginDumpID: str
+    pluginName: str
+    browserDumpID: str | None
+    pluginFilename: str | None
+    submittedCrashReport: bool
+    gmpPlugin: bool
+
 
 class IDBMutableFile(EventTarget):
     name: str
     type: str
     database: IDBDatabase
+
     def open(self, mode: FileMode | None = "readonly") -> IDBFileHandle: ...
+
     def getFile(self) -> DOMRequest: ...
+
     onabort: EventHandler
     onerror: EventHandler
+
 
 class TimeRanges:
     length: int
@@ -1791,43 +1821,79 @@ class Element(Node, ChildNode, NonDocumentTypeChildNode, ParentNode, Animatable,
     def getAttribute(self, name: str) -> str | None: ...
 
     def getAttributeNS(self, namespace: str | None, localName: str) -> str | None: ...
+
     def toggleAttribute(self, name: str, force: bool | None = None) -> bool: ...
+
     def setAttribute(self, name: str, value: str): ...
+
     def setAttributeNS(self, namespace: str | None, name: str, value: str): ...
+
     def removeAttribute(self, name: str): ...
+
     def removeAttributeNS(self, namespace: str | None, localName: str): ...
+
     def hasAttribute(self, name: str) -> bool: ...
+
     def hasAttributeNS(self, namespace: str | None, localName: str) -> bool: ...
+
     def hasAttributes(self) -> bool: ...
+
     def closest(self, selector: str) -> Element | None: ...
+
     def matches(self, selector: str) -> bool: ...
+
     def webkitMatchesSelector(self, selector: str) -> bool: ...
+
     def getElementsByTagName(self, localName: str) -> HTMLCollection: ...
+
     def getElementsByTagNameNS(self, namespace: str | None, localName: str) -> HTMLCollection: ...
+
     def getElementsByClassName(self, classNames: str) -> HTMLCollection: ...
+
     def insertAdjacentElement(self, where: str, element: Element) -> Element | None: ...
+
     def insertAdjacentText(self, where: str, data: str): ...
 
     fontSizeInflation: float
+
     def setPointerCapture(self, pointerId: int): ...
+
     def releasePointerCapture(self, pointerId: int): ...
+
     def hasPointerCapture(self, pointerId: int) -> bool: ...
+
     def setCapture(self, retargetToElement: bool | None = false): ...
+
     def releaseCapture(self): ...
+
     def setCaptureAlways(self, retargetToElement: bool | None = false): ...
+
     def getAttributeNode(self, name: str) -> Attr | None: ...
+
     def setAttributeNode(self, newAttr: Attr) -> Attr | None: ...
+
     def removeAttributeNode(self, oldAttr: Attr) -> Attr | None: ...
+
     def getAttributeNodeNS(self, namespaceURI: str | None, localName: str) -> Attr | None: ...
+
     def setAttributeNodeNS(self, newAttr: Attr) -> Attr | None: ...
+
     def scrollByNoFlush(self, dx: int, dy: int) -> bool: ...
+
     def getAsFlexContainer(self) -> Flex | None: ...
+
     def getTransformToAncestor(self, ancestor: Element) -> DOMMatrixReadOnly: ...
+
     def getTransformToParent(self) -> DOMMatrixReadOnly: ...
+
     def getTransformToViewport(self) -> DOMMatrixReadOnly: ...
+
     def getClientRects(self) -> DOMRectList: ...
+
     def getBoundingClientRect(self) -> DOMRect: ...
+
     def scrollIntoView(self, arg: bool | ScrollIntoViewOptions | None = None): ...
+
     scrollTop: int
     scrollLeft: int
     scrollWidth: int
@@ -1844,49 +1910,142 @@ class Element(Node, ChildNode, NonDocumentTypeChildNode, ParentNode, Animatable,
     def scrollBy(self, x: float, y: float): ...
 
     def scrollBy(self, options: ScrollToOptions | None = None): ...
+
     clientTop: int
     clientLeft: int
     clientWidth: int
     clientHeight: int
     innerHTML: str
     outerHTML: str
+
     def insertAdjacentHTML(self, position: str, text: str): ...
+
     def querySelector(self, selectors: str) -> Element | None: ...
+
     def querySelectorAll(self, selectors: str) -> NodeList: ...
+
     def attachShadow(self, shadowRootInitDict: ShadowRootInit) -> ShadowRoot: ...
+
     shadowRoot: ShadowRoot | None
     openOrClosedShadowRoot: ShadowRoot | None
     assignedSlot: HTMLSlotElement | None
     slot: str
+
     def requestFullscreen(self): ...
+
     def requestPointerLock(self): ...
+
 
 class CSSNamespaceRule(CSSRule):
     namespaceURI: str
     prefix: str
 
+
 class Directory:
     name: str
     path: str
 
+
 class ListBoxObject(BoxObject):
     def getRowCount(self) -> int: ...
+
     def getRowHeight(self) -> int: ...
+
     def getNumberOfVisibleRows(self) -> int: ...
+
     def getIndexOfFirstVisibleRow(self) -> int: ...
+
     def ensureIndexIsVisible(self, rowIndex: int): ...
+
     def scrollToIndex(self, rowIndex: int): ...
+
     def scrollByLines(self, numLines: int): ...
+
     def getItemAtIndex(self, index: int) -> Element | None: ...
+
     def getIndexOfItem(self, item: Element) -> int: ...
+
+
+class Request(Body):
+    method: ByteString
+    url: USVString
+    headers: Headers
+    destination: RequestDestination
+    referrer: USVString
+    referrerPolicy: ReferrerPolicy
+    mode: RequestMode
+    credentials: RequestCredentials
+    cache: RequestCache
+    redirect: RequestRedirect
+    integrity: str
+    signal: AbortSignal
+
+    def clone(self) -> Request: ...
+
+    def overrideContentPolicyType(self, context: nsContentPolicyType): ...
 
 
 class BaseAudioContext(EventTarget, rustBaseAudioContext): ...
 
+
+class MediaStreamEvent(Event):
+    stream: MediaStream | None
+
+
 class Range:
+    startContainer: Node
+    startOffset: int
+    endContainer: Node
+    endOffset: int
+    collapsed: bool
+    commonAncestorContainer: Node
+
+    def setStart(self, refNode: Node, offset: int): ...
+
+    def setEnd(self, refNode: Node, offset: int): ...
+
+    def setStartBefore(self, refNode: Node): ...
+
+    def setStartAfter(self, refNode: Node): ...
+
+    def setEndBefore(self, refNode: Node): ...
+
+    def setEndAfter(self, refNode: Node): ...
+
+    def collapse(self, toStart: bool | None = false): ...
+
+    def selectNode(self, refNode: Node): ...
+
+    def selectNodeContents(self, refNode: Node): ...
+
+    def compareBoundaryPoints(self, how: int, sourceRange: Range) -> short: ...
+
+    def deleteContents(self): ...
+
+    def extractContents(self) -> DocumentFragment: ...
+
+    def cloneContents(self) -> DocumentFragment: ...
+
+    def insertNode(self, node: Node): ...
+
+    def surroundContents(self, newParent: Node): ...
+
+    def cloneRange(self) -> Range: ...
+
+    def detach(self): ...
+
+    def isPointInRange(self, node: Node, offset: int) -> bool: ...
+
+    def comparePoint(self, node: Node, offset: int) -> short: ...
+
+    def intersectsNode(self, node: Node) -> bool: ...
+
     def createContextualFragment(self, fragment: str) -> DocumentFragment: ...
+
     def getClientRects(self) -> DOMRectList | None: ...
+
     def getBoundingClientRect(self) -> DOMRect: ...
+
     def getClientRectsAndTexts(self) -> ClientRectsAndTexts: ...
 
 
@@ -1895,12 +2054,14 @@ class SVGFEBlendElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     in2: SVGAnimatedString
     mode: SVGAnimatedEnumeration
 
+
 class HTMLHRElement(HTMLElement):
     align: str
     color: str
     noShade: bool
     size: str
     width: str
+
 
 class SourceBuffer(EventTarget):
     mode: SourceBufferAppendMode
@@ -1928,23 +2089,39 @@ class SourceBuffer(EventTarget):
 
     def changeType(self, type: str): ...
 
+
 class MediaKeyError(Event):
     systemCode: int
+
 
 class TimeEvent(Event):
     detail: int
     view: WindowProxy | None
+
     def initTimeEvent(self, aType: str, aView: Window | None = None, aDetail: int | None = 0): ...
+
 
 class CSSMediaRule(CSSConditionRule):
     media: MediaList
 
+
 class HTMLQuoteElement(HTMLElement):
     cite: str
 
+
+class ConstantSourceNode(AudioScheduledSourceNode, rustAudioScheduledSourceNode):
+    offset: AudioParam
+
+
 class MediaKeySystemAccess:
     keySystem: str
+
     def getConfiguration(self) -> MediaKeySystemConfiguration: ...
+
+
+class NotificationEvent(ExtendableEvent):
+    notification: Notification
+
 
 class HTMLFormElement(HTMLElement):
     acceptCharset: str
@@ -1958,10 +2135,15 @@ class HTMLFormElement(HTMLElement):
     target: str
     elements: HTMLCollection
     length: int
+
     def submit(self): ...
+
     def reset(self): ...
+
     def checkValidity(self) -> bool: ...
+
     def reportValidity(self) -> bool: ...
+
 
 class IntersectionObserverEntry:
     time: DOMHighResTimeStamp
@@ -1972,21 +2154,40 @@ class IntersectionObserverEntry:
     intersectionRatio: float
     target: Element
 
+
+class IntersectionObserver:
+    root: Element | None
+    rootMargin: str
+
+    def observe(self, target: Element): ...
+
+    def unobserve(self, target: Element): ...
+
+    def disconnect(self): ...
+
+    intersectionCallback: IntersectionCallback
+
+
 class PublicKeyCredential(Credential):
     rawId: ArrayBuffer
     response: AuthenticatorResponse
+
     def getClientExtensionResults(self) -> AuthenticationExtensionsClientOutputs: ...
+
 
 class AuthenticatorResponse:
     clientDataJSON: ArrayBuffer
 
+
 class AuthenticatorAttestationResponse(AuthenticatorResponse):
     attestationObject: ArrayBuffer
+
 
 class AuthenticatorAssertionResponse(AuthenticatorResponse):
     authenticatorData: ArrayBuffer
     signature: ArrayBuffer
     userHandle: ArrayBuffer
+
 
 class XPathResult:
     resultType: int
@@ -1996,8 +2197,14 @@ class XPathResult:
     singleNodeValue: Node | None
     invalidIteratorState: bool
     snapshotLength: int
+
     def iterateNext(self) -> Node | None: ...
+
     def snapshotItem(self, index: int) -> Node | None: ...
+
+
+class GroupedHistoryEvent(Event):
+    otherBrowser: Element | None
 
 
 class SVGImageElement(SVGGraphicsElement, SVGURIReference):
@@ -2007,8 +2214,15 @@ class SVGImageElement(SVGGraphicsElement, SVGURIReference):
     height: SVGAnimatedLength
     preserveAspectRatio: SVGAnimatedPreserveAspectRatio
 
+
+class AnimationPlaybackEvent(Event):
+    currentTime: float | None
+    timelineTime: float | None
+
+
 class HTMLTableCaptionElement(HTMLElement):
     align: str
+
 
 class TreeBoxObject(BoxObject):
     columns: TreeColumns | None
@@ -2018,21 +2232,37 @@ class TreeBoxObject(BoxObject):
     rowWidth: int
     horizontalPosition: int
     selectionRegion: nsIScriptableRegion
+
     def getFirstVisibleRow(self) -> int: ...
+
     def getLastVisibleRow(self) -> int: ...
+
     def getPageLength(self) -> int: ...
+
     def ensureRowIsVisible(self, index: int): ...
+
     def ensureCellIsVisible(self, row: int, col: TreeColumn | None): ...
+
     def scrollToRow(self, index: int): ...
+
     def scrollByLines(self, numLines: int): ...
+
     def scrollByPages(self, numPages: int): ...
+
     def invalidate(self): ...
+
     def invalidateColumn(self, col: TreeColumn | None): ...
+
     def invalidateRow(self, index: int): ...
+
     def invalidateCell(self, row: int, col: TreeColumn | None): ...
+
     def invalidateRange(self, startIndex: int, endIndex: int): ...
+
     def getRowAt(self, x: int, y: int) -> int: ...
+
     def getCellAt(self, x: int, y: int) -> TreeCellInfo: ...
+
     def getCellAt(self, x: int, y: int, row: object, column: object, childElt: object): ...
 
     def getCoordsForCellItem(self, row: int, col: TreeColumn, element: str) -> DOMRect | None: ...
@@ -2041,11 +2271,17 @@ class TreeBoxObject(BoxObject):
                              height: object): ...
 
     def isCellCropped(self, row: int, col: TreeColumn | None) -> bool: ...
+
     def rowCountChanged(self, index: int, count: int): ...
+
     def beginUpdateBatch(self): ...
+
     def endUpdateBatch(self): ...
+
     def clearStyleAndImageCaches(self): ...
+
     def removeImageCacheEntry(self, row: int, col: TreeColumn): ...
+
 
 class MediaStreamTrack(EventTarget):
     kind: str
@@ -2057,14 +2293,21 @@ class MediaStreamTrack(EventTarget):
     onunmute: EventHandler
     readyState: MediaStreamTrackState
     onended: EventHandler
+
     def clone(self) -> MediaStreamTrack: ...
+
     def stop(self): ...
+
     def getConstraints(self) -> MediaTrackConstraints: ...
+
     def getSettings(self) -> MediaTrackSettings: ...
+
     def mutedChanged(self, muted: bool): ...
+
 
 class CSSRuleList:
     length: int
+
 
 class PerformanceNavigationTiming(PerformanceResourceTiming):
     unloadEventStart: DOMHighResTimeStamp
@@ -2077,16 +2320,21 @@ class PerformanceNavigationTiming(PerformanceResourceTiming):
     loadEventEnd: DOMHighResTimeStamp
     type: NavigationType
     redirectCount: int
+
     def toJSON(self) -> object: ...
 
 
 class ProcessingInstruction(CharacterData, LinkStyle):
     target: str
 
+
 class PushMessageData:
     def arrayBuffer(self) -> ArrayBuffer: ...
+
     def blob(self) -> Blob: ...
+
     def text(self) -> USVString: ...
+
 
 class XMLHttpRequestEventTarget(EventTarget):
     onloadstart: EventHandler
@@ -2097,21 +2345,35 @@ class XMLHttpRequestEventTarget(EventTarget):
     ontimeout: EventHandler
     onloadend: EventHandler
 
+
 class IdleDeadline:
     def timeRemaining(self) -> DOMHighResTimeStamp: ...
+
     didTimeout: bool
+
+
+class StyleRuleChangeEvent(Event):
+    stylesheet: CSSStyleSheet | None
+    rule: CSSRule | None
+
 
 class ChildSHistory:
     count: int
     index: int
+
     def canGo(self, aOffset: int) -> bool: ...
+
     def go(self, aOffset: int): ...
+
     def reload(self, aReloadFlags: int): ...
+
     legacySHistory: nsISHistory
+
 
 class SVGAnimatedLength:
     baseVal: SVGLength
     animVal: SVGLength
+
 
 class PaintRequestList:
     length: int
@@ -2123,13 +2385,16 @@ class SVGPolylineElement(SVGGeometryElement, SVGAnimatedPoints): ...
 class SVGFEImageElement(SVGElement, SVGFilterPrimitiveStandardAttributes, SVGURIReference):
     preserveAspectRatio: SVGAnimatedPreserveAspectRatio
 
+
 class Grid:
     rows: GridDimension
     cols: GridDimension
 
+
 class GridDimension:
     lines: GridLines
     tracks: GridTracks
+
 
 class GridLines:
     length: int
@@ -2142,6 +2407,7 @@ class GridLine:
     number: int
     negativeNumber: int
 
+
 class GridTracks:
     length: int
 
@@ -2152,6 +2418,7 @@ class GridTrack:
     type: GridDeclaration
     state: GridTrackState
 
+
 class GridArea:
     name: str
     type: GridDeclaration
@@ -2160,14 +2427,26 @@ class GridArea:
     columnStart: int
     columnEnd: int
 
+
 class SVGAnimatedRect:
     baseVal: SVGRect | None
     animVal: SVGRect | None
 
+
+class ExtendableEvent(Event): ...
+
+
+class RTCPeerConnectionStatic:
+    def registerPeerConnectionLifecycleCallback(self, cb: PeerConnectionLifecycleCallback): ...
+
+
 class SharedWorkerGlobalScope(WorkerGlobalScope):
     name: str
+
     def close(self): ...
+
     onconnect: EventHandler
+
 
 class HTMLMenuItemElement(HTMLElement):
     type: str
@@ -2178,9 +2457,11 @@ class HTMLMenuItemElement(HTMLElement):
     radiogroup: str
     defaultChecked: bool
 
+
 class SVGPathSeg:
     pathSegType: int
     pathSegTypeAsLetter: str
+
 
 class SVGPathSegClosePath(SVGPathSeg): ...
 
@@ -2296,10 +2577,37 @@ class SVGPathSegCurvetoQuadraticSmoothRel(SVGPathSeg):
     x: float
     y: float
 
+
+class PaymentMethodChangeEvent(PaymentRequestUpdateEvent):
+    methodName: str
+    methodDetails: object | None
+
+
+class DOMRect(DOMRectReadOnly):
+    x: float
+    y: float
+    width: float
+    height: float
+
+
+class DOMRectReadOnly:
+    x: float
+    y: float
+    width: float
+    height: float
+    top: float
+    right: float
+    bottom: float
+    left: float
+
+    def toJSON(self) -> object: ...
+
+
 class HTMLMenuElement(HTMLElement):
     type: str
     label: str
     compact: bool
+
 
 class Client:
     url: USVString
@@ -2307,18 +2615,30 @@ class Client:
     type: ClientType
     id: str
 
+
 class WindowClient(Client):
     visibilityState: VisibilityState
     focused: bool
 
+
 class PerformanceMeasure(PerformanceEntry): ...
+
+
+class OffscreenCanvas(EventTarget):
+    width: int
+    height: int
+
+    def transferToImageBitmap(self) -> ImageBitmap: ...
+
 
 class PushSubscriptionOptions:
     applicationServerKey: ArrayBuffer
 
+
 class OVR_multiview2:
     def framebufferTextureMultiviewOVR(self, target: GLenum, attachment: GLenum, texture: WebGLTexture | None,
                                        level: GLint, baseViewIndex: GLint, numViews: GLsizei): ...
+
 
 class MouseScrollEvent(MouseEvent):
     axis: int
@@ -2331,6 +2651,108 @@ class MouseScrollEvent(MouseEvent):
                              relatedTarget: EventTarget | None = None, axis: int | None = 0): ...
 
 
+class WebKitCSSMatrix(DOMMatrix):
+    def setMatrixValue(self, transformList: str) -> WebKitCSSMatrix: ...
+
+    def multiply(self, other: WebKitCSSMatrix) -> WebKitCSSMatrix: ...
+
+    def inverse(self) -> WebKitCSSMatrix: ...
+
+    def translate(self, tx: float | None = 0, ty: float | None = 0, tz: float | None = 0) -> WebKitCSSMatrix: ...
+
+    def scale(self, scaleX: float | None = 1, scaleY: float | None = None,
+              scaleZ: float | None = 1) -> WebKitCSSMatrix: ...
+
+    def rotate(self, rotX: float | None = 0, rotY: float | None = None,
+               rotZ: float | None = None) -> WebKitCSSMatrix: ...
+
+    def rotateAxisAngle(self, x: float | None = 0, y: float | None = 0, z: float | None = 0,
+                        angle: float | None = 0) -> WebKitCSSMatrix: ...
+
+    def skewX(self, sx: float | None = 0) -> WebKitCSSMatrix: ...
+
+    def skewY(self, sy: float | None = 0) -> WebKitCSSMatrix: ...
+
+
+class BiquadFilterNode(AudioNode):
+    type: BiquadFilterType
+    frequency: AudioParam
+    detune: AudioParam
+    Q: AudioParam
+    gain: AudioParam
+
+    def getFrequencyResponse(self, frequencyHz: Float32Array, magResponse: Float32Array,
+                             phaseResponse: Float32Array): ...
+
+
+class FileReader(EventTarget):
+    def readAsArrayBuffer(self, blob: Blob): ...
+
+    def readAsBinaryString(self, filedata: Blob): ...
+
+    def readAsText(self, blob: Blob, label: str | None = None): ...
+
+    def readAsDataURL(self, blob: Blob): ...
+
+    def abort(self): ...
+
+    readyState: int
+    error: DOMException | None
+    onloadstart: EventHandler
+    onprogress: EventHandler
+    onload: EventHandler
+    onabort: EventHandler
+    onerror: EventHandler
+    onloadend: EventHandler
+
+
+class IIRFilterNode(AudioNode):
+    def getFrequencyResponse(self, frequencyHz: Float32Array, magResponse: Float32Array,
+                             phaseResponse: Float32Array): ...
+
+
+class StorageEvent(Event):
+    key: str | None
+    oldValue: str | None
+    newValue: str | None
+    url: str | None
+    storageArea: Storage | None
+
+    def initStorageEvent(self, type: str, canBubble: bool | None = false, cancelable: bool | None = false,
+                         key: str | None = None, oldValue: str | None = None, newValue: str | None = None,
+                         url: str | None = None, storageArea: Storage | None = None): ...
+
+
+class MouseEvent(UIEvent):
+    screenX: int
+    screenY: int
+    clientX: int
+    clientY: int
+    x: int
+    y: int
+    offsetX: int
+    offsetY: int
+    ctrlKey: bool
+    shiftKey: bool
+    altKey: bool
+    metaKey: bool
+    button: short
+    buttons: int
+    relatedTarget: EventTarget | None
+    region: str | None
+    movementX: int
+    movementY: int
+
+    def initMouseEvent(self, typeArg: str, canBubbleArg: bool | None = false, cancelableArg: bool | None = false,
+                       viewArg: Window | None = None, detailArg: int | None = 0, screenXArg: int | None = 0,
+                       screenYArg: int | None = 0, clientXArg: int | None = 0, clientYArg: int | None = 0,
+                       ctrlKeyArg: bool | None = false, altKeyArg: bool | None = false,
+                       shiftKeyArg: bool | None = false, metaKeyArg: bool | None = false, buttonArg: short | None = 0,
+                       relatedTargetArg: EventTarget | None = None): ...
+
+    def getModifierState(self, keyArg: str) -> bool: ...
+
+
 class SVGFETurbulenceElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     baseFrequencyX: SVGAnimatedNumber
     baseFrequencyY: SVGAnimatedNumber
@@ -2339,11 +2761,13 @@ class SVGFETurbulenceElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     stitchTiles: SVGAnimatedEnumeration
     type: SVGAnimatedEnumeration
 
+
 class FetchObserver(EventTarget):
     state: FetchState
     onstatechange: EventHandler
     onrequestprogress: EventHandler
     onresponseprogress: EventHandler
+
 
 class SVGLinearGradientElement(SVGGradientElement):
     x1: SVGAnimatedLength
@@ -2360,19 +2784,50 @@ class SVGFESpecularLightingElement(SVGElement, SVGFilterPrimitiveStandardAttribu
     kernelUnitLengthX: SVGAnimatedNumber
     kernelUnitLengthY: SVGAnimatedNumber
 
+
 class TextClause:
     startOffset: int
     endOffset: int
     isCaret: bool
     isTargetClause: bool
 
+
 class FileList:
     length: int
+
+
+class MIDIConnectionEvent(Event):
+    port: MIDIPort | None
+
+
+class UDPSocket(EventTarget):
+    localAddress: str | None
+    localPort: int | None
+    remoteAddress: str | None
+    remotePort: int | None
+    addressReuse: bool
+    loopback: bool
+    readyState: SocketReadyState
+    onmessage: EventHandler
+
+    def joinMulticastGroup(self, multicastGroupAddress: str): ...
+
+    def leaveMulticastGroup(self, multicastGroupAddress: str): ...
+
+    def send(self, data: str | Blob | ArrayBuffer | ArrayBufferView, remoteAddress: str | None = None,
+             remotePort: int | None = None) -> bool: ...
+
+
+class BlobEvent(Event):
+    data: Blob | None
+
 
 class MediaList:
     mediaText: str
     length: int
+
     def deleteMedium(self, oldMedium: str): ...
+
     def appendMedium(self, newMedium: str): ...
 
 
@@ -2394,24 +2849,45 @@ class HTMLIFrameElement(HTMLElement, BrowserElement):
     longDesc: str
     marginHeight: str
     marginWidth: str
+
     def getSVGDocument(self) -> Document | None: ...
+
 
 class LocalMediaStream(MediaStream):
     def stop(self): ...
 
+
 class WebGLSampler: ...
 
+
 class WebGLSync: ...
+
 
 class WebGLTransformFeedback: ...
 
 
 class WebGL2RenderingContext(WebGL2RenderingContextBase): ...
 
+
 class EXT_color_buffer_float: ...
 
 
-class URL: ...
+class URL:
+    href: USVString
+    origin: USVString
+    protocol: USVString
+    username: USVString
+    password: USVString
+    host: USVString
+    hostname: USVString
+    port: USVString
+    pathname: USVString
+    search: USVString
+    searchParams: URLSearchParams
+    hash: USVString
+
+    def toJSON(self) -> USVString: ...
+
 
 class CSSImportRule(CSSRule):
     href: str
@@ -2428,9 +2904,11 @@ class HTMLMeterElement(HTMLElement):
     optimum: float
     labels: NodeList
 
+
 class FileSystem:
     name: USVString
     root: FileSystemDirectoryEntry
+
 
 class BatteryManager(EventTarget):
     charging: bool
@@ -2442,11 +2920,16 @@ class BatteryManager(EventTarget):
     ondischargingtimechange: EventHandler
     onlevelchange: EventHandler
 
+
 class SVGPathSegList:
     numberOfItems: int
 
 
+class HTMLAudioElement(HTMLMediaElement): ...
+
+
 class SVGFEFloodElement(SVGElement, SVGFilterPrimitiveStandardAttributes): ...
+
 
 class SVGEllipseElement(SVGGeometryElement):
     cx: SVGAnimatedLength
@@ -2454,16 +2937,41 @@ class SVGEllipseElement(SVGGeometryElement):
     rx: SVGAnimatedLength
     ry: SVGAnimatedLength
 
+
+class BrowserFeedWriter:
+    def writeContent(self): ...
+
+    def close(self): ...
+
+
 class HTMLTemplateElement(HTMLElement):
     content: DocumentFragment
 
+
+class OscillatorNode(AudioScheduledSourceNode, rustAudioScheduledSourceNode):
+    type: OscillatorType
+    frequency: AudioParam
+    detune: AudioParam
+
+    def setPeriodicWave(self, periodicWave: PeriodicWave): ...
+
+
 class TransceiverImpl:
     def getReceiveTrack(self) -> MediaStreamTrack: ...
+
     def syncWithJS(self, transceiver: RTCRtpTransceiver): ...
+
 
 class PermissionStatus(EventTarget):
     state: PermissionState
     onchange: EventHandler
+
+
+class TextEncoder:
+    encoding: str
+
+    def encode(self, input: str | None = "") -> Uint8Array: ...
+
 
 class HTMLEmbedElement(HTMLElement):
     src: str
@@ -2472,10 +2980,13 @@ class HTMLEmbedElement(HTMLElement):
     height: str
     align: str
     name: str
+
     def getSVGDocument(self) -> Document | None: ...
+
 
 class HTMLDataElement(HTMLElement):
     value: str
+
 
 class SVGAnimatedEnumeration:
     baseVal: int
@@ -2488,6 +2999,7 @@ class VRFieldOfView:
     downDegrees: float
     leftDegrees: float
 
+
 class VRDisplayCapabilities:
     hasPosition: bool
     hasOrientation: bool
@@ -2495,10 +3007,12 @@ class VRDisplayCapabilities:
     canPresent: bool
     maxLayers: int
 
+
 class VRStageParameters:
     sittingToStandingTransform: Float32Array
     sizeX: float
     sizeZ: float
+
 
 class VRPose:
     position: Float32Array
@@ -2508,11 +3022,27 @@ class VRPose:
     angularVelocity: Float32Array
     angularAcceleration: Float32Array
 
+
+class VRFrameData:
+    timestamp: DOMHighResTimeStamp
+    leftProjectionMatrix: Float32Array
+    leftViewMatrix: Float32Array
+    rightProjectionMatrix: Float32Array
+    rightViewMatrix: Float32Array
+    pose: VRPose
+
+
+class VRSubmitFrameResult:
+    frameNum: int
+    base64Image: str | None
+
+
 class VREyeParameters:
     offset: Float32Array
     fieldOfView: VRFieldOfView
     renderWidth: int
     renderHeight: int
+
 
 class VRDisplay(EventTarget):
     presentingGroups: int
@@ -2549,6 +3079,10 @@ class HTMLFrameSetElement(HTMLElement, WindowEventHandlers):
     cols: str
     rows: str
 
+
+class PeriodicWave: ...
+
+
 class SVGGElement(SVGGraphicsElement): ...
 
 
@@ -2561,9 +3095,13 @@ class SVGFilterElement(SVGElement, SVGURIReference):
     height: SVGAnimatedLength
 
 
+class DocumentTimeline(AnimationTimeline): ...
+
+
 class SVGScriptElement(SVGElement, SVGURIReference):
     type: str
     crossOrigin: str | None
+
 
 class IDBRequest(EventTarget):
     error: DOMException | None
@@ -2581,27 +3119,40 @@ class WorkerNavigator(NavigatorID, NavigatorLanguage, NavigatorOnLine, Navigator
     usb: USB
     serial: Serial
 
+
 class SVGFEFuncAElement(SVGComponentTransferFunctionElement): ...
+
+
+class File(Blob):
+    name: str
+    lastModified: int
 
 
 class SVGFEComponentTransferElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     in1: SVGAnimatedString
+
 
 class MediaDeviceInfo:
     deviceId: str
     kind: MediaDeviceKind
     label: str
     groupId: str
+
     def toJSON(self) -> object: ...
+
 
 class HTMLLegendElement(HTMLElement):
     form: HTMLFormElement | None
     align: str
 
+
 class RTCRtpReceiver:
     track: MediaStreamTrack
+
     def setRemoteSendBit(self, sendBit: bool): ...
+
     def processTrackAdditionsAndRemovals(self, transceiver: RTCRtpTransceiver, postProcessing: object): ...
+
 
 class Attr(Node):
     localName: str
@@ -2611,18 +3162,33 @@ class Attr(Node):
     prefix: str | None
     specified: bool
 
+
 class ParentSHistory:
     count: int
     index: int
 
+
+class SpeechRecognitionError(Event):
+    error: SpeechRecognitionErrorCode
+    message: str | None
+
+
 class StorageManager: ...
+
 
 class PerformanceNavigation:
     type: int
     redirectCount: int
+
     def toJSON(self) -> object: ...
 
+
 class DOMStringMap: ...
+
+
+class FocusEvent(UIEvent):
+    relatedTarget: EventTarget | None
+
 
 class PerformanceResourceTiming(PerformanceEntry):
     initiatorType: str
@@ -2642,7 +3208,17 @@ class PerformanceResourceTiming(PerformanceEntry):
     transferSize: int
     encodedBodySize: int
     decodedBodySize: int
+
     def toJSON(self) -> object: ...
+
+
+class Blob:
+    size: int
+    type: str
+
+    def slice(self, start: int | None = None, end: int | None = None, contentType: str | None = None) -> Blob: ...
+
+    def stream(self) -> ReadableStream: ...
 
 
 class AnimationTimeline:
@@ -2653,10 +3229,14 @@ class CSSPseudoElement(Animatable):
     type: str
     parentElement: Element
 
+
 class Crypto:
     subtle: SubtleCrypto
+
     def getRandomValues(self, array: ArrayBufferView) -> ArrayBufferView: ...
+
     def randomUUID(self) -> str: ...
+
 
 class AudioTrack:
     id: str
@@ -2674,6 +3254,7 @@ class SVGFEGaussianBlurElement(SVGElement, SVGFilterPrimitiveStandardAttributes)
 
     def setStdDeviation(self, stdDeviationX: float, stdDeviationY: float): ...
 
+
 class Position:
     coords: Coordinates
     timestamp: DOMTimeStamp
@@ -2684,8 +3265,10 @@ class SVGFEColorMatrixElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     type: SVGAnimatedEnumeration
     values: SVGAnimatedNumberList
 
+
 class PaymentResponse:
     def toJSON(self) -> object: ...
+
     requestId: str
     methodName: str
     details: object
@@ -2694,6 +3277,7 @@ class PaymentResponse:
     payerName: str | None
     payerEmail: str | None
     payerPhone: str | None
+
 
 class IDBOpenDBRequest(IDBRequest):
     onblocked: EventHandler
@@ -2705,19 +3289,28 @@ class SVGFEOffsetElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     dx: SVGAnimatedNumber
     dy: SVGAnimatedNumber
 
+
 class AudioParamMap: ...
+
 
 class NamedNodeMap:
     def setNamedItem(self, arg: Attr) -> Attr | None: ...
+
     def removeNamedItem(self, name: str) -> Attr: ...
+
     length: int
+
     def getNamedItemNS(self, namespaceURI: str | None, localName: str) -> Attr | None: ...
+
     def setNamedItemNS(self, arg: Attr) -> Attr | None: ...
+
     def removeNamedItemNS(self, namespaceURI: str | None, localName: str) -> Attr: ...
+
 
 class SpeechRecognitionResult:
     length: int
     isFinal: bool
+
 
 class HTMLVideoElement(HTMLMediaElement):
     width: int
@@ -2725,6 +3318,7 @@ class HTMLVideoElement(HTMLMediaElement):
     videoWidth: int
     videoHeight: int
     poster: str
+
     def getVideoPlaybackQuality(self) -> VideoPlaybackQuality: ...
 
 
@@ -2745,18 +3339,36 @@ class SVGAnimationElement(SVGElement, SVGTests):
 
     def endElementAt(self, offset: float): ...
 
+
 class SVGSetElement(SVGAnimationElement): ...
+
 
 class SVGClipPathElement(SVGElement):
     clipPathUnits: SVGAnimatedEnumeration
     transform: SVGAnimatedTransformList
 
+
+class CaretStateChangedEvent(Event):
+    collapsed: bool
+    boundingClientRect: DOMRectReadOnly | None
+    reason: CaretChangedReason
+    caretVisible: bool
+    caretVisuallyVisible: bool
+    selectionVisible: bool
+    selectionEditable: bool
+    selectedTextContent: str
+
+
 class History:
     length: int
     scrollRestoration: ScrollRestoration
+
     def go(self, delta: int | None = 0): ...
+
     def back(self): ...
+
     def forward(self): ...
+
 
 class FileSystemEntry:
     isFile: bool
@@ -2780,6 +3392,7 @@ class SVGAElement(SVGGraphicsElement, SVGURIReference):
     type: str
     text: str
 
+
 class SVGRadialGradientElement(SVGGradientElement):
     cx: SVGAnimatedLength
     cy: SVGAnimatedLength
@@ -2787,6 +3400,11 @@ class SVGRadialGradientElement(SVGGradientElement):
     fx: SVGAnimatedLength
     fy: SVGAnimatedLength
     fr: SVGAnimatedLength
+
+
+class SubmitEvent(Event):
+    submitter: HTMLElement | None
+
 
 class MIDIPort(EventTarget):
     id: str
@@ -2798,12 +3416,18 @@ class MIDIPort(EventTarget):
     connection: MIDIPortConnectionState
     onstatechange: EventHandler
 
+
 class SpeechSynthesisVoice:
     voiceURI: str
     name: str
     lang: str
     localService: bool
     default: bool
+
+
+class RTCDataChannelEvent(Event):
+    channel: RTCDataChannel
+
 
 class HTMLTextAreaElement(HTMLElement):
     autocomplete: str
@@ -2826,11 +3450,17 @@ class HTMLTextAreaElement(HTMLElement):
     willValidate: bool
     validity: ValidityState
     validationMessage: str
+
     def checkValidity(self) -> bool: ...
+
     def reportValidity(self) -> bool: ...
+
     def setCustomValidity(self, error: str): ...
+
     labels: NodeList
+
     def select(self): ...
+
     selectionStart: int | None
     selectionEnd: int | None
     selectionDirection: str | None
@@ -2842,17 +3472,37 @@ class HTMLTextAreaElement(HTMLElement):
 
     def setSelectionRange(self, start: int, end: int, direction: str | None = None): ...
 
+
+class SpeechSynthesisEvent(Event):
+    utterance: SpeechSynthesisUtterance
+    charIndex: int
+    charLength: int | None
+    elapsedTime: float
+    name: str | None
+
+
 class SVGTSpanElement(SVGTextPositioningElement): ...
+
+
+class PresentationConnectionCloseEvent(Event):
+    reason: PresentationConnectionClosedReason
+    message: str
+
 
 class DataTransferItemList:
     length: int
+
     def add(self, data: str, type: str) -> DataTransferItem | None: ...
+
     def add(self, data: File) -> DataTransferItem | None: ...
+
     def remove(self, index: int): ...
+
     def clear(self): ...
 
 
 class SVGZoomAndPan(SVGZoomAndPanValues): ...
+
 
 class VideoPlaybackQuality:
     creationTime: DOMHighResTimeStamp
@@ -2860,31 +3510,103 @@ class VideoPlaybackQuality:
     droppedVideoFrames: int
     corruptedVideoFrames: int
 
+
 class SVGPreserveAspectRatio:
     align: int
     meetOrSlice: int
 
+
 class SVGTransformList:
     numberOfItems: int
+
     def clear(self): ...
+
     def initialize(self, newItem: SVGTransform) -> SVGTransform: ...
+
     def insertItemBefore(self, newItem: SVGTransform, index: int) -> SVGTransform: ...
+
     def replaceItem(self, newItem: SVGTransform, index: int) -> SVGTransform: ...
+
     def removeItem(self, index: int) -> SVGTransform: ...
+
     def appendItem(self, newItem: SVGTransform) -> SVGTransform: ...
+
     def createSVGTransformFromMatrix(self, matrix: SVGMatrix) -> SVGTransform: ...
+
     def consolidate(self) -> SVGTransform | None: ...
+
 
 class CDATASection(Text): ...
 
+
 class PluginArray:
     length: int
+
     def refresh(self, reloadDocuments: bool | None = false): ...
+
+
+class MediaSource(EventTarget):
+    sourceBuffers: SourceBufferList
+    activeSourceBuffers: SourceBufferList
+    readyState: MediaSourceReadyState
+    duration: float
+    onsourceopen: EventHandler
+    onsourceended: EventHandler
+    onsourceclose: EventHandler
+
+    def addSourceBuffer(self, type: str) -> SourceBuffer: ...
+
+    def removeSourceBuffer(self, sourceBuffer: SourceBuffer): ...
+
+    def endOfStream(self, error: MediaSourceEndOfStreamError | None = None): ...
+
+    def setLiveSeekableRange(self, start: float, end: float): ...
+
+    def clearLiveSeekableRange(self): ...
+
+
+class Notification(EventTarget):
+    onclick: EventHandler
+    onshow: EventHandler
+    onerror: EventHandler
+    onclose: EventHandler
+    title: str
+    dir: NotificationDirection
+    lang: str | None
+    body: str | None
+    tag: str | None
+    icon: str | None
+    requireInteraction: bool
+
+    def close(self): ...
 
 
 class Exception(ExceptionMembers):
     name: str
     message: str
+
+
+class DOMException(ExceptionMembers):
+    name: str
+    message: str
+    code: int
+
+
+class HashChangeEvent(Event):
+    oldURL: str
+    newURL: str
+
+    def initHashChangeEvent(self, typeArg: str, canBubbleArg: bool | None = false, cancelableArg: bool | None = false,
+                            oldURLArg: str | None = "", newURLArg: str | None = ""): ...
+
+
+class MediaStreamAudioDestinationNode(AudioNode):
+    stream: MediaStream
+
+
+class PresentationRequest(EventTarget):
+    onconnectionavailable: EventHandler
+
 
 class HTMLInputElement(HTMLElement):
     accept: str
@@ -2927,11 +3649,17 @@ class HTMLInputElement(HTMLElement):
     willValidate: bool
     validity: ValidityState
     validationMessage: str
+
     def checkValidity(self) -> bool: ...
+
     def reportValidity(self) -> bool: ...
+
     def setCustomValidity(self, error: str): ...
+
     labels: NodeList | None
+
     def select(self): ...
+
     selectionStart: int | None
     selectionEnd: int | None
     selectionDirection: str | None
@@ -2979,31 +3707,51 @@ class Window(EventTarget, GlobalEventHandlers, WindowEventHandlers, WindowSessio
     statusbar: BarProp
     toolbar: BarProp
     status: str
+
     def close(self): ...
+
     closed: bool
+
     def stop(self): ...
+
     def focus(self): ...
+
     def blur(self): ...
+
     frames: WindowProxy
     length: int
     top: WindowProxy | None
     parent: WindowProxy | None
     frameElement: Element | None
+
     def open(self, url: str | None = "", target: str | None = "", features: str | None = "") -> WindowProxy | None: ...
+
     navigator: Navigator
     external: External
     applicationCache: ApplicationCache
+
     def alert(self): ...
+
     def alert(self, message: str): ...
+
     def confirm(self, message: str | None = "") -> bool: ...
+
     def prompt(self, message: str | None = "", default: str | None = "") -> str | None: ...
+
     def print(self): ...
+
     onappinstalled: EventHandler
+
     def captureEvents(self): ...
+
     def releaseEvents(self): ...
+
     def getSelection(self) -> Selection | None: ...
+
     def getComputedStyle(self, elt: Element, pseudoElt: str | None = "") -> CSSStyleDeclaration | None: ...
+
     def matchMedia(self, query: str) -> MediaQueryList | None: ...
+
     screen: Screen
 
     def moveTo(self, x: int, y: int): ...
@@ -3045,11 +3793,26 @@ class Window(EventTarget, GlobalEventHandlers, WindowEventHandlers, WindowSessio
     onvrdisplaydeactivate: EventHandler
     onvrdisplaypresentchange: EventHandler
     paintWorklet: Worklet
+
     def requestIdleCallback(self, callback: IdleRequestCallback, options: IdleRequestOptions | None = None) -> int: ...
+
     def cancelIdleCallback(self, handle: int): ...
 
 
-class HTMLImageElement:
+class HTMLImageElement(HTMLElement):
+    alt: str
+    src: str
+    srcset: str
+    crossOrigin: str | None
+    useMap: str
+    referrerPolicy: str
+    isMap: bool
+    width: int
+    height: int
+    decoding: str
+    naturalWidth: int
+    naturalHeight: int
+    complete: bool
     name: str
     align: str
     hspace: int
@@ -3059,6 +3822,26 @@ class HTMLImageElement:
     sizes: str
     currentSrc: str
 
+
+class MediaStream(EventTarget):
+    id: str
+
+    def getTrackById(self, trackId: str) -> MediaStreamTrack | None: ...
+
+    def addTrack(self, track: MediaStreamTrack): ...
+
+    def removeTrack(self, track: MediaStreamTrack): ...
+
+    def clone(self) -> MediaStream: ...
+
+    active: bool
+    onaddtrack: EventHandler
+    onremovetrack: EventHandler
+    currentTime: float
+
+    def assignId(self, id: str): ...
+
+
 class Plugin:
     description: str
     filename: str
@@ -3066,18 +3849,26 @@ class Plugin:
     name: str
     length: int
 
+
 class ScrollBoxObject(BoxObject):
     def scrollTo(self, x: int, y: int): ...
+
     def scrollBy(self, dx: int, dy: int): ...
+
     def scrollByIndex(self, dindexes: int): ...
+
     def scrollToElement(self, child: Element): ...
+
     positionX: int
     positionY: int
     scrolledWidth: int
     scrolledHeight: int
+
     def ensureElementIsVisible(self, child: Element): ...
 
+
 class Flex: ...
+
 
 class FlexLine:
     growthState: FlexLineGrowthState
@@ -3085,6 +3876,7 @@ class FlexLine:
     crossSize: float
     firstBaselineOffset: float
     lastBaselineOffset: float
+
 
 class FlexItem:
     node: Node | None
@@ -3095,11 +3887,14 @@ class FlexItem:
     crossMinSize: float
     crossMaxSize: float
 
+
 class PaintWorkletGlobalScope(WorkletGlobalScope):
     def registerPaint(self, name: str, paintCtor: VoidFunction): ...
 
+
 class AudioDestinationNode(AudioNode):
     maxChannelCount: int
+
 
 class ScriptProcessorNode(AudioNode):
     onaudioprocess: EventHandler
@@ -3108,6 +3903,21 @@ class ScriptProcessorNode(AudioNode):
 
 class DOMRequest(EventTarget, DOMRequestShared):
     def fireDetailedError(self, aError: DOMException): ...
+
+
+class Response(Body):
+    type: ResponseType
+    url: USVString
+    redirected: bool
+    status: int
+    ok: bool
+    statusText: ByteString
+    headers: Headers
+
+    def clone(self) -> Response: ...
+
+    def cloneUnfiltered(self) -> Response: ...
+
 
 class IDBDatabase(EventTarget):
     name: str
@@ -3118,13 +3928,17 @@ class IDBDatabase(EventTarget):
                           optionalParameters: IDBObjectStoreParameters | None = {}) -> IDBObjectStore: ...
 
     def deleteObjectStore(self, name: str): ...
+
     def close(self): ...
+
     onabort: EventHandler
     onclose: EventHandler
     onerror: EventHandler
     onversionchange: EventHandler
     storage: StorageType
+
     def createMutableFile(self, name: str, type: str | None = None) -> IDBRequest: ...
+
 
 class SVGFESpotLightElement(SVGElement):
     x: SVGAnimatedNumber
@@ -3136,9 +3950,24 @@ class SVGFESpotLightElement(SVGElement):
     specularExponent: SVGAnimatedNumber
     limitingConeAngle: SVGAnimatedNumber
 
+
+class PointerEvent(MouseEvent):
+    pointerId: int
+    width: int
+    height: int
+    pressure: float
+    tangentialPressure: float
+    tiltX: int
+    tiltY: int
+    twist: int
+    pointerType: str
+    isPrimary: bool
+
+
 class HTMLBaseElement(HTMLElement):
     href: str
     target: str
+
 
 class HTMLButtonElement(HTMLElement):
     autofocus: bool
@@ -3155,17 +3984,32 @@ class HTMLButtonElement(HTMLElement):
     willValidate: bool
     validity: ValidityState
     validationMessage: str
+
     def checkValidity(self) -> bool: ...
+
     def reportValidity(self) -> bool: ...
+
     def setCustomValidity(self, error: str): ...
+
     labels: NodeList
+
+
+class TransitionEvent(Event):
+    propertyName: str
+    elapsedTime: float
+    pseudoElement: str
+
 
 class CSSKeyframesRule(CSSRule):
     name: str
     cssRules: CSSRuleList
+
     def appendRule(self, rule: str): ...
+
     def deleteRule(self, select: str): ...
+
     def findRule(self, select: str) -> CSSKeyframeRule | None: ...
+
 
 class CSSCounterStyleRule(CSSRule):
     name: str
@@ -3180,20 +4024,40 @@ class CSSCounterStyleRule(CSSRule):
     speakAs: str
     fallback: str
 
+
 class CSSAnimation(Animation):
     animationName: str
 
 
-class DocumentFragment(ParentNode):
+class DocumentFragment(Node, ParentNode):
+    def getElementById(self, elementId: str) -> Element | None: ...
+
     def querySelector(self, selectors: str) -> Element | None: ...
 
     def querySelectorAll(self, selectors: str) -> NodeList: ...
 
+
 class HTMLTimeElement(HTMLElement):
     dateTime: str
 
+
+class MessageChannel:
+    port1: MessagePort
+    port2: MessagePort
+
+
+class PerformanceEntryEvent(Event):
+    name: str
+    entryType: str
+    startTime: DOMHighResTimeStamp
+    duration: DOMHighResTimeStamp
+    epoch: float
+    origin: str
+
+
 class MimeTypeArray:
     length: int
+
 
 class FileSystemDirectoryEntry(FileSystemEntry):
     def createReader(self) -> FileSystemDirectoryReader: ...
@@ -3205,6 +4069,7 @@ class FileSystemDirectoryEntry(FileSystemEntry):
                      successCallback: FileSystemEntryCallback | None = None,
                      errorCallback: ErrorCallback | None = None): ...
 
+
 class TextTrack(EventTarget):
     kind: TextTrackKind
     label: str
@@ -3214,12 +4079,35 @@ class TextTrack(EventTarget):
     mode: TextTrackMode
     cues: TextTrackCueList | None
     activeCues: TextTrackCueList | None
+
     def addCue(self, cue: VTTCue): ...
+
     def removeCue(self, cue: VTTCue): ...
+
     oncuechange: EventHandler
     sourceBuffer: SourceBuffer | None
 
+
 class SVGMetadataElement(SVGElement): ...
+
+
+class DeviceOrientationEvent(Event):
+    alpha: float | None
+    beta: float | None
+    gamma: float | None
+    absolute: bool
+
+    def initDeviceOrientationEvent(self, type: str, canBubble: bool | None = false, cancelable: bool | None = false,
+                                   alpha: float | None = None, beta: float | None = None, gamma: float | None = None,
+                                   absolute: bool | None = false): ...
+
+
+class PopupBlockedEvent(Event):
+    requestingWindow: Window | None
+    popupWindowURI: URI | None
+    popupWindowName: str | None
+    popupWindowFeatures: str | None
+
 
 class TextTrackCue(EventTarget):
     track: TextTrack | None
@@ -3240,15 +4128,63 @@ class Geolocation:
 
     def clearWatch(self, watchId: int): ...
 
+
 class SVGAnimatedTransformList:
     baseVal: SVGTransformList
     animVal: SVGTransformList
+
+
+class SharedWorker(EventTarget, AbstractWorker):
+    port: MessagePort
+
 
 class BeforeUnloadEvent(Event):
     returnValue: str
 
 
-class RTCPeerConnection: ...
+class RTCPeerConnection(EventTarget):
+    def setIdentityProvider(self, provider: str, options: RTCIdentityProviderOptions | None = None): ...
+
+    localDescription: RTCSessionDescription | None
+    currentLocalDescription: RTCSessionDescription | None
+    pendingLocalDescription: RTCSessionDescription | None
+    remoteDescription: RTCSessionDescription | None
+    currentRemoteDescription: RTCSessionDescription | None
+    pendingRemoteDescription: RTCSessionDescription | None
+    signalingState: RTCSignalingState
+    canTrickleIceCandidates: bool | None
+    iceGatheringState: RTCIceGatheringState
+    iceConnectionState: RTCIceConnectionState
+    idpLoginUrl: str | None
+    id: str
+
+    def getConfiguration(self) -> RTCConfiguration: ...
+
+    def addStream(self, stream: MediaStream): ...
+
+    def addTrack(self, track: MediaStreamTrack, stream: MediaStream,
+                 moreStreams: MediaStream | None = None) -> RTCRtpSender: ...
+
+    def removeTrack(self, sender: RTCRtpSender): ...
+
+    def addTransceiver(self, trackOrKind: MediaStreamTrack | str,
+                       init: RTCRtpTransceiverInit | None = None) -> RTCRtpTransceiver: ...
+
+    def close(self): ...
+
+    onnegotiationneeded: EventHandler
+    onicecandidate: EventHandler
+    onsignalingstatechange: EventHandler
+    onaddstream: EventHandler
+    onaddtrack: EventHandler
+    ontrack: EventHandler
+    onremovestream: EventHandler
+    oniceconnectionstatechange: EventHandler
+    onicegatheringstatechange: EventHandler
+
+    def createDataChannel(self, label: str, dataChannelDict: RTCDataChannelInit | None = None) -> RTCDataChannel: ...
+
+    ondatachannel: EventHandler
 
 
 class ServiceWorker(EventTarget, AbstractWorker):
@@ -3267,6 +4203,7 @@ class ScrollAreaEvent(UIEvent):
                             view: Window | None = None, detail: int | None = 0, x: float | None = 0,
                             y: float | None = 0, width: float | None = 0, height: float | None = 0): ...
 
+
 class HTMLOListElement(HTMLElement):
     reversed: bool
     start: int
@@ -3274,20 +4211,29 @@ class HTMLOListElement(HTMLElement):
     compact: bool
 
 
-class Text(GeometryUtils):
+class Text(CharacterData, GeometryUtils):
+    def splitText(self, offset: int) -> Text: ...
+
+    wholeText: str
     assignedSlot: HTMLSlotElement | None
+
 
 class IDBObjectStore:
     name: str
     indexNames: DOMStringList
     transaction: IDBTransaction
     autoIncrement: bool
+
     def clear(self) -> IDBRequest: ...
+
     def index(self, name: str) -> IDBIndex: ...
+
     def deleteIndex(self, indexName: str): ...
+
 
 class HTMLHtmlElement(HTMLElement):
     version: str
+
 
 class GetUserMediaRequest:
     windowID: int
@@ -3295,9 +4241,12 @@ class GetUserMediaRequest:
     callID: str
     rawID: str
     mediaSource: str
+
     def getConstraints(self) -> MediaStreamConstraints: ...
+
     isSecure: bool
     isHandlingUserInput: bool
+
 
 class MimeType:
     description: str
@@ -3305,13 +4254,22 @@ class MimeType:
     suffixes: str
     type: str
 
+
 class CSSFontFeatureValuesRule(CSSRule):
     fontFamily: str
     valueText: str
 
+
 class SVGAnimatedBoolean:
     baseVal: bool
     animVal: bool
+
+
+class RTCSessionDescription:
+    type: RTCSdpType
+    sdp: str
+
+    def toJSON(self) -> object: ...
 
 
 class AudioListener:
@@ -3325,7 +4283,46 @@ class AudioListener:
     def setVelocity(self, x: float, y: float, z: float): ...
 
 
-class UIEvent:
+class SpeechRecognition(EventTarget):
+    grammars: SpeechGrammarList
+    lang: str
+    continuous: bool
+    interimResults: bool
+    maxAlternatives: int
+    serviceURI: str
+
+    def start(self, stream: MediaStream | None = None): ...
+
+    def stop(self): ...
+
+    def abort(self): ...
+
+    onaudiostart: EventHandler
+    onsoundstart: EventHandler
+    onspeechstart: EventHandler
+    onspeechend: EventHandler
+    onsoundend: EventHandler
+    onaudioend: EventHandler
+    onresult: EventHandler
+    onnomatch: EventHandler
+    onerror: EventHandler
+    onstart: EventHandler
+    onend: EventHandler
+
+
+class FetchEvent(ExtendableEvent):
+    request: Request
+    clientId: str | None
+    isReload: bool
+
+
+class UIEvent(Event):
+    view: WindowProxy | None
+    detail: int
+
+    def initUIEvent(self, aType: str, aCanBubble: bool | None = false, aCancelable: bool | None = false,
+                    aView: Window | None = None, aDetail: int | None = 0): ...
+
     layerX: int
     layerY: int
     pageX: int
@@ -3334,15 +4331,26 @@ class UIEvent:
     rangeParent: Node | None
     rangeOffset: int
 
+
+class MediaElementAudioSourceNode(AudioNode): ...
+
+
 class HTMLHeadingElement(HTMLElement):
     align: str
+
+
+class PresentationConnectionAvailableEvent(Event):
+    connection: PresentationConnection
+
 
 class HTMLMapElement(HTMLElement):
     name: str
     areas: HTMLCollection
 
+
 class MIDIInput(MIDIPort):
     onmidimessage: EventHandler
+
 
 class HTMLScriptElement(HTMLElement):
     src: str
@@ -3364,17 +4372,30 @@ class SVGUseElement(SVGGraphicsElement, SVGURIReference):
     width: SVGAnimatedLength
     height: SVGAnimatedLength
 
+
 class SVGFEMergeNodeElement(SVGElement):
     in1: SVGAnimatedString
 
+
 class AudioWorklet(Worklet): ...
+
+
+class ImageCaptureErrorEvent(Event):
+    imageCaptureError: ImageCaptureError | None
+
 
 class ImageCaptureError:
     code: int
     message: str
 
+
+class GamepadEvent(Event):
+    gamepad: Gamepad | None
+
+
 class HTMLCollection:
     length: int
+
 
 class HTMLTableCellElement(HTMLElement):
     colSpan: int
@@ -3406,8 +4427,11 @@ class HTMLElement(Element, GlobalEventHandlers, DocumentAndElementEventHandlers,
     def click(self): ...
 
     tabIndex: int
+
     def focus(self): ...
+
     def blur(self): ...
+
     accessKey: str
     accessKeyLabel: str
     draggable: bool
@@ -3421,21 +4445,31 @@ class HTMLElement(Element, GlobalEventHandlers, DocumentAndElementEventHandlers,
     offsetWidth: int
     offsetHeight: int
 
+
 class HTMLUnknownElement(HTMLElement): ...
+
+
+class StereoPannerNode(AudioNode):
+    pan: AudioParam
+
 
 class CryptoKey:
     type: KeyType
     extractable: bool
     algorithm: object
 
+
 class SubtleCrypto: ...
 
 
 class SVGFEMergeElement(SVGElement, SVGFilterPrimitiveStandardAttributes): ...
 
+
 class CustomElementRegistry:
     def define(self, name: str, functionConstructor: Function, options: ElementDefinitionOptions | None = None): ...
+
     def setElementCreationCallback(self, name: str, callback: CustomElementCreationCallback): ...
+
     def upgrade(self, root: Node): ...
 
 
@@ -3445,14 +4479,45 @@ class SVGFEMorphologyElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     radiusX: SVGAnimatedNumber
     radiusY: SVGAnimatedNumber
 
+
+class HTMLOptionElement(HTMLElement):
+    disabled: bool
+    form: HTMLFormElement | None
+    label: str
+    defaultSelected: bool
+    selected: bool
+    value: str
+    text: str
+    index: int
+
+
+class MediaEncryptedEvent(Event):
+    initDataType: str
+    initData: ArrayBuffer
+
+
 class ImageDocument(HTMLDocument):
     imageIsOverflowing: bool
     imageIsResized: bool
     imageRequest: imgIRequest | None
+
     def shrinkToFit(self): ...
+
     def restoreImage(self): ...
+
     def restoreImageTo(self, x: int, y: int): ...
+
     def toggleImageSize(self): ...
+
+
+class StyleSheetChangeEvent(Event):
+    stylesheet: CSSStyleSheet | None
+    documentSheet: bool
+
+
+class XMLSerializer:
+    def serializeToString(self, root: Node) -> str: ...
+
 
 class HTMLPictureElement(HTMLElement): ...
 
@@ -3487,6 +4552,18 @@ class SVGMatrix:
 
     def skewY(self, angle: float) -> SVGMatrix: ...
 
+
+class EventSource(EventTarget):
+    url: str
+    withCredentials: bool
+    readyState: int
+    onopen: EventHandler
+    onmessage: EventHandler
+    onerror: EventHandler
+
+    def close(self): ...
+
+
 class MutationRecord:
     type: str
     target: Node | None
@@ -3497,6 +4574,24 @@ class MutationRecord:
     attributeName: str | None
     attributeNamespace: str | None
     oldValue: str | None
+
+
+class MutationObserver:
+    def observe(self, target: Node, options: MutationObserverInit | None = None): ...
+
+    def disconnect(self): ...
+
+    mutationCallback: MutationCallback
+    mergeAttributeRecords: bool
+
+
+class DynamicsCompressorNode(AudioNode):
+    threshold: AudioParam
+    knee: AudioParam
+    ratio: AudioParam
+    reduction: float
+    attack: AudioParam
+    release: AudioParam
 
 
 class Screen(EventTarget):
@@ -3521,26 +4616,37 @@ class ScreenLuminance:
     max: float
     maxAverage: float
 
+
 class CSSRule:
     type: int
     cssText: str
     parentRule: CSSRule | None
     parentStyleSheet: CSSStyleSheet | None
 
+
 class Clients: ...
+
 
 class TextTrackCueList:
     length: int
+
     def getCueById(self, id: str) -> VTTCue | None: ...
+
 
 class PresentationAvailability(EventTarget):
     value: bool
     onchange: EventHandler
 
+
 class WindowRoot(EventTarget): ...
+
+
+class TCPSocketEvent(Event): ...
+
 
 class HTMLDirectoryElement(HTMLElement):
     compact: bool
+
 
 class SVGAngle:
     unitType: int
@@ -3551,6 +4657,7 @@ class SVGAngle:
     def newValueSpecifiedUnits(self, unitType: int, valueInSpecifiedUnits: float): ...
 
     def convertToSpecifiedUnits(self, unitType: int): ...
+
 
 class StyleSheet:
     type: str
@@ -3563,6 +4670,7 @@ class StyleSheet:
     sourceMapURL: str
     sourceURL: str
 
+
 class RTCDataChannel(EventTarget):
     label: str
     reliable: bool
@@ -3574,14 +4682,79 @@ class RTCDataChannel(EventTarget):
     onopen: EventHandler
     onerror: EventHandler
     onclose: EventHandler
+
     def close(self): ...
+
     onmessage: EventHandler
     onbufferedamountlow: EventHandler
     binaryType: RTCDataChannelType
+
     def send(self, data: str): ...
+
     def send(self, data: Blob): ...
+
     def send(self, data: ArrayBuffer): ...
+
     def send(self, data: ArrayBufferView): ...
+
+
+class Headers:
+    def append(self, name: ByteString, value: ByteString): ...
+
+    def delete(self, name: ByteString): ...
+
+    def get(self, name: ByteString) -> ByteString | None: ...
+
+    def has(self, name: ByteString) -> bool: ...
+
+    def set(self, name: ByteString, value: ByteString): ...
+
+    guard: HeadersGuardEnum
+
+
+class VTTRegion:
+    id: str
+    width: float
+    lines: int
+    regionAnchorX: float
+    regionAnchorY: float
+    viewportAnchorX: float
+    viewportAnchorY: float
+    scroll: ScrollSetting
+
+
+class XMLHttpRequest(XMLHttpRequestEventTarget):
+    onreadystatechange: EventHandler
+    readyState: int
+
+    def open(self, method: ByteString, url: USVString): ...
+
+    def open(self, method: ByteString, url: USVString, async_: bool, user: USVString | None = None,
+             password: USVString | None = None): ...
+
+    def setRequestHeader(self, header: ByteString, value: ByteString): ...
+
+    timeout: int
+    withCredentials: bool
+    upload: XMLHttpRequestUpload
+
+    def send(self, body: Document | BodyInit | None = None): ...
+
+    def abort(self): ...
+
+    responseURL: USVString
+    status: int
+    statusText: ByteString
+
+    def getResponseHeader(self, header: ByteString) -> ByteString | None: ...
+
+    def getAllResponseHeaders(self) -> ByteString: ...
+
+    def overrideMimeType(self, mime: str): ...
+
+    responseType: XMLHttpRequestResponseType
+    responseText: USVString | None
+    responseXML: Document | None
 
 
 class SVGStyleElement(SVGElement, LinkStyle):
@@ -3590,15 +4763,98 @@ class SVGStyleElement(SVGElement, LinkStyle):
     media: str
     title: str
 
+
 class GamepadHapticActuator:
     type: GamepadHapticActuatorType
 
 
-class CompositionEvent:
+class PerformanceObserver:
+    def observe(self, options: PerformanceObserverInit): ...
+
+    def disconnect(self): ...
+
+    def takeRecords(self) -> PerformanceEntryList: ...
+
+
+class PeerConnectionImpl:
+    def initialize(self, observer: PeerConnectionObserver, window: Window, iceServers: RTCConfiguration,
+                   thread: nsISupports): ...
+
+    def createOffer(self, options: RTCOfferOptions | None = None): ...
+
+    def createAnswer(self): ...
+
+    def setLocalDescription(self, action: int, sdp: str): ...
+
+    def setRemoteDescription(self, action: int, sdp: str): ...
+
+    def getStats(self, selector: MediaStreamTrack | None): ...
+
+    def createTransceiverImpl(self, kind: str, track: MediaStreamTrack | None) -> TransceiverImpl: ...
+
+    def checkNegotiationNeeded(self) -> bool: ...
+
+    def insertDTMF(self, transceiver: TransceiverImpl, tones: str, duration: int | None = 100,
+                   interToneGap: int | None = 70): ...
+
+    def getDTMFToneBuffer(self, sender: RTCRtpSender) -> str: ...
+
+    def getNowInRtpSourceReferenceTime(self) -> DOMHighResTimeStamp: ...
+
+    def replaceTrackNoRenegotiation(self, transceiverImpl: TransceiverImpl, withTrack: MediaStreamTrack | None): ...
+
+    def closeStreams(self): ...
+
+    def addRIDExtension(self, recvTrack: MediaStreamTrack, extensionId: int): ...
+
+    def addRIDFilter(self, recvTrack: MediaStreamTrack, rid: str): ...
+
+    def insertAudioLevelForContributingSource(self, recvTrack: MediaStreamTrack, source: int,
+                                              timestamp: DOMHighResTimeStamp, hasLevel: bool, level: byte): ...
+
+    def enablePacketDump(self, level: int, type: mozPacketDumpType, sending: bool): ...
+
+    def disablePacketDump(self, level: int, type: mozPacketDumpType, sending: bool): ...
+
+    def addIceCandidate(self, candidate: str, mid: str, level: int): ...
+
+    def close(self): ...
+
+    def pluginCrash(self, pluginId: int, name: str) -> bool: ...
+
+    certificate: RTCCertificate
+    fingerprint: str
+    localDescription: str
+    currentLocalDescription: str
+    pendingLocalDescription: str
+    remoteDescription: str
+    currentRemoteDescription: str
+    pendingRemoteDescription: str
+    iceConnectionState: PCImplIceConnectionState
+    iceGatheringState: PCImplIceGatheringState
+    signalingState: PCImplSignalingState
+    id: str
+    peerIdentity: str
+    privacyRequested: bool
+
+    def createDataChannel(self, label: str, protocol: str, type: int, ordered: bool, maxTime: int, maxNum: int,
+                          externalNegotiated: bool, stream: int) -> RTCDataChannel: ...
+
+
+class GainNode(AudioNode):
+    gain: AudioParam
+
+
+class CompositionEvent(UIEvent):
+    data: str | None
+    locale: str
+
     def initCompositionEvent(self, typeArg: str, canBubbleArg: bool | None = false, cancelableArg: bool | None = false,
                              viewArg: Window | None = None, dataArg: str | None = None, localeArg: str | None = ""): ...
 
+
 class Cache: ...
+
 
 class Selection:
     anchorNode: Node | None
@@ -3608,26 +4864,46 @@ class Selection:
     isCollapsed: bool
     rangeCount: int
     type: str
+
     def getRangeAt(self, index: int) -> Range: ...
+
     def addRange(self, range: Range): ...
+
     def removeRange(self, range: Range): ...
+
     def removeAllRanges(self): ...
+
     def empty(self): ...
+
     def collapse(self, node: Node | None, offset: int | None = 0): ...
+
     def setPosition(self, node: Node | None, offset: int | None = 0): ...
+
     def collapseToStart(self): ...
+
     def collapseToEnd(self): ...
+
     def extend(self, node: Node, offset: int | None = 0): ...
+
     def setBaseAndExtent(self, anchorNode: Node, anchorOffset: int, focusNode: Node, focusOffset: int): ...
+
     def selectAllChildren(self, node: Node): ...
+
     def deleteFromDocument(self): ...
+
     def containsNode(self, node: Node, allowPartialContainment: bool | None = false) -> bool: ...
+
     def modify(self, alter: str, direction: str, granularity: str): ...
+
     interlinePosition: bool
     caretBidiLevel: short | None
+
     def toStringWithFormat(self, formatType: str, flags: int, wrapColumn: int) -> str: ...
+
     def addSelectionListener(self, newListener: nsISelectionListener): ...
+
     def removeSelectionListener(self, listenerToRemove: nsISelectionListener): ...
+
     selectionType: short
 
     def scrollIntoView(self, aRegion: short, aIsSynchronous: bool, aVPercent: short, aHPercent: short): ...
@@ -3637,40 +4913,64 @@ class Selection:
 
     def resetColors(self): ...
 
+
 class HTMLDocument(Document):
     domain: str
     cookie: str
+
     def open(self, type: str | None = None, replace: str | None = "") -> Document: ...
+
     def open(self, url: str, name: str, features: str, replace: bool | None = false) -> WindowProxy | None: ...
+
     def close(self): ...
+
     def write(self, text: str | None = None): ...
+
     def writeln(self, text: str | None = None): ...
+
     designMode: str
+
     def execCommand(self, commandId: str, showUI: bool | None = false, value: str | None = "") -> bool: ...
+
     def queryCommandEnabled(self, commandId: str) -> bool: ...
+
     def queryCommandIndeterm(self, commandId: str) -> bool: ...
+
     def queryCommandState(self, commandId: str) -> bool: ...
+
     def queryCommandSupported(self, commandId: str) -> bool: ...
+
     def queryCommandValue(self, commandId: str) -> str: ...
+
     fgColor: str
     linkColor: str
     vlinkColor: str
     alinkColor: str
     bgColor: str
+
     def clear(self): ...
+
     all: HTMLAllCollection
+
     def captureEvents(self): ...
+
     def releaseEvents(self): ...
+
     blockedTrackingNodeCount: int
     blockedTrackingNodes: NodeList
 
+
 class MessagePort(EventTarget):
     def start(self): ...
+
     def close(self): ...
+
     onmessage: EventHandler
     onmessageerror: EventHandler
 
+
 class SVGUnitTypes: ...
+
 
 class HTMLMetaElement(HTMLElement):
     name: str
@@ -3678,7 +4978,12 @@ class HTMLMetaElement(HTMLElement):
     content: str
     scheme: str
 
+
+class PopStateEvent(Event): ...
+
+
 class WebrtcGlobalInformation: ...
+
 
 class MIDIAccess(EventTarget):
     inputs: MIDIInputMap
@@ -3686,21 +4991,47 @@ class MIDIAccess(EventTarget):
     onstatechange: EventHandler
     sysexEnabled: bool
 
+
+class SpeechSynthesisErrorEvent(SpeechSynthesisEvent):
+    error: SpeechSynthesisErrorCode
+
+
 class MIDIOutputMap: ...
+
 
 class FileSystemDirectoryReader:
     def readEntries(self, successCallback: FileSystemEntriesCallback, errorCallback: ErrorCallback | None = None): ...
+
+
+class SecurityPolicyViolationEvent(Event):
+    documentURI: str
+    referrer: str
+    blockedURI: str
+    violatedDirective: str
+    effectiveDirective: str
+    originalPolicy: str
+    sourceFile: str
+    sample: str
+    disposition: SecurityPolicyViolationEventDisposition
+    statusCode: int
+    lineNumber: int
+    columnNumber: int
+
 
 class CSSStyleSheet(StyleSheet):
     ownerRule: CSSRule | None
     cssRules: CSSRuleList
     parsingMode: CSSStyleSheetParsingMode
+
     def insertRule(self, rule: str, index: int | None = 0) -> int: ...
+
     def deleteRule(self, index: int): ...
+
 
 class SVGAnimatedString:
     baseVal: str
     animVal: str
+
 
 class HTMLSelectElement(HTMLElement):
     autofocus: bool
@@ -3714,22 +5045,34 @@ class HTMLSelectElement(HTMLElement):
     type: str
     options: HTMLOptionsCollection
     length: int
+
     def namedItem(self, name: str) -> HTMLOptionElement | None: ...
+
     def add(self, element: HTMLOptionElement | HTMLOptGroupElement, before: HTMLElement | int | None = None): ...
+
     def remove(self, index: int): ...
+
     selectedOptions: HTMLCollection
     selectedIndex: int
     value: str
     willValidate: bool
     validity: ValidityState
     validationMessage: str
+
     def checkValidity(self) -> bool: ...
+
     def reportValidity(self) -> bool: ...
+
     def setCustomValidity(self, error: str): ...
+
     labels: NodeList
+
     def remove(self): ...
+
     openInParentProcess: bool
+
     def getAutocompleteInfo(self) -> AutocompleteInfo: ...
+
     previewValue: str
 
 
@@ -3740,8 +5083,17 @@ class SVGFEDiffuseLightingElement(SVGElement, SVGFilterPrimitiveStandardAttribut
     kernelUnitLengthX: SVGAnimatedNumber
     kernelUnitLengthY: SVGAnimatedNumber
 
+
+class TextDecoder:
+    encoding: str
+    fatal: bool
+
+    def decode(self, input: BufferSource | None = None, options: TextDecodeOptions | None = None) -> USVString: ...
+
+
 class HTMLDataListElement(HTMLElement):
     options: HTMLCollection
+
 
 class SVGLength:
     unitType: int
@@ -3753,33 +5105,47 @@ class SVGLength:
 
     def convertToSpecifiedUnits(self, unitType: int): ...
 
+
 class DataTransferItem:
     kind: str
     type: str
+
     def getAsString(self, callback: FunctionStringCallback | None): ...
+
     def getAsFile(self) -> File | None: ...
+
     def webkitGetAsEntry(self) -> FileSystemEntry | None: ...
+
 
 class CSSKeyframeRule(CSSRule):
     keyText: str
     style: CSSStyleDeclaration
 
+
 class XMLDocument(Document):
     def load(self, url: str) -> bool: ...
+
     async_: bool
+
 
 class HTMLOptionsCollection(HTMLCollection):
     length: int
+
     def add(self, element: HTMLOptionElement | HTMLOptGroupElement, before: HTMLElement | int | None = None): ...
+
     def remove(self, index: int): ...
+
     selectedIndex: int
 
+
 class SVGTitleElement(SVGElement): ...
+
 
 class SourceBufferList(EventTarget):
     length: int
     onaddsourcebuffer: EventHandler
     onremovesourcebuffer: EventHandler
+
 
 class MediaKeySession(EventTarget):
     error: MediaKeyError | None
@@ -3789,14 +5155,28 @@ class MediaKeySession(EventTarget):
     onkeystatuseschange: EventHandler
     onmessage: EventHandler
 
+
+class SpeechRecognitionEvent(Event):
+    resultIndex: int
+    results: SpeechRecognitionResultList | None
+    emma: Document | None
+
+
 class ScreenOrientation(EventTarget):
     def unlock(self): ...
+
     type: OrientationType
     angle: int
     onchange: EventHandler
 
+
+class WebGLContextEvent(Event):
+    statusMessage: str
+
+
 class HTMLDetailsElement(HTMLElement):
     open: bool
+
 
 class SVGTransform:
     type: int
@@ -3831,30 +5211,56 @@ class CharacterData(Node, ChildNode, NonDocumentTypeChildNode):
     def replaceData(self, offset: int, count: int, data: str): ...
 
 
-class InputEvent:
+class InputEvent(UIEvent):
+    isComposing: bool
+    inputType: str
+    data: str | None
     dataTransfer: DataTransfer | None
+
 
 class SVGCircleElement(SVGGeometryElement):
     cx: SVGAnimatedLength
     cy: SVGAnimatedLength
     r: SVGAnimatedLength
 
+
+class OfflineAudioCompletionEvent(Event):
+    renderedBuffer: AudioBuffer
+
+
 class DOMTokenList:
     length: int
+
     def contains(self, token: str) -> bool: ...
+
     def add(self, tokens: str | None = None): ...
+
     def remove(self, tokens: str | None = None): ...
+
     def replace(self, token: str, newToken: str) -> bool: ...
+
     def toggle(self, token: str, force: bool | None = None) -> bool: ...
+
     def supports(self, token: str) -> bool: ...
+
     value: str
+
 
 class MediaKeyStatusMap:
     size: int
+
     def has(self, keyId: BufferSource) -> bool: ...
+
+
+class AudioWorkletNode(AudioNode):
+    parameters: AudioParamMap
+    port: MessagePort
+    onprocessorerror: EventHandler
+
 
 class HTMLDListElement(HTMLElement):
     compact: bool
+
 
 class SVGRectElement(SVGGeometryElement):
     x: SVGAnimatedLength
@@ -3864,8 +5270,10 @@ class SVGRectElement(SVGGeometryElement):
     rx: SVGAnimatedLength
     ry: SVGAnimatedLength
 
+
 class MIDIOutput(MIDIPort):
     def clear(self): ...
+
 
 class PerformanceTiming:
     navigationStart: int
@@ -3891,10 +5299,20 @@ class PerformanceTiming:
     loadEventEnd: int
     timeToNonBlankPaint: int
     timeToDOMContentFlushed: int
+
     def toJSON(self) -> object: ...
 
 
 class AudioScheduledSourceNode(AudioNode, rustAudioScheduledSourceNode): ...
+
+
+class CheckerboardReportService:
+    def isRecordingEnabled(self) -> bool: ...
+
+    def setRecordingEnabled(self, aEnabled: bool): ...
+
+    def flushActiveReports(self): ...
+
 
 class CSSSupportsRule(CSSConditionRule): ...
 
@@ -3913,11 +5331,16 @@ class SVGFEConvolveMatrixElement(SVGElement, SVGFilterPrimitiveStandardAttribute
     kernelUnitLengthY: SVGAnimatedNumber
     preserveAlpha: SVGAnimatedBoolean
 
+
 class Storage:
     length: int
+
     def key(self, index: int) -> str | None: ...
+
     def clear(self): ...
+
     isSessionOnly: bool
+
 
 class SVGComponentTransferFunctionElement(SVGElement):
     type: SVGAnimatedEnumeration
@@ -3929,6 +5352,12 @@ class SVGComponentTransferFunctionElement(SVGElement):
     offset: SVGAnimatedNumber
 
 
+class CloseEvent(Event):
+    wasClean: bool
+    code: int
+    reason: str
+
+
 class SVGFECompositeElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     in1: SVGAnimatedString
     in2: SVGAnimatedString
@@ -3938,14 +5367,27 @@ class SVGFECompositeElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     k3: SVGAnimatedNumber
     k4: SVGAnimatedNumber
 
+
+class AudioContext(BaseAudioContext, rustBaseAudioContext):
+    def createMediaElementSource(self, mediaElement: HTMLMediaElement) -> MediaElementAudioSourceNode: ...
+
+    def createMediaStreamSource(self, mediaStream: MediaStream) -> MediaStreamAudioSourceNode: ...
+
+    def createMediaStreamDestination(self) -> MediaStreamAudioDestinationNode: ...
+
+
 class HTMLTableSectionElement(HTMLElement):
     rows: HTMLCollection
+
     def insertRow(self, index: int | None = -1) -> HTMLElement: ...
+
     def deleteRow(self, index: int): ...
+
     align: str
     ch: str
     chOff: str
     vAlign: str
+
 
 class Node(EventTarget):
     nodeType: int
@@ -3953,10 +5395,14 @@ class Node(EventTarget):
     baseURI: str | None
     isConnected: bool
     ownerDocument: Document | None
+
     def getRootNode(self, options: GetRootNodeOptions | None = None) -> Node: ...
+
     parentNode: Node | None
     parentElement: Element | None
+
     def hasChildNodes(self) -> bool: ...
+
     childNodes: NodeList
     firstChild: Node | None
     lastChild: Node | None
@@ -3964,19 +5410,39 @@ class Node(EventTarget):
     nextSibling: Node | None
     nodeValue: str | None
     textContent: str | None
+
     def insertBefore(self, node: Node, child: Node | None) -> Node: ...
+
     def appendChild(self, node: Node) -> Node: ...
+
     def replaceChild(self, node: Node, child: Node) -> Node: ...
+
     def removeChild(self, child: Node) -> Node: ...
+
     def normalize(self): ...
+
     def cloneNode(self, deep: bool | None = false) -> Node: ...
+
     def isSameNode(self, node: Node | None) -> bool: ...
+
     def isEqualNode(self, node: Node | None) -> bool: ...
+
     def compareDocumentPosition(self, other: Node) -> int: ...
+
     def contains(self, other: Node | None) -> bool: ...
+
     def lookupPrefix(self, namespace: str | None) -> str | None: ...
+
     def lookupNamespaceURI(self, prefix: str | None) -> str | None: ...
+
     def isDefaultNamespace(self, namespace: str | None) -> bool: ...
+
+
+class DOMParser:
+    def parseFromString(self, str: str, type: SupportedType) -> Document: ...
+
+    def forceEnableXULXBL(self): ...
+
 
 class DOMImplementation:
     def hasFeature(self) -> bool: ...
@@ -3987,6 +5453,7 @@ class DOMImplementation:
                        doctype: DocumentType | None = None) -> Document: ...
 
     def createHTMLDocument(self, title: str | None = None) -> Document: ...
+
 
 class VRMockDisplay:
     def setEyeResolution(self, aRenderWidth: int, aRenderHeight: int): ...
@@ -4001,6 +5468,7 @@ class VRMockDisplay:
 
     def update(self): ...
 
+
 class VRMockController:
     def newButtonEvent(self, button: int, pressed: bool): ...
 
@@ -4009,7 +5477,9 @@ class VRMockController:
     def newPoseMove(self, position: Float32Array, linearVelocity: Float32Array, linearAcceleration: Float32Array,
                     orientation: Float32Array, angularVelocity: Float32Array, angularAcceleration: Float32Array): ...
 
+
 class VRServiceTest: ...
+
 
 class HTMLSourceElement(HTMLElement):
     src: str
@@ -4018,28 +5488,46 @@ class HTMLSourceElement(HTMLElement):
     sizes: str
     media: str
 
+
 class SVGPointList:
     numberOfItems: int
+
     def clear(self): ...
+
     def initialize(self, newItem: SVGPoint) -> SVGPoint: ...
+
     def insertItemBefore(self, newItem: SVGPoint, index: int) -> SVGPoint: ...
+
     def replaceItem(self, newItem: SVGPoint, index: int) -> SVGPoint: ...
+
     def removeItem(self, index: int) -> SVGPoint: ...
+
     def appendItem(self, newItem: SVGPoint) -> SVGPoint: ...
+
 
 class SVGStopElement(SVGElement):
     offset: SVGAnimatedNumber
 
+
 class SVGAnimateTransformElement(SVGAnimationElement): ...
+
 
 class CSSStyleRule(CSSRule):
     selectorText: str
     style: CSSStyleDeclaration
 
+
 class CSSGroupingRule(CSSRule):
     cssRules: CSSRuleList
+
     def insertRule(self, rule: str, index: int | None = 0) -> int: ...
+
     def deleteRule(self, index: int): ...
+
+
+class SpeechGrammar:
+    src: str
+    weight: float
 
 
 class SVGPatternElement(SVGElement, SVGFitToViewBox, SVGURIReference):
@@ -4051,28 +5539,57 @@ class SVGPatternElement(SVGElement, SVGFitToViewBox, SVGURIReference):
     width: SVGAnimatedLength
     height: SVGAnimatedLength
 
+
 class PaintRequest:
     clientRect: DOMRect
     reason: str
 
+
 class CSSStyleDeclaration:
     cssText: str
     length: int
+
     def getPropertyValue(self, property: str) -> str: ...
+
     def getPropertyPriority(self, property: str) -> str: ...
+
     def setProperty(self, property: str, value: str, priority: str | None = ""): ...
+
     def removeProperty(self, property: str) -> str: ...
+
     parentRule: CSSRule | None
+
 
 class RTCRtpSender:
     track: MediaStreamTrack | None
+
     def getParameters(self) -> RTCRtpParameters: ...
+
     dtmf: RTCDTMFSender | None
+
     def setTrack(self, track: MediaStreamTrack | None): ...
+
     def checkWasCreatedByPc(self, pc: RTCPeerConnection): ...
+
+
+class Touch:
+    identifier: int
+    target: EventTarget | None
+    screenX: int
+    screenY: int
+    clientX: int
+    clientY: int
+    pageX: int
+    pageY: int
+    radiusX: int
+    radiusY: int
+    rotationAngle: float
+    force: float
+
 
 class MediaDevices(EventTarget):
     ondevicechange: EventHandler
+
     def getSupportedConstraints(self) -> MediaTrackSupportedConstraints: ...
 
 
@@ -4123,28 +5640,60 @@ class SVGSVGElement(SVGGraphicsElement, SVGFitToViewBox, SVGZoomAndPanValues):
 
     def getElementById(self, elementId: str) -> Element | None: ...
 
+
 class HTMLSpanElement(HTMLElement): ...
+
+
+class AnalyserNode(AudioNode):
+    def getFloatFrequencyData(self, array: Float32Array): ...
+
+    def getByteFrequencyData(self, array: Uint8Array): ...
+
+    def getFloatTimeDomainData(self, array: Float32Array): ...
+
+    def getByteTimeDomainData(self, array: Uint8Array): ...
+
+    fftSize: int
+    frequencyBinCount: int
+    minDecibels: float
+    maxDecibels: float
+    smoothingTimeConstant: float
+
+
+class DOMError:
+    name: str
+    message: str
+
 
 class WebGLBuffer: ...
 
+
 class WebGLFramebuffer: ...
+
 
 class WebGLProgram: ...
 
+
 class WebGLRenderbuffer: ...
+
 
 class WebGLShader: ...
 
+
 class WebGLTexture: ...
+
 
 class WebGLUniformLocation: ...
 
+
 class WebGLVertexArrayObject: ...
+
 
 class WebGLActiveInfo:
     size: GLint
     type: GLenum
     name: str
+
 
 class WebGLShaderPrecisionFormat:
     rangeMin: GLint
@@ -4233,65 +5782,97 @@ class WebGLRenderingContext(WebGLRenderingContextBase):
     def uniformMatrix2fv(self, location: WebGLUniformLocation | None, transpose: GLboolean, data: Float32List): ...
 
     def uniformMatrix3fv(self, location: WebGLUniformLocation | None, transpose: GLboolean, data: Float32List): ...
+
     def uniformMatrix4fv(self, location: WebGLUniformLocation | None, transpose: GLboolean, data: Float32List): ...
+
     def commit(self): ...
+
 
 class WEBGL_compressed_texture_s3tc: ...
 
+
 class WEBGL_compressed_texture_s3tc_srgb: ...
+
 
 class WEBGL_compressed_texture_astc: ...
 
+
 class WEBGL_compressed_texture_atc: ...
+
 
 class WEBGL_compressed_texture_etc: ...
 
+
 class WEBGL_compressed_texture_etc1: ...
+
 
 class WEBGL_compressed_texture_pvrtc: ...
 
+
 class WEBGL_debug_renderer_info: ...
+
 
 class WEBGL_debug_shaders:
     def getTranslatedShaderSource(self, shader: WebGLShader) -> str: ...
 
+
 class WEBGL_depth_texture: ...
+
 
 class OES_element_index_uint: ...
 
+
 class EXT_frag_depth: ...
+
 
 class WEBGL_lose_context:
     def loseContext(self): ...
+
     def restoreContext(self): ...
+
 
 class EXT_texture_filter_anisotropic: ...
 
+
 class EXT_sRGB: ...
+
 
 class OES_standard_derivatives: ...
 
+
 class OES_texture_float: ...
+
 
 class WEBGL_draw_buffers: ...
 
+
 class OES_texture_float_linear: ...
+
 
 class EXT_shader_texture_lod: ...
 
+
 class OES_texture_half_float: ...
+
 
 class OES_texture_half_float_linear: ...
 
+
 class WEBGL_color_buffer_float: ...
+
 
 class EXT_color_buffer_half_float: ...
 
+
 class OES_vertex_array_object:
     def createVertexArrayOES(self) -> WebGLVertexArrayObject | None: ...
+
     def deleteVertexArrayOES(self, arrayObject: WebGLVertexArrayObject | None): ...
+
     def isVertexArrayOES(self, arrayObject: WebGLVertexArrayObject | None) -> GLboolean: ...
+
     def bindVertexArrayOES(self, arrayObject: WebGLVertexArrayObject | None): ...
+
 
 class ANGLE_instanced_arrays:
     def drawArraysInstancedANGLE(self, mode: GLenum, first: GLint, count: GLsizei, primcount: GLsizei): ...
@@ -4301,41 +5882,114 @@ class ANGLE_instanced_arrays:
 
     def vertexAttribDivisorANGLE(self, index: GLuint, divisor: GLuint): ...
 
+
 class EXT_blend_minmax: ...
+
 
 class WebGLQuery: ...
 
+
 class EXT_disjoint_timer_query:
     def createQueryEXT(self) -> WebGLQuery | None: ...
+
     def deleteQueryEXT(self, query: WebGLQuery | None): ...
+
     def isQueryEXT(self, query: WebGLQuery | None) -> bool: ...
+
     def beginQueryEXT(self, target: GLenum, query: WebGLQuery): ...
+
     def endQueryEXT(self, target: GLenum): ...
+
     def queryCounterEXT(self, query: WebGLQuery, target: GLenum): ...
+
 
 class MOZ_debug: ...
 
+
 class ImageBitmapRenderingContext:
     def transferFromImageBitmap(self, bitmap: ImageBitmap): ...
+
     def transferImageBitmap(self, bitmap: ImageBitmap): ...
+
 
 class RTCCertificate:
     expires: DOMTimeStamp
 
 
+class WaveShaperNode(AudioNode):
+    curve: Float32Array
+    oversample: OverSampleType
+
+
+class TCPSocketErrorEvent(Event):
+    name: str
+    message: str
+
+
+class DOMQuad:
+    p1: DOMPoint
+    p2: DOMPoint
+    p3: DOMPoint
+    p4: DOMPoint
+
+    def getBounds(self) -> DOMRectReadOnly: ...
+
+    bounds: DOMRectReadOnly
+
+    def toJSON(self) -> DOMQuadJSON: ...
+
+
 class SVGPathElement(SVGGeometryElement, SVGAnimatedPathData):
     def getPathSegAtLength(self, distance: float) -> int: ...
+
+
+class RTCIceCandidate:
+    candidate: str
+    sdpMid: str | None
+    sdpMLineIndex: int | None
+
+    def toJSON(self) -> object: ...
+
 
 class AudioStreamTrack(MediaStreamTrack): ...
 
 
-class WebSocket: ...
+class WebSocket(EventTarget):
+    url: str
+    readyState: int
+    bufferedAmount: int
+    onopen: EventHandler
+    onerror: EventHandler
+    onclose: EventHandler
+    extensions: str
+    protocol: str
+
+    def close(self, code: int | None = None, reason: str | None = None): ...
+
+    onmessage: EventHandler
+    binaryType: BinaryType
+
+    def send(self, data: str): ...
+
+    def send(self, data: Blob): ...
+
+    def send(self, data: ArrayBuffer): ...
+
+    def send(self, data: ArrayBufferView): ...
+
 
 class InstallTriggerImpl:
     def enabled(self) -> bool: ...
+
     def updateEnabled(self) -> bool: ...
+
     def installChrome(self, type: int, url: str, skin: str) -> bool: ...
+
     def startSoftwareUpdate(self, url: str, flags: int | None = None) -> bool: ...
+
+
+class ScrollViewChangeEvent(Event):
+    state: ScrollState
 
 
 class HTMLLinkElement(HTMLElement, LinkStyle):
@@ -4354,15 +6008,19 @@ class HTMLLinkElement(HTMLElement, LinkStyle):
     target: str
     integrity: str
 
+
 class Credential:
     id: USVString
     type: str
 
+
 class CredentialsContainer: ...
+
 
 class NetworkInformation(EventTarget):
     type: ConnectionType
     ontypechange: EventHandler
+
 
 class StyleSheetList:
     length: int
@@ -4382,34 +6040,55 @@ class ShadowRoot(DocumentFragment, DocumentOrShadowRoot):
 
     innerHTML: str
 
+
 class HTMLTableRowElement(HTMLElement):
     rowIndex: int
     sectionRowIndex: int
     cells: HTMLCollection
+
     def insertCell(self, index: int | None = -1) -> HTMLElement: ...
+
     def deleteCell(self, index: int): ...
+
     align: str
     ch: str
     chOff: str
     vAlign: str
     bgColor: str
 
+
 class SVGFEPointLightElement(SVGElement):
     x: SVGAnimatedNumber
     y: SVGAnimatedNumber
     z: SVGAnimatedNumber
 
+
+class ConvolverNode(AudioNode):
+    buffer: AudioBuffer | None
+    normalize: bool
+
+
 class WorkerDebuggerGlobalScope(EventTarget):
     def createSandbox(self, name: str, prototype: object) -> object: ...
+
     def loadSubScript(self, url: str, sandbox: object | None = None): ...
+
     def enterEventLoop(self): ...
+
     def leaveEventLoop(self): ...
+
     def postMessage(self, message: str): ...
+
     onmessage: EventHandler
+
     def setImmediate(self, handler: Function): ...
+
     def reportError(self, message: str): ...
+
     def setConsoleEventHandler(self, handler: AnyCallback | None): ...
+
     def dump(self, string: str | None = None): ...
+
 
 class SVGForeignObjectElement(SVGGraphicsElement):
     x: SVGAnimatedLength
@@ -4417,8 +6096,13 @@ class SVGForeignObjectElement(SVGGraphicsElement):
     width: SVGAnimatedLength
     height: SVGAnimatedLength
 
+
+class MediaStreamAudioSourceNode(AudioNode): ...
+
+
 class HTMLPreElement(HTMLElement):
     width: int
+
 
 class HTMLFieldSetElement(HTMLElement):
     disabled: bool
@@ -4429,9 +6113,13 @@ class HTMLFieldSetElement(HTMLElement):
     willValidate: bool
     validity: ValidityState
     validationMessage: str
+
     def checkValidity(self) -> bool: ...
+
     def reportValidity(self) -> bool: ...
+
     def setCustomValidity(self, error: str): ...
+
 
 class MutationEvent(Event):
     relatedNode: Node | None
@@ -4444,8 +6132,10 @@ class MutationEvent(Event):
                           relatedNode: Node | None = None, prevValue: str | None = "", newValue: str | None = "",
                           attrName: str | None = "", attrChange: int | None = 0): ...
 
+
 class RTCDTMFSender(EventTarget):
     def insertDTMF(self, tones: str, duration: int | None = 100, interToneGap: int | None = 70): ...
+
     ontonechange: EventHandler
     toneBuffer: str
 
@@ -4453,10 +6143,14 @@ class RTCDTMFSender(EventTarget):
 class SVGFETileElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
     in1: SVGAnimatedString
 
+
 class OfflineResourceList(EventTarget):
     status: int
+
     def update(self): ...
+
     def swapCache(self): ...
+
     onchecking: EventHandler
     onerror: EventHandler
     onnoupdate: EventHandler
@@ -4465,6 +6159,12 @@ class OfflineResourceList(EventTarget):
     onupdateready: EventHandler
     oncached: EventHandler
     onobsolete: EventHandler
+
+
+class ImageData:
+    width: int
+    height: int
+    data: Uint8ClampedArray
 
 
 class Navigator(NavigatorID, NavigatorLanguage, NavigatorOnLine, NavigatorContentUtils, NavigatorStorageUtils,
@@ -4509,27 +6209,159 @@ class Navigator(NavigatorID, NavigatorLanguage, NavigatorOnLine, NavigatorConten
     serial: Serial
     bluetooth: Bluetooth | None
 
+
 class NavigatorAutomationInformation:
     webdriver: bool
 
+
 class DOMRectList:
     length: int
+
 
 class HTMLLabelElement(HTMLElement):
     form: HTMLFormElement | None
     htmlFor: str
     control: HTMLElement | None
 
+
 class WEBGL_multi_draw: ...
+
+
+class DOMMatrixReadOnly:
+    a: float
+    b: float
+    c: float
+    d: float
+    e: float
+    f: float
+    m11: float
+    m12: float
+    m13: float
+    m14: float
+    m21: float
+    m22: float
+    m23: float
+    m24: float
+    m31: float
+    m32: float
+    m33: float
+    m34: float
+    m41: float
+    m42: float
+    m43: float
+    m44: float
+
+    def translate(self, tx: float, ty: float, tz: float | None = 0) -> DOMMatrix: ...
+
+    def scale(self, scale: float, originX: float | None = 0, originY: float | None = 0) -> DOMMatrix: ...
+
+    def scale3d(self, scale: float, originX: float | None = 0, originY: float | None = 0,
+                originZ: float | None = 0) -> DOMMatrix: ...
+
+    def scaleNonUniform(self, scaleX: float, scaleY: float | None = 1, scaleZ: float | None = 1,
+                        originX: float | None = 0, originY: float | None = 0,
+                        originZ: float | None = 0) -> DOMMatrix: ...
+
+    def rotate(self, angle: float, originX: float | None = 0, originY: float | None = 0) -> DOMMatrix: ...
+
+    def rotateFromVector(self, x: float, y: float) -> DOMMatrix: ...
+
+    def rotateAxisAngle(self, x: float, y: float, z: float, angle: float) -> DOMMatrix: ...
+
+    def skewX(self, sx: float) -> DOMMatrix: ...
+
+    def skewY(self, sy: float) -> DOMMatrix: ...
+
+    def multiply(self, other: DOMMatrix) -> DOMMatrix: ...
+
+    def flipX(self) -> DOMMatrix: ...
+
+    def flipY(self) -> DOMMatrix: ...
+
+    def inverse(self) -> DOMMatrix: ...
+
+    is2D: bool
+    isIdentity: bool
+
+    def transformPoint(self, point: DOMPointInit | None = None) -> DOMPoint: ...
+
+    def toFloat32Array(self) -> Float32Array: ...
+
+    def toFloat64Array(self) -> Float64Array: ...
+
+    def toJSON(self) -> object: ...
+
+
+class DOMMatrix(DOMMatrixReadOnly):
+    a: float
+    b: float
+    c: float
+    d: float
+    e: float
+    f: float
+    m11: float
+    m12: float
+    m13: float
+    m14: float
+    m21: float
+    m22: float
+    m23: float
+    m24: float
+    m31: float
+    m32: float
+    m33: float
+    m34: float
+    m41: float
+    m42: float
+    m43: float
+    m44: float
+
+    def multiplySelf(self, other: DOMMatrix) -> DOMMatrix: ...
+
+    def preMultiplySelf(self, other: DOMMatrix) -> DOMMatrix: ...
+
+    def translateSelf(self, tx: float, ty: float, tz: float | None = 0) -> DOMMatrix: ...
+
+    def scaleSelf(self, scale: float, originX: float | None = 0, originY: float | None = 0) -> DOMMatrix: ...
+
+    def scale3dSelf(self, scale: float, originX: float | None = 0, originY: float | None = 0,
+                    originZ: float | None = 0) -> DOMMatrix: ...
+
+    def scaleNonUniformSelf(self, scaleX: float, scaleY: float | None = 1, scaleZ: float | None = 1,
+                            originX: float | None = 0, originY: float | None = 0,
+                            originZ: float | None = 0) -> DOMMatrix: ...
+
+    def rotateSelf(self, angle: float, originX: float | None = 0, originY: float | None = 0) -> DOMMatrix: ...
+
+    def rotateFromVectorSelf(self, x: float, y: float) -> DOMMatrix: ...
+
+    def rotateAxisAngleSelf(self, x: float, y: float, z: float, angle: float) -> DOMMatrix: ...
+
+    def skewXSelf(self, sx: float) -> DOMMatrix: ...
+
+    def skewYSelf(self, sy: float) -> DOMMatrix: ...
+
+    def invertSelf(self) -> DOMMatrix: ...
+
+    def setMatrixValue(self, transformList: str) -> DOMMatrix: ...
+
 
 class SVGSwitchElement(SVGGraphicsElement): ...
 
+
+class MIDIMessageEvent(Event):
+    data: Uint8Array
+
+
 class AudioTrackList(EventTarget):
     length: int
+
     def getTrackById(self, id: str) -> AudioTrack | None: ...
+
     onchange: EventHandler
     onaddtrack: EventHandler
     onremovetrack: EventHandler
+
 
 class AudioWorkletGlobalScope(WorkletGlobalScope):
     def registerProcessor(self, name: str, processorCtor: VoidFunction): ...
@@ -4537,6 +6369,13 @@ class AudioWorkletGlobalScope(WorkletGlobalScope):
     currentFrame: int
     currentTime: float
     sampleRate: float
+
+
+class ErrorEvent(Event):
+    message: str
+    filename: str
+    lineno: int
+    colno: int
 
 
 class HTMLAnchorElement(HTMLElement, HTMLHyperlinkElementUtils):
@@ -4555,6 +6394,31 @@ class HTMLAnchorElement(HTMLElement, HTMLHyperlinkElementUtils):
     rev: str
     shape: str
 
+
+class PannerNode(AudioNode):
+    panningModel: PanningModelType
+
+    def setPosition(self, x: float, y: float, z: float): ...
+
+    def setOrientation(self, x: float, y: float, z: float): ...
+
+    def setVelocity(self, x: float, y: float, z: float): ...
+
+    positionX: AudioParam
+    positionY: AudioParam
+    positionZ: AudioParam
+    orientationX: AudioParam
+    orientationY: AudioParam
+    orientationZ: AudioParam
+    distanceModel: DistanceModelType
+    refDistance: float
+    maxDistance: float
+    rolloffFactor: float
+    coneInnerAngle: float
+    coneOuterAngle: float
+    coneOuterGain: float
+
+
 class HTMLOptGroupElement(HTMLElement):
     disabled: bool
     label: str
@@ -4570,7 +6434,15 @@ class Coordinates:
     speed: float | None
 
 
-class KeyframeEffect: ...
+class KeyframeEffect(AnimationEffect):
+    target: Element | CSSPseudoElement | None
+    iterationComposite: IterationCompositeOperation
+    composite: CompositeOperation
+
+    def setKeyframes(self, keyframes: object | None): ...
+
+
+class Comment(CharacterData): ...
 
 
 class SVGFEDropShadowElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
@@ -4582,11 +6454,15 @@ class SVGFEDropShadowElement(SVGElement, SVGFilterPrimitiveStandardAttributes):
 
     def setStdDeviation(self, stdDeviationX: float, stdDeviationY: float): ...
 
+
 class MediaQueryList(EventTarget):
     media: str
     matches: bool
+
     def addListener(self, listener: EventListener | None): ...
+
     def removeListener(self, listener: EventListener | None): ...
+
     onchange: EventHandler
 
 
@@ -4605,6 +6481,7 @@ class CanvasRenderingContext2D(CanvasState, CanvasTransform, CanvasCompositing, 
 class CanvasGradient:
     def addColorStop(self, offset: float, color: str): ...
 
+
 class CanvasPattern:
     def setTransform(self, matrix: SVGMatrix): ...
 
@@ -4618,12 +6495,19 @@ class TextMetrics:
     actualBoundingBoxAscent: float
     actualBoundingBoxDescent: float
 
+
+class Path2D(CanvasPathMethods):
+    def addPath(self, path: Path2D, transformation: SVGMatrix | None = None): ...
+
+
 class SVGDescElement(SVGElement): ...
+
 
 class PerformanceServerTiming:
     name: str
     duration: DOMHighResTimeStamp
     description: str
+
     def toJSON(self) -> object: ...
 
 
@@ -4632,6 +6516,7 @@ class HTMLProgressElement(HTMLElement):
     max: float
     position: float
     labels: NodeList
+
 
 class ServiceWorkerGlobalScope(WorkerGlobalScope):
     clients: Clients
@@ -4645,12 +6530,14 @@ class ServiceWorkerGlobalScope(WorkerGlobalScope):
     onnotificationclick: EventHandler
     onnotificationclose: EventHandler
 
+
 class SVGTextPositioningElement(SVGTextContentElement):
     x: SVGAnimatedLengthList
     y: SVGAnimatedLengthList
     dx: SVGAnimatedLengthList
     dy: SVGAnimatedLengthList
     rotate: SVGAnimatedNumberList
+
 
 class HTMLFrameElement(HTMLElement):
     name: str
@@ -4664,7 +6551,13 @@ class HTMLFrameElement(HTMLElement):
     marginHeight: str
     marginWidth: str
 
+
+class PushEvent(ExtendableEvent):
+    data: PushMessageData | None
+
+
 class SVGAnimateElement(SVGAnimationElement): ...
+
 
 class CSSFontFaceRule(CSSRule):
     style: CSSStyleDeclaration
@@ -4677,21 +6570,36 @@ class SVGFEDisplacementMapElement(SVGElement, SVGFilterPrimitiveStandardAttribut
     xChannelSelector: SVGAnimatedEnumeration
     yChannelSelector: SVGAnimatedEnumeration
 
+
 class HTMLTableElement(HTMLElement):
     caption: HTMLTableCaptionElement | None
+
     def createCaption(self) -> HTMLElement: ...
+
     def deleteCaption(self): ...
+
     tHead: HTMLTableSectionElement | None
+
     def createTHead(self) -> HTMLElement: ...
+
     def deleteTHead(self): ...
+
     tFoot: HTMLTableSectionElement | None
+
     def createTFoot(self) -> HTMLElement: ...
+
     def deleteTFoot(self): ...
+
     tBodies: HTMLCollection
+
     def createTBody(self) -> HTMLElement: ...
+
     rows: HTMLCollection
+
     def insertRow(self, index: int | None = -1) -> HTMLElement: ...
+
     def deleteRow(self, index: int): ...
+
     align: str
     border: str
     frame: str
@@ -4702,8 +6610,10 @@ class HTMLTableElement(HTMLElement):
     cellPadding: str
     cellSpacing: str
 
+
 class External:
     def AddSearchProvider(self, aDescriptionURL: str): ...
+
     def IsSearchProviderInstalled(self, aSearchURL: str) -> int: ...
 
 
@@ -4711,6 +6621,7 @@ class HTMLStyleElement(HTMLElement, LinkStyle):
     disabled: bool
     media: str
     type: str
+
 
 class HTMLObjectElement(HTMLElement):
     data: str
@@ -4726,9 +6637,13 @@ class HTMLObjectElement(HTMLElement):
     willValidate: bool
     validity: ValidityState
     validationMessage: str
+
     def checkValidity(self) -> bool: ...
+
     def reportValidity(self) -> bool: ...
+
     def setCustomValidity(self, error: str): ...
+
     align: str
     archive: str
     code: str
@@ -4739,11 +6654,64 @@ class HTMLObjectElement(HTMLElement):
     codeBase: str
     codeType: str
     border: str
+
     def getSVGDocument(self) -> Document | None: ...
 
 
-class Document(XPathEvaluator, GlobalEventHandlers, DocumentAndElementEventHandlers, TouchEventHandlers, ParentNode,
-               OnErrorEventHandlerForNodes, GeometryUtils, FontFaceSource, DocumentOrShadowRoot):
+class Document(Node, XPathEvaluator, GlobalEventHandlers, DocumentAndElementEventHandlers, TouchEventHandlers,
+               ParentNode, OnErrorEventHandlerForNodes, GeometryUtils, FontFaceSource, DocumentOrShadowRoot):
+    implementation: DOMImplementation
+    URL: str
+    documentURI: str
+    compatMode: str
+    characterSet: str
+    charset: str
+    inputEncoding: str
+    contentType: str
+    doctype: DocumentType | None
+    documentElement: Element | None
+
+    def getElementsByTagName(self, localName: str) -> HTMLCollection: ...
+
+    def getElementsByTagNameNS(self, namespace: str | None, localName: str) -> HTMLCollection: ...
+
+    def getElementsByClassName(self, classNames: str) -> HTMLCollection: ...
+
+    def getElementById(self, elementId: str) -> Element | None: ...
+
+    def createElement(self, localName: str, options: ElementCreationOptions | str | None = None) -> Element: ...
+
+    def createElementNS(self, namespace: str | None, qualifiedName: str,
+                        options: ElementCreationOptions | str | None = None) -> Element: ...
+
+    def createDocumentFragment(self) -> DocumentFragment: ...
+
+    def createTextNode(self, data: str) -> Text: ...
+
+    def createComment(self, data: str) -> Comment: ...
+
+    def createProcessingInstruction(self, target: str, data: str) -> ProcessingInstruction: ...
+
+    def importNode(self, node: Node, deep: bool | None = false) -> Node: ...
+
+    def adoptNode(self, node: Node) -> Node: ...
+
+    def createEvent(self, interface: str) -> Event: ...
+
+    def createRange(self) -> Range: ...
+
+    def createNodeIterator(self, root: Node, whatToShow: int | None = 0xFFFFFFFF,
+                           filter: NodeFilter | None = None) -> NodeIterator: ...
+
+    def createTreeWalker(self, root: Node, whatToShow: int | None = 0xFFFFFFFF,
+                         filter: NodeFilter | None = None) -> TreeWalker: ...
+
+    def createCDATASection(self, data: str) -> CDATASection: ...
+
+    def createAttribute(self, name: str) -> Attr: ...
+
+    def createAttributeNS(self, namespace: str | None, name: str) -> Attr: ...
+
     location: Location | None
     referrer: str
     lastModified: str
@@ -4758,25 +6726,35 @@ class Document(XPathEvaluator, GlobalEventHandlers, DocumentAndElementEventHandl
     links: HTMLCollection
     forms: HTMLCollection
     scripts: HTMLCollection
+
     def getElementsByName(self, elementName: str) -> NodeList: ...
+
     defaultView: WindowProxy | None
+
     def hasFocus(self) -> bool: ...
+
     onreadystatechange: EventHandler
     onbeforescriptexecute: EventHandler
     onafterscriptexecute: EventHandler
     onselectionchange: EventHandler
     currentScript: Element | None
+
     def releaseCapture(self): ...
+
     documentURIObject: URI | None
     referrerPolicy: int
     anchors: HTMLCollection
     applets: HTMLCollection
     fullscreen: bool
     fullscreenEnabled: bool
+
     def exitFullscreen(self): ...
+
     onfullscreenchange: EventHandler
     onfullscreenerror: EventHandler
+
     def exitPointerLock(self): ...
+
     onpointerlockchange: EventHandler
     onpointerlockerror: EventHandler
     hidden: bool
@@ -4790,33 +6768,66 @@ class Document(XPathEvaluator, GlobalEventHandlers, DocumentAndElementEventHandl
     def enableStyleSheetsForSet(self, name: str | None): ...
 
     def caretPositionFromPoint(self, x: float, y: float) -> CaretPosition | None: ...
+
     scrollingElement: Element | None
+
     def querySelector(self, selectors: str) -> Element | None: ...
+
     def querySelectorAll(self, selectors: str) -> NodeList: ...
+
     timeline: DocumentTimeline
     rootElement: SVGSVGElement | None
     isSrcdocDocument: bool
     sandboxFlagsAsString: str | None
+
     def insertAnonymousContent(self, aElement: Element) -> AnonymousContent: ...
+
     def removeAnonymousContent(self, aContent: AnonymousContent): ...
+
     def getSelection(self) -> Selection | None: ...
+
     userHasInteracted: bool
+
     def notifyUserGestureActivation(self): ...
+
     documentFlashClassification: FlashClassification
 
 
 class SVGPolygonElement(SVGGeometryElement, SVGAnimatedPoints): ...
 
+
+class DelayNode(AudioNode):
+    delayTime: AudioParam
+
+
 class PromiseNativeHandler: ...
+
+
+class MediaStreamTrackEvent(Event):
+    track: MediaStreamTrack
+
+
+class DeviceProximityEvent(Event):
+    value: float
+    min: float
+    max: float
+
 
 class SVGLengthList:
     numberOfItems: int
+
     def clear(self): ...
+
     def initialize(self, newItem: SVGLength) -> SVGLength: ...
+
     def insertItemBefore(self, newItem: SVGLength, index: int) -> SVGLength: ...
+
     def replaceItem(self, newItem: SVGLength, index: int) -> SVGLength: ...
+
     def removeItem(self, index: int) -> SVGLength: ...
+
     def appendItem(self, newItem: SVGLength) -> SVGLength: ...
+
 
 class AudioProcessingEvent(Event):
     playbackTime: float
@@ -4824,30 +6835,94 @@ class AudioProcessingEvent(Event):
     outputBuffer: AudioBuffer
 
 
+class Event:
+    type: str
+    target: EventTarget | None
+    currentTarget: EventTarget | None
+    eventPhase: int
+
+    def stopPropagation(self): ...
+
+    def stopImmediatePropagation(self): ...
+
+    bubbles: bool
+    cancelable: bool
+
+    def preventDefault(self): ...
+
+    defaultPrevented: bool
+    defaultPreventedByChrome: bool
+    defaultPreventedByContent: bool
+    composed: bool
+    isTrusted: bool
+    timeStamp: DOMHighResTimeStamp
+
+    def initEvent(self, type: str, bubbles: bool | None = false, cancelable: bool | None = false): ...
+
+    cancelBubble: bool
+
+
 class SVGGradientElement(SVGElement, SVGURIReference):
     gradientUnits: SVGAnimatedEnumeration
     gradientTransform: SVGAnimatedTransformList
     spreadMethod: SVGAnimatedEnumeration
 
+
 class HTMLHeadElement(HTMLElement): ...
+
 
 class SVGFEFuncBElement(SVGComponentTransferFunctionElement): ...
 
+
 class XMLHttpRequestUpload(XMLHttpRequestEventTarget): ...
+
 
 class HTMLDialogElement(HTMLElement):
     open: bool
     returnValue: str
+
     def show(self): ...
+
     def showModal(self): ...
+
     def close(self, returnValue: str | None = None): ...
 
 
-class Animation:
+class Animation(EventTarget):
+    id: str
+    effect: AnimationEffect | None
+    timeline: AnimationTimeline | None
+    startTime: float | None
+    currentTime: float | None
+    playbackRate: float
+    playState: AnimationPlayState
+    pending: bool
+    onfinish: EventHandler
+    oncancel: EventHandler
+
+    def cancel(self): ...
+
+    def finish(self): ...
+
+    def play(self): ...
+
+    def pause(self): ...
+
+    def updatePlaybackRate(self, playbackRate: float): ...
+
+    def reverse(self): ...
+
     isRunningOnCompositor: bool
+
+
+class GamepadAxisMoveEvent(GamepadEvent):
+    axis: int
+    value: float
+
 
 class TouchList:
     length: int
+
 
 class IDBIndex:
     name: str
@@ -4857,17 +6932,31 @@ class IDBIndex:
     locale: str | None
     isAutoLocale: bool
 
+
 class SVGTextElement(SVGTextPositioningElement): ...
+
 
 class SVGAnimatedInteger:
     baseVal: int
     animVal: int
 
+
 class IDBKeyRange:
     lowerOpen: bool
     upperOpen: bool
 
+
 class IDBLocaleAwareKeyRange(IDBKeyRange): ...
+
+
+class BroadcastChannel(EventTarget):
+    name: str
+
+    def close(self): ...
+
+    onmessage: EventHandler
+    onmessageerror: EventHandler
+
 
 class SVGGeometryElement(SVGGraphicsElement):
     pathLength: SVGAnimatedNumber
@@ -4876,32 +6965,53 @@ class SVGGeometryElement(SVGGraphicsElement):
 
     def getPointAtLength(self, distance: float) -> SVGPoint: ...
 
+
 class SVGStringList:
     length: int
     numberOfItems: int
+
     def clear(self): ...
+
     def initialize(self, newItem: str) -> str: ...
+
     def getItem(self, index: int) -> str: ...
+
     def insertItemBefore(self, newItem: str, index: int) -> str: ...
+
     def replaceItem(self, newItem: str, index: int) -> str: ...
+
     def removeItem(self, index: int) -> str: ...
+
     def appendItem(self, newItem: str) -> str: ...
+
 
 class Performance(EventTarget):
     def now(self) -> DOMHighResTimeStamp: ...
+
     timeOrigin: DOMHighResTimeStamp
     timing: PerformanceTiming
     navigation: PerformanceNavigation
+
     def toJSON(self) -> object: ...
+
     def getEntries(self) -> PerformanceEntryList: ...
+
     def getEntriesByType(self, entryType: str) -> PerformanceEntryList: ...
+
     def getEntriesByName(self, name: str, entryType: str | None = None) -> PerformanceEntryList: ...
+
     def clearResourceTimings(self): ...
+
     def setResourceTimingBufferSize(self, maxSize: int): ...
+
     onresourcetimingbufferfull: EventHandler
+
     def mark(self, markName: str): ...
+
     def clearMarks(self, markName: str | None = None): ...
+
     def measure(self, measureName: str, startMark: str | None = None, endMark: str | None = None): ...
+
     def clearMeasures(self, measureName: str | None = None): ...
 
 
@@ -4910,64 +7020,183 @@ class SVGTextPathElement(SVGTextContentElement, SVGURIReference):
     method: SVGAnimatedEnumeration
     spacing: SVGAnimatedEnumeration
 
+
+class XSLTProcessor:
+    def importStylesheet(self, style: Node): ...
+
+    def transformToFragment(self, source: Node, output: Document) -> DocumentFragment: ...
+
+    def transformToDocument(self, source: Node) -> Document: ...
+
+    def getParameter(self, namespaceURI: str, localName: str) -> nsIVariant | None: ...
+
+    def removeParameter(self, namespaceURI: str, localName: str): ...
+
+    def clearParameters(self): ...
+
+    def reset(self): ...
+
+    flags: int
+
+
 class SpeechSynthesis(EventTarget):
     pending: bool
     speaking: bool
     paused: bool
+
     def speak(self, utterance: SpeechSynthesisUtterance): ...
+
     def cancel(self): ...
+
     def pause(self): ...
+
     def resume(self): ...
+
     onvoiceschanged: EventHandler
+
     def forceEnd(self): ...
 
+
+class PushManagerImpl: ...
+
+
 class PushManager: ...
+
 
 class MediaCapabilitiesInfo:
     supported: bool
     smooth: bool
     powerEfficient: bool
 
+
 class MediaCapabilities: ...
+
+
+class PeerConnectionObserver:
+    def onCreateOfferSuccess(self, offer: str): ...
+
+    def onCreateOfferError(self, name: int, message: str): ...
+
+    def onCreateAnswerSuccess(self, answer: str): ...
+
+    def onCreateAnswerError(self, name: int, message: str): ...
+
+    def onSetLocalDescriptionSuccess(self): ...
+
+    def onSetRemoteDescriptionSuccess(self): ...
+
+    def onSetLocalDescriptionError(self, name: int, message: str): ...
+
+    def onSetRemoteDescriptionError(self, name: int, message: str): ...
+
+    def onAddIceCandidateSuccess(self): ...
+
+    def onAddIceCandidateError(self, name: int, message: str): ...
+
+    def onIceCandidate(self, level: int, mid: str, candidate: str): ...
+
+    def onGetStatsSuccess(self, report: RTCStatsReportInternal | None = None): ...
+
+    def onGetStatsError(self, name: int, message: str): ...
+
+    def notifyDataChannel(self, channel: RTCDataChannel): ...
+
+    def onStateChange(self, state: PCObserverStateType): ...
+
+    def onTransceiverNeeded(self, kind: str, transceiverImpl: TransceiverImpl): ...
+
+    def onDTMFToneChange(self, track: MediaStreamTrack, tone: str): ...
+
+    def onPacket(self, level: int, type: mozPacketDumpType, sending: bool, packet: ArrayBuffer): ...
+
+    def syncTransceivers(self): ...
+
 
 class HTMLDivElement(HTMLElement):
     align: str
 
+
 class TreeView:
     rowCount: int
     selection: nsITreeSelection | None
+
     def getRowProperties(self, row: int) -> str: ...
+
     def getCellProperties(self, row: int, column: TreeColumn) -> str: ...
+
     def getColumnProperties(self, column: TreeColumn) -> str: ...
+
     def isContainer(self, row: int) -> bool: ...
+
     def isContainerOpen(self, row: int) -> bool: ...
+
     def isContainerEmpty(self, row: int) -> bool: ...
+
     def isSeparator(self, row: int) -> bool: ...
+
     def isSorted(self) -> bool: ...
+
     def canDrop(self, row: int, orientation: int, dataTransfer: DataTransfer | None) -> bool: ...
+
     def drop(self, row: int, orientation: int, dataTransfer: DataTransfer | None): ...
+
     def getParentIndex(self, row: int) -> int: ...
+
     def hasNextSibling(self, row: int, afterIndex: int) -> bool: ...
+
     def getLevel(self, row: int) -> int: ...
+
     def getImageSrc(self, row: int, column: TreeColumn) -> str: ...
+
     def getCellValue(self, row: int, column: TreeColumn) -> str: ...
+
     def getCellText(self, row: int, column: TreeColumn) -> str: ...
+
     def setTree(self, tree: TreeBoxObject | None): ...
+
     def toggleOpenState(self, row: int): ...
+
     def cycleHeader(self, column: TreeColumn): ...
+
     def selectionChanged(self): ...
+
     def cycleCell(self, row: int, column: TreeColumn): ...
+
     def isEditable(self, row: int, column: TreeColumn) -> bool: ...
+
     def isSelectable(self, row: int, column: TreeColumn) -> bool: ...
+
     def setCellValue(self, row: int, column: TreeColumn, value: str): ...
+
     def setCellText(self, row: int, column: TreeColumn, value: str): ...
+
     def performAction(self, action: str): ...
+
     def performActionOnRow(self, action: str, row: int): ...
+
     def performActionOnCell(self, action: str, row: int, column: TreeColumn): ...
+
 
 class HTMLLIElement(HTMLElement):
     value: int
     type: str
+
+
+class DOMPointReadOnly:
+    x: float
+    y: float
+    z: float
+    w: float
+
+    def toJSON(self) -> object: ...
+
+
+class DOMPoint(DOMPointReadOnly):
+    x: float
+    y: float
+    z: float
+    w: float
+
 
 class MediaStreamError:
     name: str
@@ -4979,14 +7208,19 @@ class SVGAnimatedNumber:
     baseVal: float
     animVal: float
 
+
 class PushSubscription:
     endpoint: USVString
     options: PushSubscriptionOptions
+
     def getKey(self, name: PushEncryptionKeyName) -> ArrayBuffer: ...
+
     def toJSON(self) -> PushSubscriptionJSON: ...
+
 
 class HTMLSlotElement(HTMLElement):
     name: str
+
 
 class SVGMaskElement(SVGElement):
     maskUnits: SVGAnimatedEnumeration
@@ -5000,7 +7234,29 @@ class SVGMaskElement(SVGElement):
 class SVGSymbolElement(SVGElement, SVGFitToViewBox, SVGTests): ...
 
 
+class FontFaceSetLoadEvent(Event): ...
+
+
 class SVGViewElement(SVGElement, SVGFitToViewBox, SVGZoomAndPanValues): ...
+
+
+class FileReaderSync:
+    def readAsArrayBuffer(self, blob: Blob) -> ArrayBuffer: ...
+
+    def readAsBinaryString(self, blob: Blob) -> str: ...
+
+    def readAsText(self, blob: Blob, encoding: str | None = None) -> str: ...
+
+    def readAsDataURL(self, blob: Blob) -> str: ...
+
+
+class MediaRecorderErrorEvent(Event):
+    error: DOMException
+
+
+class TrackEvent(Event):
+    track: VideoTrack | AudioTrack | TextTrack | None
+
 
 class IDBFileHandle(EventTarget):
     mutableFile: IDBMutableFile | None
@@ -5008,17 +7264,27 @@ class IDBFileHandle(EventTarget):
     mode: FileMode
     active: bool
     location: int | None
+
     def getMetadata(self, parameters: IDBFileMetadataParameters | None = {}) -> IDBFileRequest | None: ...
+
     def readAsArrayBuffer(self, size: int) -> IDBFileRequest | None: ...
+
     def readAsText(self, size: int, encoding: str | None = None) -> IDBFileRequest | None: ...
+
     def write(self, value: str | ArrayBuffer | ArrayBufferView | Blob) -> IDBFileRequest | None: ...
+
     def append(self, value: str | ArrayBuffer | ArrayBufferView | Blob) -> IDBFileRequest | None: ...
+
     def truncate(self, size: int | None = None) -> IDBFileRequest | None: ...
+
     def flush(self) -> IDBFileRequest | None: ...
+
     def abort(self): ...
+
     oncomplete: EventHandler
     onabort: EventHandler
     onerror: EventHandler
+
 
 class NodeIterator:
     root: Node
@@ -5026,9 +7292,13 @@ class NodeIterator:
     pointerBeforeReferenceNode: bool
     whatToShow: int
     filter: NodeFilter | None
+
     def nextNode(self) -> Node | None: ...
+
     def previousNode(self) -> Node | None: ...
+
     def detach(self): ...
+
 
 class ReadableStream:
     locked: bool
@@ -5046,67 +7316,115 @@ class ReadableStreamDefaultReader(ReadableStreamGenericReader):
 class ReadableStreamBYOBReader(ReadableStreamGenericReader):
     def releaseLock(self): ...
 
+
 class ReadableStreamDefaultController:
     desiredSize: float | None
+
     def close(self): ...
+
 
 class ReadableByteStreamController:
     byobRequest: ReadableStreamBYOBRequest | None
     desiredSize: float | None
+
     def close(self): ...
+
     def enqueue(self, chunk: ArrayBufferView): ...
+
 
 class ReadableStreamBYOBRequest:
     view: ArrayBufferView | None
+
     def respond(self, bytesWritten: int): ...
+
     def respondWithNewView(self, view: ArrayBufferView): ...
+
 
 class WritableStream:
     locked: bool
+
     def getWriter(self) -> WritableStreamDefaultWriter: ...
+
 
 class WritableStreamDefaultWriter:
     desiredSize: float | None
+
     def releaseLock(self): ...
+
 
 class WritableStreamDefaultController:
     signal: AbortSignal
+
 
 class TransformStream:
     readable: ReadableStream
     writable: WritableStream
 
+
 class TransformStreamDefaultController:
     desiredSize: float | None
+
     def terminate(self): ...
+
 
 class ByteLengthQueuingStrategy:
     highWaterMark: float
     size: Function
 
+
 class CountQueuingStrategy:
     highWaterMark: float
     size: Function
+
 
 class HTMLModElement(HTMLElement):
     cite: str
     dateTime: str
 
+
+class StyleSheetApplicableStateChangeEvent(Event):
+    stylesheet: CSSStyleSheet | None
+    applicable: bool
+
+
+class PaymentRequestUpdateEvent(Event): ...
+
+
 class SVGNumberList:
     numberOfItems: int
+
     def clear(self): ...
+
     def initialize(self, newItem: SVGNumber) -> SVGNumber: ...
+
     def insertItemBefore(self, newItem: SVGNumber, index: int) -> SVGNumber: ...
+
     def replaceItem(self, newItem: SVGNumber, index: int) -> SVGNumber: ...
+
     def removeItem(self, index: int) -> SVGNumber: ...
+
     def appendItem(self, newItem: SVGNumber) -> SVGNumber: ...
 
+
 class RTCStatsReport: ...
+
+
+class SpeechGrammarList:
+    length: int
+
+    def addFromURI(self, src: str, weight: float | None = None): ...
+
+    def addFromString(self, string: str, weight: float | None = None): ...
+
+
+class CustomEvent(Event): ...
+
 
 class GamepadButton:
     pressed: bool
     touched: bool
     value: float
+
 
 class Gamepad:
     id: str
@@ -5118,6 +7436,7 @@ class Gamepad:
     timestamp: DOMHighResTimeStamp
     pose: GamepadPose | None
 
+
 class HTMLFontElement(HTMLElement):
     color: str
     face: str
@@ -5127,14 +7446,44 @@ class HTMLFontElement(HTMLElement):
 class SVGNumber:
     value: float
 
+
+class KeyboardEvent(UIEvent):
+    charCode: int
+    keyCode: int
+    altKey: bool
+    ctrlKey: bool
+    shiftKey: bool
+    metaKey: bool
+
+    def getModifierState(self, key: str) -> bool: ...
+
+    location: int
+    repeat: bool
+    isComposing: bool
+    key: str
+    code: str
+
+    def initKeyboardEvent(self, typeArg: str, bubblesArg: bool | None = false, cancelableArg: bool | None = false,
+                          viewArg: Window | None = None, keyArg: str | None = "", locationArg: int | None = 0,
+                          ctrlKey: bool | None = false, altKey: bool | None = false, shiftKey: bool | None = false,
+                          metaKey: bool | None = false): ...
+
+    initDict: KeyboardEventInit
+
+
 class CSSPageRule(CSSRule):
     style: CSSStyleDeclaration
 
+
 class ConsoleInstance:
     def clear(self): ...
+
     def count(self, label: str | None = "default"): ...
+
     def countReset(self, label: str | None = "default"): ...
+
     def groupEnd(self): ...
+
     def time(self, label: str | None = "default"): ...
 
     def timeEnd(self, label: str | None = "default"): ...
@@ -5156,8 +7505,13 @@ class SVGMarkerElement(SVGElement, SVGFitToViewBox):
 
     def setOrientToAngle(self, angle: SVGAngle): ...
 
+
 class BarProp:
     visible: bool
+
+
+class DeviceLightEvent(Event):
+    value: float
 
 
 class SVGElement(Element, GlobalEventHandlers, DocumentAndElementEventHandlers, TouchEventHandlers,
@@ -5173,6 +7527,22 @@ class SVGElement(Element, GlobalEventHandlers, DocumentAndElementEventHandlers, 
     def focus(self): ...
 
     def blur(self): ...
+
+
+class TouchEvent(UIEvent):
+    touches: TouchList
+    targetTouches: TouchList
+    changedTouches: TouchList
+    altKey: bool
+    metaKey: bool
+    ctrlKey: bool
+    shiftKey: bool
+
+    def initTouchEvent(self, type: str, canBubble: bool | None = false, cancelable: bool | None = false,
+                       view: Window | None = None, detail: int | None = 0, ctrlKey: bool | None = false,
+                       altKey: bool | None = false, shiftKey: bool | None = false, metaKey: bool | None = false,
+                       touches: TouchList | None = None, targetTouches: TouchList | None = None,
+                       changedTouches: TouchList | None = None): ...
 
 
 class AudioParam:
@@ -5205,10 +7575,27 @@ class WorkerGlobalScope(EventTarget, GlobalCrypto, WindowOrWorkerGlobalScope):
     onoffline: EventHandler
     ononline: EventHandler
 
+
 class SVGFEFuncGElement(SVGComponentTransferFunctionElement): ...
+
+
+class AudioBufferSourceNode(AudioScheduledSourceNode):
+    buffer: AudioBuffer | None
+    playbackRate: AudioParam
+    detune: AudioParam
+    loop: bool
+    loopStart: float
+    loopEnd: float
+    onended: EventHandler
+
+    def start(self, when: float | None = 0, grainOffset: float | None = 0, grainDuration: float | None = None): ...
+
+    def stop(self, when: float | None = 0): ...
+
 
 class PaymentAddress:
     def toJSON(self) -> object: ...
+
     country: str
     region: str
     city: str
@@ -5220,21 +7607,39 @@ class PaymentAddress:
     recipient: str
     phone: str
 
+
+class WheelEvent(MouseEvent):
+    deltaX: float
+    deltaY: float
+    deltaZ: float
+    deltaMode: int
+
+
 class FontFaceSetIterator:
     def next(self) -> FontFaceSetIteratorResult: ...
 
+
 class FontFaceSet(EventTarget):
     size: int
+
     def add(self, font: FontFace): ...
+
     def has(self, font: FontFace) -> bool: ...
+
     def delete(self, font: FontFace) -> bool: ...
+
     def clear(self): ...
+
     def entries(self) -> FontFaceSetIterator: ...
+
     def values(self) -> FontFaceSetIterator: ...
+
     onloading: EventHandler
     onloadingdone: EventHandler
     onloadingerror: EventHandler
+
     def check(self, font: str, text: str | None = " ") -> bool: ...
+
     status: FontFaceSetLoadStatus
 
 
@@ -5242,6 +7647,7 @@ class DocumentType(Node, ChildNode):
     name: str
     publicId: str
     systemId: str
+
 
 class PresentationConnection(EventTarget):
     id: str
@@ -5251,13 +7657,21 @@ class PresentationConnection(EventTarget):
     onclose: EventHandler
     onterminate: EventHandler
     binaryType: PresentationConnectionBinaryType
+
     def send(self, data: str): ...
+
     def send(self, data: Blob): ...
+
     def send(self, data: ArrayBuffer): ...
+
     def send(self, data: ArrayBufferView): ...
+
     onmessage: EventHandler
+
     def close(self): ...
+
     def terminate(self): ...
+
 
 class HTMLTableColElement(HTMLElement):
     span: int
@@ -5267,13 +7681,21 @@ class HTMLTableColElement(HTMLElement):
     vAlign: str
     width: str
 
+
+class HiddenPluginEvent(Event):
+    tag: PluginTag | None
+
+
 class SVGAnimatedLengthList:
     baseVal: SVGLengthList
     animVal: SVGLengthList
 
+
 class PerformanceObserverEntryList:
     def getEntries(self, filter: PerformanceEntryFilterOptions | None = None) -> PerformanceEntryList: ...
+
     def getEntriesByType(self, entryType: str) -> PerformanceEntryList: ...
+
     def getEntriesByName(self, name: str, entryType: str | None = None) -> PerformanceEntryList: ...
 
 
@@ -5290,16 +7712,20 @@ class SVGGraphicsElement(SVGElement, SVGTests):
 
     def getTransformToElement(self, element: SVGGraphicsElement) -> SVGMatrix: ...
 
+
 class HTMLParamElement(HTMLElement):
     name: str
     value: str
     type: str
     valueType: str
 
+
 class SVGFEFuncRElement(SVGComponentTransferFunctionElement): ...
+
 
 class NodeList:
     length: int
+
 
 class IDBFactory:
     def open(self, name: str, version: int) -> IDBOpenDBRequest: ...
@@ -5316,41 +7742,87 @@ class IDBFactory:
     def deleteForPrincipal(self, principal: Principal, name: str,
                            options: IDBOpenDBOptions | None = {}) -> IDBOpenDBRequest: ...
 
+
+class UserProximityEvent(Event):
+    near: bool
+
+
 class DedicatedWorkerGlobalScope(WorkerGlobalScope):
     name: str
+
     def close(self): ...
+
     onmessage: EventHandler
     onmessageerror: EventHandler
 
+
 class CacheStorage: ...
+
 
 class PositionError:
     code: int
     message: str
 
+
 class Presentation:
     defaultRequest: PresentationRequest | None
     receiver: PresentationReceiver | None
 
+
 class VideoStreamTrack(MediaStreamTrack): ...
+
+
+class FontFace:
+    family: str
+    style: str
+    weight: str
+    stretch: str
+    unicodeRange: str
+    variant: str
+    featureSettings: str
+    variationSettings: str
+    display: str
+    status: FontFaceLoadStatus
+
+
+class TCPServerSocket(EventTarget):
+    localPort: int
+    onconnect: EventHandler
+    onerror: EventHandler
+
+    def close(self): ...
+
 
 class MediaKeys:
     keySystem: str
+
     def createSession(self, sessionType: MediaKeySessionType | None = "temporary") -> MediaKeySession: ...
+
 
 class SVGAnimatedAngle:
     baseVal: SVGAngle
     animVal: SVGAngle
 
+
+class MediaKeyMessageEvent(Event):
+    messageType: MediaKeyMessageType
+    message: ArrayBuffer
+
+
 class HTMLAllCollection:
     length: int
+
     def item(self, index: int) -> Node | None: ...
+
     def item(self, name: str) -> Node | HTMLCollection | None: ...
+
 
 class HTMLCanvasElement(HTMLElement):
     width: int
     height: int
+
     def transferControlToOffscreen(self) -> OffscreenCanvas: ...
+
 
 class GamepadServiceTest:
     noMapping: GamepadMappingType
@@ -5370,12 +7842,46 @@ class GamepadServiceTest:
     def newPoseMove(self, index: int, orient: Float32Array, pos: Float32Array, angVelocity: Float32Array,
                     angAcceleration: Float32Array, linVelocity: Float32Array, linAcceleration: Float32Array): ...
 
+
 class AbortSignal(EventTarget):
     aborted: bool
     onabort: EventHandler
 
+
+class MediaRecorder(EventTarget):
+    stream: MediaStream
+    state: RecordingState
+    mimeType: str
+    ondataavailable: EventHandler
+    onerror: EventHandler
+    onstart: EventHandler
+    onstop: EventHandler
+    onwarning: EventHandler
+
+    def start(self, timeSlice: int | None = None): ...
+
+    def stop(self): ...
+
+    def pause(self): ...
+
+    def resume(self): ...
+
+    def requestData(self): ...
+
+
 class FileSystemFileEntry(FileSystemEntry):
     def file(self, successCallback: FileCallback, errorCallback: ErrorCallback | None = None): ...
+
+
+class DragEvent(MouseEvent):
+    dataTransfer: DataTransfer | None
+
+    def initDragEvent(self, type: str, canBubble: bool | None = false, cancelable: bool | None = false,
+                      aView: Window | None = None, aDetail: int | None = 0, aScreenX: int | None = 0,
+                      aScreenY: int | None = 0, aClientX: int | None = 0, aClientY: int | None = 0,
+                      aCtrlKey: bool | None = false, aAltKey: bool | None = false, aShiftKey: bool | None = false,
+                      aMetaKey: bool | None = false, aButton: int | None = 0, aRelatedTarget: EventTarget | None = None,
+                      aDataTransfer: DataTransfer | None = None): ...
 
 
 class HTMLAreaElement(HTMLElement, HTMLHyperlinkElementUtils):
@@ -5390,24 +7896,42 @@ class HTMLAreaElement(HTMLElement, HTMLHyperlinkElementUtils):
     relList: DOMTokenList
     noHref: bool
 
+
 class IDBTransaction(EventTarget):
     mode: IDBTransactionMode
     db: IDBDatabase
     error: DOMException | None
+
     def objectStore(self, name: str) -> IDBObjectStore: ...
+
     def commit(self): ...
+
     def abort(self): ...
+
     onabort: EventHandler
     oncomplete: EventHandler
     onerror: EventHandler
     objectStoreNames: DOMStringList
 
+
 class CSSConditionRule(CSSGroupingRule):
     conditionText: str
+
 
 class SVGFEDistantLightElement(SVGElement):
     azimuth: SVGAnimatedNumber
     elevation: SVGAnimatedNumber
+
+
+class EventTarget:
+    def addEventListener(self, type: str, listener: EventListener,
+                         options: AddEventListenerOptions | bool | None = None, wantsUntrusted: bool | None = None): ...
+
+    def removeEventListener(self, type: str, listener: EventListener,
+                            options: EventListenerOptions | bool | None = None): ...
+
+    def dispatchEvent(self, event: Event) -> bool: ...
+
 
 class PresentationConnectionList(EventTarget):
     onconnectionavailable: EventHandler
@@ -5415,42 +7939,68 @@ class PresentationConnectionList(EventTarget):
 
 class SVGMPathElement(SVGElement, SVGURIReference): ...
 
+
 class HTMLParagraphElement(HTMLElement):
     align: str
 
+
 class RTCIdentityProviderRegistrar:
     def register(self, idp: RTCIdentityProvider): ...
+
     hasIdp: bool
+
 
 class IDBCursor:
     source: IDBObjectStore | IDBIndex
     direction: IDBCursorDirection
     request: IDBRequest
+
     def advance(self, count: int): ...
+
     def delete(self) -> IDBRequest: ...
 
+
 class IDBCursorWithValue(IDBCursor): ...
+
 
 class HTMLTitleElement(HTMLElement):
     text: str
 
+
+class AnimationEvent(Event):
+    animationName: str
+    elapsedTime: float
+    pseudoElement: str
+
+
 class CSSTransition(Animation):
     transitionProperty: str
+
 
 class HTMLUListElement(HTMLElement):
     compact: bool
     type: str
 
+
 class DOMStringList:
     length: int
+
     def contains(self, string: str) -> bool: ...
+
+
+class TCPServerSocketEvent(Event):
+    socket: TCPSocket
+
 
 class TextTrackList(EventTarget):
     length: int
+
     def getTrackById(self, id: str) -> TextTrack | None: ...
+
     onchange: EventHandler
     onaddtrack: EventHandler
     onremovetrack: EventHandler
+
 
 class HTMLTrackElement(HTMLElement):
     kind: str
@@ -5468,23 +8018,65 @@ class SVGPoint:
 
     def matrixTransform(self, matrix: SVGMatrix) -> SVGPoint: ...
 
+
 class AnimationEffect:
     def getTiming(self) -> EffectTiming: ...
+
     def getComputedTiming(self) -> ComputedEffectTiming: ...
+
     def updateTiming(self, timing: OptionalEffectTiming | None = None): ...
 
+
+class FormData:
+    def append(self, name: USVString, value: Blob, filename: USVString | None = None): ...
+
+    def append(self, name: USVString, value: USVString): ...
+
+    def delete(self, name: USVString): ...
+
+    def get(self, name: USVString) -> FormDataEntryValue | None: ...
+
+    def has(self, name: USVString) -> bool: ...
+
+    def set(self, name: USVString, value: Blob, filename: USVString | None = None): ...
+
+    def set(self, name: USVString, value: USVString): ...
+
+
+class SpeechSynthesisUtterance(EventTarget):
+    text: str
+    lang: str
+    voice: SpeechSynthesisVoice | None
+    volume: float
+    rate: float
+    pitch: float
+    onstart: EventHandler
+    onend: EventHandler
+    onerror: EventHandler
+    onpause: EventHandler
+    onresume: EventHandler
+    onmark: EventHandler
+    onboundary: EventHandler
+    chosenVoiceURI: str
+
+
 class XPathExpression: ...
+
 
 class ServiceWorkerContainer(EventTarget):
     controller: ServiceWorker | None
     oncontrollerchange: EventHandler
     onerror: EventHandler
     onmessage: EventHandler
+
     def getScopeForUrl(self, url: str) -> str: ...
+
 
 class CanvasCaptureMediaStream(MediaStream):
     canvas: HTMLCanvasElement
+
     def requestFrame(self): ...
+
 
 class SVGLineElement(SVGGeometryElement):
     x1: SVGAnimatedLength
@@ -5492,11 +8084,14 @@ class SVGLineElement(SVGGeometryElement):
     x2: SVGAnimatedLength
     y2: SVGAnimatedLength
 
+
 class MIDIInputMap: ...
+
 
 class MediaError:
     code: int
     message: str
+
 
 class SVGTextContentElement(SVGGraphicsElement):
     textLength: SVGAnimatedLength
@@ -5520,26 +8115,53 @@ class SVGTextContentElement(SVGGraphicsElement):
 
     def selectSubString(self, charnum: int, nchars: int): ...
 
+
 class SpeechRecognitionAlternative:
     transcript: str
     confidence: float
 
+
 class AudioNode(EventTarget):
     def connect(self, destination: AudioNode, output: int | None = 0, input: int | None = 0) -> AudioNode: ...
+
     def connect(self, destination: AudioParam, output: int | None = 0): ...
+
     def disconnect(self): ...
+
     def disconnect(self, output: int): ...
+
     def disconnect(self, destination: AudioNode): ...
+
     def disconnect(self, destination: AudioNode, output: int): ...
+
     def disconnect(self, destination: AudioNode, output: int, input: int): ...
+
     def disconnect(self, destination: AudioParam): ...
+
     def disconnect(self, destination: AudioParam, output: int): ...
+
     context: BaseAudioContext
     numberOfInputs: int
     numberOfOutputs: int
     channelCount: int
     channelCountMode: ChannelCountMode
     channelInterpretation: ChannelInterpretation
+
+
+class RTCTrackEvent(Event):
+    receiver: RTCRtpReceiver
+    track: MediaStreamTrack
+    transceiver: RTCRtpTransceiver
+
+
+class OfflineAudioContext(BaseAudioContext, rustBaseAudioContext):
+    length: int
+    oncomplete: EventHandler
+
+
+class RTCPeerConnectionIceEvent(Event):
+    candidate: RTCIceCandidate | None
+
 
 class GamepadPose:
     hasOrientation: bool
@@ -5551,18 +8173,35 @@ class GamepadPose:
     angularVelocity: Float32Array
     angularAcceleration: Float32Array
 
+
+class RTCDTMFToneChangeEvent(Event):
+    tone: str
+
+
 class HTMLBRElement(HTMLElement):
     clear: str
 
+
 class U2F: ...
+
 
 class IDBVersionChangeEvent(Event):
     oldVersion: int
     newVersion: int | None
 
+
 class FuzzingFunctions: ...
 
+
+class GamepadButtonEvent(GamepadEvent):
+    button: int
+
+
 class PresentationReceiver: ...
+
+
+class PromiseRejectionEvent(Event): ...
+
 
 class RTCRtpTransceiver:
     mid: str | None
@@ -5571,22 +8210,38 @@ class RTCRtpTransceiver:
     stopped: bool
     direction: RTCRtpTransceiverDirection
     currentDirection: RTCRtpTransceiverDirection | None
+
     def stop(self): ...
+
     def setRemoteTrackId(self, trackId: str): ...
+
     def remoteTrackIdIs(self, trackId: str) -> bool: ...
+
     def getRemoteTrackId(self) -> str: ...
+
     def setAddTrackMagic(self): ...
+
     addTrackMagic: bool
     shouldRemove: bool
+
     def setCurrentDirection(self, direction: RTCRtpTransceiverDirection): ...
+
     def setDirectionInternal(self, direction: RTCRtpTransceiverDirection): ...
+
     def setMid(self, mid: str): ...
+
     def unsetMid(self): ...
+
     def setStopped(self): ...
+
     def getKind(self) -> str: ...
+
     def hasBeenUsedToSend(self) -> bool: ...
+
     def sync(self): ...
+
     def insertDTMF(self, tones: str, duration: int | None = 100, interToneGap: int | None = 70): ...
+
 
 class WorkerLocation:
     href: USVString
@@ -5599,32 +8254,74 @@ class WorkerLocation:
     search: USVString
     hash: USVString
 
+
 class WorkletGlobalScope: ...
+
+
+class ChannelSplitterNode(AudioNode): ...
+
 
 class SVGAnimateMotionElement(SVGAnimationElement): ...
 
 
-class DataTransfer: ...
+class AbortController:
+    signal: AbortSignal
+
+    def abort(self): ...
+
+
+class DataTransfer:
+    dropEffect: str
+    effectAllowed: str
+    items: DataTransferItemList
+
+    def setDragImage(self, image: Element, x: int, y: int): ...
+
+    def getData(self, format: str) -> str: ...
+
+    def setData(self, format: str, data: str): ...
+
+    def clearData(self, format: str | None = None): ...
+
+    files: FileList | None
+
 
 class CaretPosition:
     offsetNode: Node | None
     offset: int
+
     def getClientRect(self) -> DOMRect | None: ...
+
+
+class Worker(EventTarget, AbstractWorker):
+    def terminate(self): ...
+
+    onmessage: EventHandler
+    onmessageerror: EventHandler
+
+
+class ChromeWorker(Worker): ...
+
 
 class SVGAnimatedNumberList:
     baseVal: SVGNumberList
     animVal: SVGNumberList
 
+
 class RadioNodeList(NodeList):
     value: str
 
+
 class VideoTrackList(EventTarget):
     length: int
+
     def getTrackById(self, id: str) -> VideoTrack | None: ...
+
     selectedIndex: int
     onchange: EventHandler
     onaddtrack: EventHandler
     onremovetrack: EventHandler
+
 
 class ServiceWorkerRegistration(EventTarget):
     installing: ServiceWorker | None
@@ -5644,10 +8341,71 @@ class HTMLBodyElement(HTMLElement, WindowEventHandlers):
     bgColor: str
     background: str
 
+
+class TCPSocket(EventTarget):
+    def upgradeToSecure(self): ...
+
+    host: USVString
+    port: int
+    ssl: bool
+    bufferedAmount: int
+
+    def suspend(self): ...
+
+    def resume(self): ...
+
+    def close(self): ...
+
+    def closeImmediately(self): ...
+
+    def send(self, data: ByteString) -> bool: ...
+
+    def send(self, data: ArrayBuffer, byteOffset: int | None = 0, byteLength: int | None = None) -> bool: ...
+
+    readyState: TCPReadyState
+    binaryType: TCPSocketBinaryType
+    onopen: EventHandler
+    ondrain: EventHandler
+    ondata: EventHandler
+    onerror: EventHandler
+    onclose: EventHandler
+
+
+class MessageEvent(Event):
+    origin: USVString
+    lastEventId: str
+    source: MessageEventSource | None
+
+
+class PageTransitionEvent(Event):
+    persisted: bool
+    inFrameSwap: bool
+
+
+class VTTCue(TextTrackCue):
+    region: VTTRegion | None
+    vertical: DirectionSetting
+    snapToLines: bool
+    line: float | AutoKeyword
+    lineAlign: LineAlignSetting
+    position: float | AutoKeyword
+    positionAlign: PositionAlignSetting
+    size: float
+    align: AlignSetting
+    text: str
+
+    def getCueAsHTML(self) -> DocumentFragment: ...
+
+
+class AudioWorkletProcessor:
+    port: MessagePort
+
+
 class IDBFileRequest(DOMRequest):
     fileHandle: IDBFileHandle | None
     lockedFile: IDBFileHandle | None
     onprogress: EventHandler
+
 
 class NotifyPaintEvent(Event):
     clientRects: DOMRectList
@@ -5656,7 +8414,22 @@ class NotifyPaintEvent(Event):
     transactionId: int
     paintTimeStamp: DOMHighResTimeStamp
 
+
 class IntlUtils: ...
+
+
+class URLSearchParams:
+    def append(self, name: USVString, value: USVString): ...
+
+    def delete(self, name: USVString): ...
+
+    def get(self, name: USVString) -> USVString | None: ...
+
+    def has(self, name: USVString) -> bool: ...
+
+    def set(self, name: USVString, value: USVString): ...
+
+    def sort(self): ...
 
 
 class DeviceAcceleration:
@@ -5670,9 +8443,31 @@ class DeviceRotationRate:
     beta: float | None
     gamma: float | None
 
+
+class DeviceMotionEvent(Event):
+    acceleration: DeviceAcceleration | None
+    accelerationIncludingGravity: DeviceAcceleration | None
+    rotationRate: DeviceRotationRate | None
+    interval: float | None
+
+
+class ProgressEvent(Event):
+    lengthComputable: bool
+    loaded: int
+    total: int
+
+
+class ExtendableMessageEvent(ExtendableEvent):
+    origin: str
+    lastEventId: str
+    source: Client | ServiceWorker | MessagePort | None
+
+
 class SVGDefsElement(SVGGraphicsElement): ...
 
+
 class Worklet: ...
+
 
 class Location:
     href: USVString
@@ -5684,9 +8479,13 @@ class Location:
     pathname: USVString
     search: USVString
     hash: USVString
+
     def assign(self, url: USVString): ...
+
     def replace(self, url: USVString): ...
+
     def reload(self, forceget: bool | None = false): ...
+
 
 class SpeechRecognitionResultList:
     length: int
@@ -5697,6 +8496,7 @@ class SVGRect:
     y: float
     width: float
     height: float
+
 
 class ValidityState:
     valueMissing: bool
@@ -5711,7 +8511,25 @@ class ValidityState:
     customError: bool
     valid: bool
 
+
 class HTMLFormControlsCollection(HTMLCollection): ...
+
+
+class AudioBuffer:
+    sampleRate: float
+    length: int
+    duration: float
+    numberOfChannels: int
+
+    def getChannelData(self, channel: int) -> Float32Array: ...
+
+    def copyFromChannel(self, destination: Float32Array, channelNumber: int, startInChannel: int | None = 0): ...
+
+    def copyToChannel(self, source: Float32Array, channelNumber: int, startInChannel: int | None = 0): ...
+
+
+class ChannelMergerNode(AudioNode): ...
+
 
 class VideoTrack:
     id: str
@@ -5721,7 +8539,14 @@ class VideoTrack:
     selected: bool
     sourceBuffer: SourceBuffer | None
 
+
 class Permissions: ...
+
+
+class UDPMessageEvent(Event):
+    remoteAddress: str
+    remotePort: int
+
 
 class HTMLMediaElement(HTMLElement):
     error: MediaError | None
@@ -5763,12 +8588,17 @@ class HTMLMediaElement(HTMLElement):
     audioTracks: AudioTrackList
     videoTracks: VideoTrackList
     textTracks: TextTrackList | None
+
     def addTextTrack(self, kind: TextTrackKind, label: str | None = "", language: str | None = "") -> TextTrack: ...
+
     mediaKeys: MediaKeys | None
     onencrypted: EventHandler
     onwaitingforkey: EventHandler
+
     def setVisible(self, aVisible: bool): ...
+
     def hasSuspendTaint(self) -> bool: ...
+
 
 class CreateOfferRequest:
     windowID: int
@@ -5776,29 +8606,42 @@ class CreateOfferRequest:
     callID: str
     isSecure: bool
 
+
 class PerformanceMark(PerformanceEntry): ...
+
 
 class TreeWalker:
     root: Node
     whatToShow: int
     filter: NodeFilter | None
     currentNode: Node
+
     def parentNode(self) -> Node | None: ...
+
     def firstChild(self) -> Node | None: ...
+
     def lastChild(self) -> Node | None: ...
+
     def previousSibling(self) -> Node | None: ...
+
     def nextSibling(self) -> Node | None: ...
+
     def previousNode(self) -> Node | None: ...
+
     def nextNode(self) -> Node | None: ...
+
 
 class SVGAnimatedPreserveAspectRatio:
     baseVal: SVGPreserveAspectRatio
     animVal: SVGPreserveAspectRatio
 
+
 class ImageBitmap:
     width: int
     height: int
+
     def close(self): ...
+
 
 class KeyEvent:
     def initKeyEvent(self, type: str, canBubble: bool | None = false, cancelable: bool | None = false,
@@ -5806,15 +8649,19 @@ class KeyEvent:
                      shiftKey: bool | None = false, metaKey: bool | None = false, keyCode: int | None = 0,
                      charCode: int | None = 0): ...
 
+
 class WakeLock: ...
+
 
 class WakeLockSentinel(EventTarget):
     released: bool
     type: WakeLockType
     onrelease: EventHandler
 
+
 class XRSystem(EventTarget):
     ondevicechange: EventHandler
+
 
 class XRSession(EventTarget):
     visibilityState: XRVisibilityState
@@ -5822,9 +8669,13 @@ class XRSession(EventTarget):
     supportedFrameRates: Float32Array
     renderState: XRRenderState
     inputSources: XRInputSourceArray
+
     def updateRenderState(self, state: XRRenderStateInit | None = {}): ...
+
     def requestAnimationFrame(self, callback: XRFrameRequestCallback) -> int: ...
+
     def cancelAnimationFrame(self, handle: int): ...
+
     onend: EventHandler
     oninputsourceschange: EventHandler
     onselect: EventHandler
@@ -5854,13 +8705,18 @@ class XRFrame:
 
     def getJointPose(self, joint: XRJointSpace, baseSpace: XRSpace) -> XRJointPose | None: ...
 
+
 class XRSpace(EventTarget): ...
+
 
 class XRReferenceSpace(XRSpace):
     def getOffsetReferenceSpace(self, originOffset: XRRigidTransform) -> XRReferenceSpace: ...
+
     onreset: EventHandler
 
+
 class XRBoundedReferenceSpace(XRReferenceSpace): ...
+
 
 class XRView:
     eye: XREye
@@ -5870,11 +8726,13 @@ class XRView:
 
     def requestViewportScale(self, scale: float | None): ...
 
+
 class XRViewport:
     x: int
     y: int
     width: int
     height: int
+
 
 class XRRigidTransform:
     position: DOMPointReadOnly
@@ -5882,11 +8740,13 @@ class XRRigidTransform:
     matrix: Float32Array
     inverse: XRRigidTransform
 
+
 class XRPose:
     transform: XRRigidTransform
     linearVelocity: DOMPointReadOnly | None
     angularVelocity: DOMPointReadOnly | None
     emulatedPosition: bool
+
 
 class XRViewerPose(XRPose): ...
 
@@ -5899,10 +8759,13 @@ class XRInputSource:
     hand: XRHand | None
     gamepad: Gamepad | None
 
+
 class XRInputSourceArray:
     length: int
 
+
 class XRLayer(EventTarget): ...
+
 
 class XRWebGLLayer(XRLayer):
     antialias: bool
@@ -5911,46 +8774,63 @@ class XRWebGLLayer(XRLayer):
     framebuffer: WebGLFramebuffer | None
     framebufferWidth: int
     framebufferHeight: int
+
     def getViewport(self, view: XRView) -> XRViewport | None: ...
+
 
 class XRSessionEvent(Event):
     session: XRSession
+
 
 class XRInputSourceEvent(Event):
     frame: XRFrame
     inputSource: XRInputSource
 
+
 class XRInputSourcesChangeEvent(Event):
     session: XRSession
+
 
 class XRReferenceSpaceEvent(Event):
     referenceSpace: XRReferenceSpace
     transform: XRRigidTransform | None
 
+
 class XRPermissionStatus(PermissionStatus): ...
+
 
 class MediaStreamTrackGenerator(MediaStreamTrack):
     writable: WritableStream
 
+
 class MediaStreamTrackProcessor:
     readable: ReadableStream
+
 
 class MediaSession:
     metadata: MediaMetadata | None
     playbackState: MediaSessionPlaybackState
+
     def setActionHandler(self, action: MediaSessionAction, handler: MediaSessionActionHandler | None): ...
+
     def setPositionState(self, state: MediaPositionState | None = {}): ...
+
     def setMicrophoneActive(self, active: bool): ...
+
     def setCameraActive(self, active: bool): ...
+
 
 class MediaMetadata:
     title: str
     artist: str
     album: str
 
+
 class XRHand:
     size: int
+
     def get(self, key: XRHandJoint) -> XRJointSpace: ...
+
 
 class XRJointSpace(XRSpace):
     jointName: XRHandJoint
@@ -5959,17 +8839,25 @@ class XRJointSpace(XRSpace):
 class XRJointPose(XRPose):
     radius: float
 
+
+class ImageCapture:
+    track: MediaStreamTrack
+
+
 class HID(EventTarget):
     onconnect: EventHandler
     ondisconnect: EventHandler
 
+
 class HIDConnectionEvent(Event):
     device: HIDDevice
+
 
 class HIDInputReportEvent(Event):
     device: HIDDevice
     reportId: octet
     data: DataView
+
 
 class HIDDevice(EventTarget):
     oninputreport: EventHandler
@@ -5978,12 +8866,15 @@ class HIDDevice(EventTarget):
     productId: int
     productName: str
 
+
 class USB(EventTarget):
     onconnect: EventHandler
     ondisconnect: EventHandler
 
+
 class USBConnectionEvent(Event):
     device: USBDevice
+
 
 class USBDevice:
     usbVersionMajor: octet
@@ -6003,35 +8894,44 @@ class USBDevice:
     configuration: USBConfiguration | None
     opened: bool
 
+
 class USBInTransferResult:
     data: DataView
     status: USBTransferStatus
+
 
 class USBOutTransferResult:
     bytesWritten: int
     status: USBTransferStatus
 
+
 class USBIsochronousInTransferPacket:
     data: DataView
     status: USBTransferStatus
 
+
 class USBIsochronousInTransferResult:
     data: DataView
+
 
 class USBIsochronousOutTransferPacket:
     bytesWritten: int
     status: USBTransferStatus
 
+
 class USBIsochronousOutTransferResult: ...
+
 
 class USBConfiguration:
     configurationValue: octet
     configurationName: str | None
 
+
 class USBInterface:
     interfaceNumber: octet
     alternate: USBAlternateInterface
     claimed: bool
+
 
 class USBAlternateInterface:
     alternateSetting: octet
@@ -6040,28 +8940,37 @@ class USBAlternateInterface:
     interfaceProtocol: octet
     interfaceName: str | None
 
+
 class USBEndpoint:
     endpointNumber: octet
     direction: USBDirection
     type: USBEndpointType
     packetSize: int
 
+
 class USBPermissionResult(PermissionStatus): ...
+
 
 class ClipboardEvent(Event):
     clipboardData: DataTransfer | None
 
+
 class Clipboard(EventTarget): ...
+
 
 class ClipboardItem:
     presentationStyle: PresentationStyle
     lastModified: int
     delayed: bool
 
+
 class ResizeObserver:
     def observe(self, target: Element, options: ResizeObserverOptions | None = {}): ...
+
     def unobserve(self, target: Element): ...
+
     def disconnect(self): ...
+
 
 class ResizeObserverEntry:
     target: Element
@@ -6071,6 +8980,7 @@ class ResizeObserverEntry:
 class ResizeObserverSize:
     inlineSize: float
     blockSize: float
+
 
 class GPUSupportedLimits:
     maxTextureDimension1D: int
@@ -6105,7 +9015,9 @@ class GPUSupportedLimits:
     maxComputeWorkgroupSizeZ: int
     maxComputeWorkgroupsPerDimension: int
 
+
 class GPUSupportedFeatures: ...
+
 
 class GPUAdapterInfo:
     vendor: str
@@ -6113,8 +9025,10 @@ class GPUAdapterInfo:
     device: str
     description: str
 
+
 class GPU:
     def getPreferredCanvasFormat(self) -> GPUTextureFormat: ...
+
 
 class GPUAdapter:
     features: GPUSupportedFeatures
@@ -6208,6 +9122,7 @@ class GPUPipelineLayout(GPUObjectBase): ...
 
 class GPUShaderModule(GPUObjectBase): ...
 
+
 class GPUCompilationMessage:
     message: str
     type: GPUCompilationMessageType
@@ -6215,6 +9130,7 @@ class GPUCompilationMessage:
     linePos: int
     offset: int
     length: int
+
 
 class GPUCompilationInfo: ...
 
@@ -6309,84 +9225,122 @@ class GPUQuerySet(GPUObjectBase):
     type: GPUQueryType
     count: GPUSize32
 
+
 class GPUCanvasContext:
     canvas: HTMLCanvasElement | OffscreenCanvas
+
     def configure(self, configuration: GPUCanvasConfiguration): ...
+
     def unconfigure(self): ...
+
     def getCurrentTexture(self) -> GPUTexture: ...
+
 
 class GPUDeviceLostInfo:
     reason: GPUDeviceLostReason | undefined
     message: str
 
+
 class GPUError:
     message: str
 
+
 class GPUValidationError(GPUError): ...
+
 
 class GPUOutOfMemoryError(GPUError): ...
 
+
 class GPUInternalError(GPUError): ...
+
 
 class GPUUncapturedErrorEvent(Event):
     error: GPUError
 
+
 class Serial(EventTarget):
     onconnect: EventHandler
     ondisconnect: EventHandler
+
 
 class SerialPort(EventTarget):
     onconnect: EventHandler
     ondisconnect: EventHandler
     readable: ReadableStream
     writable: WritableStream
+
     def getInfo(self) -> SerialPortInfo: ...
+
 
 class AudioDecoder:
     state: CodecState
     decodeQueueSize: int
+
     def configure(self, config: AudioDecoderConfig): ...
+
     def decode(self, chunk: EncodedAudioChunk): ...
+
     def reset(self): ...
+
     def close(self): ...
+
 
 class VideoDecoder:
     state: CodecState
     decodeQueueSize: int
+
     def configure(self, config: VideoDecoderConfig): ...
+
     def decode(self, chunk: EncodedVideoChunk): ...
+
     def reset(self): ...
+
     def close(self): ...
+
 
 class AudioEncoder:
     state: CodecState
     encodeQueueSize: int
+
     def configure(self, config: AudioEncoderConfig): ...
+
     def encode(self, data: AudioData): ...
+
     def reset(self): ...
+
     def close(self): ...
+
 
 class VideoEncoder:
     state: CodecState
     encodeQueueSize: int
+
     def configure(self, config: VideoEncoderConfig): ...
+
     def encode(self, frame: VideoFrame, options: VideoEncoderEncodeOptions | None = {}): ...
+
     def reset(self): ...
+
     def close(self): ...
+
 
 class EncodedAudioChunk:
     type: EncodedAudioChunkType
     timestamp: int
     duration: int | None
     byteLength: int
+
     def copyTo(self, destination: BufferSource): ...
+
 
 class EncodedVideoChunk:
     type: EncodedVideoChunkType
     timestamp: int
     duration: int | None
     byteLength: int
+
     def copyTo(self, destination: BufferSource): ...
+
 
 class AudioData:
     format: AudioSampleFormat | None
@@ -6395,10 +9349,15 @@ class AudioData:
     numberOfChannels: int
     duration: int
     timestamp: int
+
     def allocationSize(self, options: AudioDataCopyToOptions) -> int: ...
+
     def copyTo(self, destination: BufferSource, options: AudioDataCopyToOptions): ...
+
     def clone(self) -> AudioData: ...
+
     def close(self): ...
+
 
 class VideoFrame:
     format: VideoPixelFormat | None
@@ -6411,28 +9370,38 @@ class VideoFrame:
     duration: int | None
     timestamp: int | None
     colorSpace: VideoColorSpace
+
     def allocationSize(self, options: VideoFrameCopyToOptions | None = {}) -> int: ...
+
     def clone(self) -> VideoFrame: ...
+
     def close(self): ...
+
 
 class VideoColorSpace:
     primaries: VideoColorPrimaries | None
     transfer: VideoTransferCharacteristics | None
     matrix: VideoMatrixCoefficients | None
     fullRange: bool | None
+
     def toJSON(self) -> VideoColorSpaceInit: ...
+
 
 class ImageDecoder:
     type: str
     complete: bool
     tracks: ImageTrackList
+
     def reset(self): ...
+
     def close(self): ...
+
 
 class ImageTrackList:
     length: int
     selectedIndex: int
     selectedTrack: ImageTrack | None
+
 
 class ImageTrack(EventTarget):
     animated: bool
@@ -6446,7 +9415,9 @@ class Bluetooth(EventTarget, BluetoothDeviceEventHandlers, CharacteristicEventHa
     onavailabilitychanged: EventHandler
     referringDevice: BluetoothDevice | None
 
+
 class BluetoothPermissionResult(PermissionStatus): ...
+
 
 class ValueEvent(Event): ...
 
@@ -6457,9 +9428,12 @@ class BluetoothDevice(EventTarget, BluetoothDeviceEventHandlers, CharacteristicE
     gatt: BluetoothRemoteGATTServer | None
     watchingAdvertisements: bool
 
+
 class BluetoothManufacturerDataMap: ...
 
+
 class BluetoothServiceDataMap: ...
+
 
 class BluetoothAdvertisingEvent(Event):
     device: BluetoothDevice
@@ -6470,9 +9444,11 @@ class BluetoothAdvertisingEvent(Event):
     manufacturerData: BluetoothManufacturerDataMap
     serviceData: BluetoothServiceDataMap
 
+
 class BluetoothRemoteGATTServer:
     device: BluetoothDevice
     connected: bool
+
     def disconnect(self): ...
 
 
@@ -6488,6 +9464,7 @@ class BluetoothRemoteGATTCharacteristic(EventTarget, CharacteristicEventHandlers
     properties: BluetoothCharacteristicProperties
     value: DataView
 
+
 class BluetoothCharacteristicProperties:
     broadcast: bool
     read: bool
@@ -6499,13 +9476,29 @@ class BluetoothCharacteristicProperties:
     reliableWrite: bool
     writableAuxiliaries: bool
 
+
 class BluetoothRemoteGATTDescriptor:
     characteristic: BluetoothRemoteGATTCharacteristic
     uuid: UUID
     value: DataView
 
+
 class BluetoothUUID: ...
 
+
+class PaymentRequest(EventTarget):
+    id: str
+    shippingAddress: PaymentAddress | None
+    shippingOption: str | None
+    shippingType: PaymentShippingType | None
+    onshippingaddresschange: EventHandler
+    onshippingoptionchange: EventHandler
+    onpaymentmethodchange: EventHandler
+
+
+class VRDisplayEvent(Event):
+    display: VRDisplay
+    reason: VRDisplayEventReason | None
 
 
 document: Document
