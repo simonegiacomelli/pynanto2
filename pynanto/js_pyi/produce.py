@@ -30,17 +30,20 @@ def produce(files: List[Path] | None = None) -> str:
 def parse_product() -> bool:
     exceptions = []
     for file in find_all():
-        actual = produce([file])
+        python_code = produce([file])
         try:
-            ast.parse(actual)
+            ast.parse(python_code)
         except Exception as ex:
-            exceptions.append((file, traceback.format_exc()))
+            exceptions.append((file.name, traceback.format_exc(), python_code))
     print()
-    for file, ex in exceptions:
+    for file, ex, python_code in exceptions:
         print('=' * 50)
-        print(file)
+        print('file', file)
         print('-' * 50)
-        print(ex)
+        print('exception', ex)
+        print('-' * 50)
+        print('full source')
+        print(python_code)
 
     success = len(exceptions) == 0
     return success

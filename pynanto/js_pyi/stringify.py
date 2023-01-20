@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import traceback
 from io import StringIO
 from typing import TYPE_CHECKING, List
@@ -60,11 +61,25 @@ def s_annotation(a: GAnnotation) -> str:
     unhandled(a)
 
 
+_invalid_keywords = {'None', 'class', 'in', 'float', 'long', 'int'}
+
+
 def s_enum(e: GEnum) -> str:
     from js_pyi.datamodel import GInterface, GArg
 
     def to_arg(ev: GEnumValue) -> GArg:
         name = ev.value.rstrip('"').lstrip('"')
+        if name == '':
+            name = 'empty_'
+        elif name[0].isdigit():
+            name = 'X_' + name
+        elif name in _invalid_keywords:
+            name = name + '_'
+
+        pattern = re.compile("[^0-9a-zA-Z]?")
+        if pattern.match(name):
+            name = re.sub('[^0-9a-zA-Z]', '_', name)
+
         return GArg(name, [], ev.value)
 
     proxy = GInterface(e.name, list(map(to_arg, e.body)))

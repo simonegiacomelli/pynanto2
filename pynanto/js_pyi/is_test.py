@@ -47,11 +47,21 @@ def test_float():
 
 def test_enum_root_stmt():
     _verify_root_stmt(
-        'enum Foo { "bar" , "baz" };',
-        'class Foo:\n    bar = "bar"\n    baz = "baz"',
+        'enum Foo {"bar","None","class","a-b+c/d", "","2x-y" };',
+        'class Foo:\n'
+        '    bar = "bar"\n'
+        '    None_ = "None"\n'
+        '    class_ = "class"\n'
+        '    a_b_c_d = "a-b+c/d"\n'
+        '    empty_ = ""\n'
+        '    X_2x_y = "2x-y"',
         GEnum('Foo', [
             GEnumValue('"bar"'),
-            GEnumValue('"baz"'),
+            GEnumValue('"None"'),
+            GEnumValue('"class"'),
+            GEnumValue('"a-b+c/d"'),
+            GEnumValue('""'),
+            GEnumValue('"2x-y"'),
         ])
     )
 
