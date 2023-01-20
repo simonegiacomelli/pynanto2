@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 _types_dict = {
+    'undefined': 'None',
     'DOMString': 'str',
     'long': 'int',
     'long long': 'int',

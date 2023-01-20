@@ -9,6 +9,9 @@ def main():
 
 
 _head = """# @formatter:off
+
+from typing import Awaitable, Sequence
+
 """
 _tail = """
 

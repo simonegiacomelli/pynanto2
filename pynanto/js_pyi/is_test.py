@@ -29,6 +29,14 @@ def test_generic_attribute():
         )
 
 
+def test_generic_attribute_undefined():
+    _verify_interface_stmt(
+        'Promise<undefined> abort();',
+        f'def abort(self) -> Awaitable[None]: ...',
+        GMethod('abort', returns=GGeneric('Promise', 'undefined')),
+    )
+
+
 def test_generic_method_parameter():
     for gen, pyt in generics_webidl:
         _verify_interface_stmt(
