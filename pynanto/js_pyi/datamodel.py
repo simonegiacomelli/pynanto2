@@ -15,6 +15,11 @@ class GStmt:
 
 @dataclass()
 class GRootStmt(GStmt):
+    pass
+
+
+@dataclass()
+class GNameAndBody(GStmt):
     name: str
     body: List[GStmt] = field(default_factory=list)
 
@@ -28,7 +33,7 @@ class GUnhandled(GStmt):
 
 
 @dataclass()
-class GUnhandledRoot(GUnhandled):
+class GUnhandledRoot(GUnhandled, GRootStmt):
     pass
 
 
@@ -44,7 +49,7 @@ class GGeneric:
 
 
 @dataclass()
-class GInterface(GRootStmt):
+class GInterface(GNameAndBody, GRootStmt):
     bases: List[str] = field(default_factory=list)
 
     def to_python(self): return s_interface(self)
@@ -57,7 +62,7 @@ GAnnotation = typing.Union[GType, List[GType]]
 @dataclass()
 class GNamedAnnotation(GStmt):
     name: str
-    annotation: GAnnotation
+    annotation: GAnnotation = field(default_factory=list)
 
 
 @dataclass()
@@ -70,6 +75,8 @@ class GArg(GNamedAnnotation):
     default: Optional[str] = None
 
     def to_python(self): return s_arg(self)
+
+
 @dataclass
 class GMethod(GStmt):
     name: str
@@ -80,7 +87,7 @@ class GMethod(GStmt):
 
 
 @dataclass
-class GEnum(GRootStmt):
+class GEnum(GNameAndBody, GRootStmt):
     def to_python(self): return s_enum(self)
 
 

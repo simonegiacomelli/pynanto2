@@ -57,7 +57,7 @@ def test_enum_root_stmt():
 
 
 def test_root_unhandled():
-    actual_model = _root_stmt('nonexistent_type Foo {}')
+    actual_model = _root_stmt('nonexistent_type Foo ;')
     assert GUnhandledRoot == type(actual_model)
 
 
@@ -195,32 +195,32 @@ ConsoleInstanceDumpCallback dump;
         assert 'dump' in a.body_str
 
 
-class TestInner:
+def test_parse_error():
+    exception = False
+    try:
+        ingest('enum InvalidEnum {};')
+    except Exception as ex:
+        exc = ex
+        exception = True
+
+    assert exception
+    assert 'SyntaxError' in str(exc)
+
+
+def test_inner_unhandled():
     inner_unhandled_idl = """
 interface ConsoleInstanceOptions {
 undefined foo();
-ConsoleInstanceDumpCallback <invalid> dump;
+attribute Blob global;
 }
-"""
+    """
 
-    def test_inner_raise(self):
-        exception = False
-        try:
-            ingest(self.inner_unhandled_idl)
-        except Exception as ex:
-            exc = ex
-            exception = True
-
-        assert exception
-        assert 'dump' in str(exc)
-
-    def test_inner_unhandled(self):
-        actual = ingest(self.inner_unhandled_idl, throw=False)
-        assert len(actual) == 1
-        a = actual[0]
-        assert isinstance(a, GInterface)
-        a: GInterface
-        assert len(a.body) == 2
+    actual = ingest(inner_unhandled_idl, throw=False)
+    assert len(actual) == 1
+    a = actual[0]
+    expect_isinstance(a, GInterface)
+    a: GInterface
+    assert len(a.body) == 2
 
 
 def _verify_interface_stmt(idl, expected_python, expected_model):
@@ -249,6 +249,11 @@ def _root_stmt(idl, throw=False) -> GRootStmt:
     sts = ingest(idl, throw=throw)
     assert len(sts) == 1
     st = sts[0]
-    if not isinstance(st, GRootStmt):
-        assert f'Expect to find a GRootStmt but found {type(st)}'
+    o_type = GRootStmt
+    expect_isinstance(st, o_type)
     return st
+
+
+def expect_isinstance(instance, expected_type):
+    if not isinstance(instance, expected_type):
+        raise Exception('Expect to find a {expected_type} but found {type(instance)}')

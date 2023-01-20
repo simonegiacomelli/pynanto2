@@ -11,14 +11,14 @@ if TYPE_CHECKING:
 
 
 def s_attribute(a: GAttribute) -> str:
-    return to_py_name(a.name) + ': ' + s_annotation(a.annotation)
+    return to_py_name(a.name) + s_annotation_named(a.annotation)
 
 
 def s_arg(a: GArg) -> str:
     default = ''
     if a.default is not None:
         default = ' = ' + to_py_value(a.default)
-    return to_py_name(a.name) + ': ' + s_annotation(a.annotation) + default
+    return to_py_name(a.name) + s_annotation_named(a.annotation) + default
 
 
 def s_interface(i: GInterface) -> str:
@@ -44,6 +44,13 @@ def s_method(m: GMethod) -> str:
     return f'def {name}({args_str}){returns}: ...'
 
 
+def s_annotation_named(a: GAnnotation) -> str:
+    ann = s_annotation(a)
+    if ann != '':
+        ann = ': ' + ann
+    return ann
+
+
 def s_annotation(a: GAnnotation) -> str:
     if isinstance(a, str):
         return s_annotation([a])
@@ -58,7 +65,7 @@ def s_enum(e: GEnum) -> str:
 
     def to_arg(ev: GEnumValue) -> GArg:
         name = ev.value.rstrip('"').lstrip('"')
-        return GArg(name, '', ev.value)
+        return GArg(name, [], ev.value)
 
     proxy = GInterface(e.name, list(map(to_arg, e.body)))
     return s_interface(proxy)
