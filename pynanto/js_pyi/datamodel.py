@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import s_method, s_attribute, s_interface, s_unhandled
+from js_pyi.stringify import s_method, s_attribute, s_interface, s_unhandled, s_enum, s_arg
 
 
 @dataclass()
@@ -69,7 +69,7 @@ class GAttribute(GNamedAnnotation):
 class GArg(GNamedAnnotation):
     default: Optional[str] = None
 
-
+    def to_python(self): return s_arg(self)
 @dataclass
 class GMethod(GStmt):
     name: str
@@ -81,8 +81,12 @@ class GMethod(GStmt):
 
 @dataclass
 class GEnum(GRootStmt):
-    name: str
-    body: List[GArg]
+    def to_python(self): return s_enum(self)
+
+
+@dataclass()
+class GEnumValue(GStmt):
+    value: str
 
 
 def unhandled(argument):

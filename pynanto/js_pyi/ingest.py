@@ -5,7 +5,7 @@ from itertools import groupby
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
-    TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType
+    TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue
 
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_type
@@ -191,11 +191,23 @@ def i_interface(interface: Interface, throw: bool):
     return GInterface(interface.name, bases=interface_bases(interface), body=members)
 
 
+def i_enum_value(enum_value: EnumValue):
+    return GEnumValue(enum_value.value)
+
+
+def i_enum(enum: Enum, throw: bool):
+    expect_type(enum, Enum)
+    members = [i_enum_value(value) for value in enum.enum_values]
+    return GEnum(enum.name, body=members)
+
+
 def i_construct(construct: Construct, throw: bool):
     expect_type(construct, Construct)
 
     if isinstance(construct, Interface):
         return i_interface(construct, throw)
+    if isinstance(construct, Enum):
+        return i_enum(construct, throw)
     if isinstance(construct, InterfaceMember):
         if throw:
             res = i_interface_member(construct)
@@ -206,10 +218,7 @@ def i_construct(construct: Construct, throw: bool):
                 res = GUnhandledNested(str(construct), ex)
         return res
 
-    if throw:
-        unhandled(construct)
-    else:
-        return GUnhandled(str(construct), None)
+    unhandled(construct)
 
 
 def i_union_member_types(umt: UnionMemberType):

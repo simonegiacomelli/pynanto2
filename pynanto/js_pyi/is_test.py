@@ -6,7 +6,7 @@ from js_pyi.ingest import ingest, merge, discard_unhandled
 
 
 def test_attribute():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'attribute Blob foo;',
         'foo: Blob',
         GAttribute('foo', 'Blob'),
@@ -14,7 +14,7 @@ def test_attribute():
 
 
 def test_method_no_params():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'undefined foo();',
         'def foo(self): ...',
         GMethod('foo'),
@@ -22,7 +22,7 @@ def test_method_no_params():
 
 
 def test_name_clash_async():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'undefined foo (Blob async);',
         'def foo(self, async_: Blob): ...',
         GMethod('foo', [GArg('async', 'Blob')])
@@ -30,7 +30,7 @@ def test_name_clash_async():
 
 
 def test_nullable():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'undefined foo (DOMString? name);',
         'def foo(self, name: str | None): ...',
         GMethod('foo', [GArg('name', ['DOMString', 'None'])])
@@ -38,45 +38,53 @@ def test_nullable():
 
 
 def test_float():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'undefined foo (float x);',
         'def foo(self, x: float): ...',
         GMethod('foo', [GArg('x', 'float')])
     )
 
 
-def x_test_enum_attribute():
-    _verify_root_construct(
-        'enum Foo { "bar", "baz" };',
-        'class Foo:\n    bar = "bar"',  # \n    baz = "baz"',
-        GEnum('foo', [GArg('bar', '', default='"bar"')])
+def test_enum_root_stmt():
+    _verify_root_stmt(
+        'enum Foo { "bar" , "baz" };',
+        'class Foo:\n    bar = "bar"\n    baz = "baz"',
+        GEnum('Foo', [
+            GEnumValue('"bar"'),
+            GEnumValue('"baz"'),
+        ])
     )
+
+
+def test_root_unhandled():
+    actual_model = _root_stmt('nonexistent_type Foo {}')
+    assert GUnhandledRoot == type(actual_model)
 
 
 def test_unsupported__generics():
     idl = 'Blob foo ((Blob or sequence<Blob>) bar);'
-    actual_model = _interface_construct(idl)
+    actual_model = _interface_stmt(idl)
     assert GUnhandledNested == type(actual_model)
 
 
 def test_unsupported__attribute_names():
     idl = 'attribute object global;'
-    actual_model = _interface_construct(idl)
+    actual_model = _interface_stmt(idl)
     assert GUnhandledNested == type(actual_model)
 
     idl = 'attribute object as;'
-    actual_model = _interface_construct(idl)
+    actual_model = _interface_stmt(idl)
     assert GUnhandledNested == type(actual_model)
 
 
 def test_unsupported__comments():
     idl = 'Blob foo(optional Blob bar = 0  /* comment */ );'
-    actual_model = _interface_construct(idl)
+    actual_model = _interface_stmt(idl)
     assert GUnhandledNested == type(actual_model)
 
 
 def test_nullable_result():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'Blob? foo();',
         'def foo(self) -> Blob | None: ...',
         GMethod('foo', returns=['Blob', 'None'])
@@ -84,7 +92,7 @@ def test_nullable_result():
 
 
 def test_compound_nullable():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'undefined foo( (HTMLElement or long)? before );',
         'def foo(self, before: HTMLElement | int | None): ...',
         GMethod('foo', [GArg('before', ['HTMLElement', 'long', 'None'])])
@@ -92,7 +100,7 @@ def test_compound_nullable():
 
 
 def test_optional():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'undefined foo(optional Blob label);',
         'def foo(self, label: Blob | None = None): ...',
         GMethod('foo', [GArg('label', ['Blob', 'None'], 'None')])
@@ -100,7 +108,7 @@ def test_optional():
 
 
 def test_optional_with_default():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'undefined foo(optional DOMString label = "foobar");',
         'def foo(self, label: str | None = "foobar"): ...',
         GMethod('foo', [GArg('label', ['DOMString', 'None'], '"foobar"')])
@@ -108,7 +116,7 @@ def test_optional_with_default():
 
 
 def test_compound_nullable_optional_default():
-    _verify_interface_construct(
+    _verify_interface_stmt(
         'undefined foo( optional (HTMLElement or long)? before = null);',
         'def foo(self, before: HTMLElement | int | None = None): ...',
         GMethod('foo', [
@@ -215,33 +223,32 @@ ConsoleInstanceDumpCallback <invalid> dump;
         assert len(a.body) == 2
 
 
-def _verify_interface_construct(idl, expected_python, expected_model):
-    actual_model = _interface_construct(idl)
-    assert actual_model is not None
-    assert actual_model == expected_model
-    assert actual_model.to_python() == expected_python
+def _verify_interface_stmt(idl, expected_python, expected_model):
+    actual = _interface_stmt(idl)
+    assert actual is not None
+    assert actual == expected_model
+    assert actual.to_python() == expected_python
 
 
-def _verify_root_construct(idl, expected_python, expected_model):
-    actual_model = _root_construct(idl)
-    assert actual_model is not None
-    assert actual_model == expected_model
-    assert actual_model.to_python() == expected_python
+def _verify_root_stmt(idl, expected_python, expected):
+    actual = _root_stmt(idl, throw=True)
+    assert actual == expected
+    assert actual.to_python() == expected_python
 
 
-def _interface_construct(idl_piece: str) -> GMethod | GAttribute | None:
-    lst = _root_construct('interface Dummy', idl_piece)
-    first = lst
-    assert isinstance(first, GInterface)
-    if len(first.body) == 1:
-        return first.body[0]
+def _interface_stmt(idl_piece: str) -> GMethod | GAttribute | None:
+    idl = 'interface Dummy {\n' + idl_piece + '\n}'
+    stmt = _root_stmt(idl)
+    assert isinstance(stmt, GInterface)
+    if len(stmt.body) == 1:
+        return stmt.body[0]
     return None
 
 
-def _root_construct(construct_idl, idl_piece='') -> GRootStmt:
-    idl = construct_idl + ' {\n' + idl_piece + '\n}'
-    sts = ingest(idl, throw=False)
+def _root_stmt(idl, throw=False) -> GRootStmt:
+    sts = ingest(idl, throw=throw)
     assert len(sts) == 1
     st = sts[0]
-    assert isinstance(st, GRootStmt)
+    if not isinstance(st, GRootStmt):
+        assert f'Expect to find a GRootStmt but found {type(st)}'
     return st

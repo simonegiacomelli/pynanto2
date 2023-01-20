@@ -53,6 +53,17 @@ def s_annotation(a: GAnnotation) -> str:
     unhandled(a)
 
 
+def s_enum(e: GEnum) -> str:
+    from js_pyi.datamodel import GInterface, GArg
+
+    def to_arg(ev: GEnumValue) -> GArg:
+        name = ev.value.rstrip('"').lstrip('"')
+        return GArg(name, '', ev.value)
+
+    proxy = GInterface(e.name, list(map(to_arg, e.body)))
+    return s_interface(proxy)
+
+
 def s_unhandled(u: GUnhandled) -> str:
     ex_str = '<<<\n'
     if u.exception is not None:
