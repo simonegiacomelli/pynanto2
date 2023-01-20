@@ -11,6 +11,9 @@ _types_dict = {
     'double': 'float',
     'unrestricted double': 'float',
     'unrestricted float': 'float',
+    # generics
+    'sequence': 'Sequence',
+    'Promise': 'Awaitable'
 }
 
 

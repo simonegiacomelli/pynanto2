@@ -14,23 +14,26 @@ def test_attribute():
     )
 
 
-all_webidl_generics = ['Promise', 'sequence']
+generics_webidl = [
+    ('Promise', 'Awaitable'),
+    ('sequence', 'Sequence')
+]
 
 
 def test_generic_attribute():
-    for gen in all_webidl_generics:
+    for gen, pyt in generics_webidl:
         _verify_interface_stmt(
             f'attribute {gen}<Blob> foo;',
-            f'foo: {gen}[Blob]',
+            f'foo: {pyt}[Blob]',
             GAttribute('foo', GGeneric(gen, 'Blob')),
         )
 
 
 def test_generic_method_parameter():
-    for gen in all_webidl_generics:
+    for gen, pyt in generics_webidl:
         _verify_interface_stmt(
             f'Blob foo ((Rest or {gen}<Flip>) bar);',
-            f'def foo(self, bar: Rest | {gen}[Flip]) -> Blob: ...',
+            f'def foo(self, bar: Rest | {pyt}[Flip]) -> Blob: ...',
             GMethod('foo', [GArg('bar', ['Rest', GGeneric(gen, 'Flip')])],
                     returns='Blob'),
         )

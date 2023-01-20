@@ -61,7 +61,8 @@ def s_type(a: GType) -> str:
     if isinstance(a, GGeneric):
         a: GGeneric
         ann = s_annotation(a.annotation)
-        return f'{a.name}[{ann}]'
+        name = to_py_type(a.name)
+        return f'{name}[{ann}]'
 
     unhandled(a)
 
