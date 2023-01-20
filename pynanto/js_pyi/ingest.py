@@ -312,13 +312,16 @@ def keep_python_producer(statements: List[GStmt]) -> List[GStmt]:
 
 
 def keep_unhandled(statements: List[GStmt]) -> List[GStmt]:
-    def keep_unhandled(iterable):
+    def keep_unhand(iterable):
         return list(filter(lambda e: isinstance(e, GUnhandled), iterable))
 
     for st in statements:
-        if not isinstance(st, GUnhandled):
-            st.body = keep_unhandled(st.body)
+        if hasattr(st, 'body'):
+            st.body = keep_unhand(st.body)
 
-    statements = list(filter(lambda e: isinstance(e, GUnhandled) or len(e.body) > 0, statements))
+    statements = list(filter(
+        lambda e: isinstance(e, GUnhandled)
+                  or (hasattr(st, 'body') and len(e.body) > 0), statements)
+    )
 
     return statements
