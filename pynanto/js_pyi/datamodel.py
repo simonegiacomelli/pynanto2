@@ -86,6 +86,14 @@ class GMethod(GStmt):
     def to_python(self): return s_method(self)
 
 
+@dataclass()
+class GInclude(GRootStmt):
+    name: str
+    includes: str
+
+    def to_python(self): return ''
+
+
 @dataclass
 class GEnum(GNameAndBody, GRootStmt):
     def to_python(self): return s_enum(self)

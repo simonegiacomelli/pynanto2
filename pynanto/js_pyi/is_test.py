@@ -45,6 +45,13 @@ def test_float():
     )
 
 
+def test_include():
+    _verify_root_stmt('Foo includes Bar', '', GInclude('Foo', 'Bar'))
+
+
+# implement 'typedef (ReadableStreamDefaultReader or ReadableStreamBYOBReader) ReadableStreamReader;'
+# as: ReadableStreamReader =  ReadableStreamDefaultReader | ReadableStreamBYOBReader
+
 def test_enum_root_stmt():
     _verify_root_stmt(
         'enum Foo {"bar","None","class","a-b+c/d", "","2x-y" };',

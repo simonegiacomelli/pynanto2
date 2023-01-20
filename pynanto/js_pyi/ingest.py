@@ -5,7 +5,8 @@ from itertools import groupby
 import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
-    TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue
+    TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
+    IncludesStatement
 
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_type
@@ -195,7 +196,12 @@ def i_enum_value(enum_value: EnumValue):
     return GEnumValue(enum_value.value)
 
 
-def i_enum(enum: Enum, throw: bool):
+def i_include_statement(i: IncludesStatement):
+    expect_type(i, IncludesStatement)
+    return GInclude(i.name, i.includes)
+
+
+def i_enum(enum: Enum):
     expect_type(enum, Enum)
     members = [i_enum_value(value) for value in enum.enum_values]
     return GEnum(enum.name, body=members)
@@ -207,7 +213,9 @@ def i_construct(construct: Construct, throw: bool):
     if isinstance(construct, Interface):
         return i_interface(construct, throw)
     if isinstance(construct, Enum):
-        return i_enum(construct, throw)
+        return i_enum(construct)
+    if isinstance(construct, IncludesStatement):
+        return i_include_statement(construct)
     if isinstance(construct, InterfaceMember):
         if throw:
             res = i_interface_member(construct)
