@@ -1,6 +1,7 @@
 """ingest and stringify tests"""
 from __future__ import annotations
 
+from js_pyi.assertions import expect_isinstance
 from js_pyi.datamodel import *
 from js_pyi.ingest import ingest, keep_python_producer
 
@@ -11,6 +12,28 @@ def test_attribute():
         'foo: Blob',
         GAttribute('foo', 'Blob'),
     )
+
+
+all_webidl_generics = ['Promise', 'sequence']
+
+
+def test_generic_attribute():
+    for gen in all_webidl_generics:
+        _verify_interface_stmt(
+            f'attribute {gen}<Blob> foo;',
+            f'foo: {gen}[Blob]',
+            GAttribute('foo', GGeneric(gen, 'Blob')),
+        )
+
+
+def test_generic_method_parameter():
+    for gen in all_webidl_generics:
+        _verify_interface_stmt(
+            f'Blob foo ((Rest or {gen}<Flip>) bar);',
+            f'def foo(self, bar: Rest | {gen}[Flip]) -> Blob: ...',
+            GMethod('foo', [GArg('bar', ['Rest', GGeneric(gen, 'Flip')])],
+                    returns='Blob'),
+        )
 
 
 def test_method_no_params():
@@ -85,29 +108,23 @@ def test_enum_root_stmt():
 
 
 def test_root_unhandled():
-    actual_model = _root_stmt('nonexistent_type Foo ;')
+    actual_model = _root_stmt('nonexistent_type Foo ;', throw=False)
     assert GUnhandledRoot == type(actual_model)
-
-
-def test_unsupported__generics():
-    idl = 'Blob foo ((Blob or sequence<Blob>) bar);'
-    actual_model = _interface_stmt(idl)
-    assert GUnhandledNested == type(actual_model)
 
 
 def test_unsupported__attribute_names():
     idl = 'attribute object global;'
-    actual_model = _interface_stmt(idl)
+    actual_model = _interface_stmt(idl, throw=False)
     assert GUnhandledNested == type(actual_model)
 
     idl = 'attribute object as;'
-    actual_model = _interface_stmt(idl)
+    actual_model = _interface_stmt(idl, throw=False)
     assert GUnhandledNested == type(actual_model)
 
 
 def test_unsupported__comments():
     idl = 'Blob foo(optional Blob bar = 0  /* comment */ );'
-    actual_model = _interface_stmt(idl)
+    actual_model = _interface_stmt(idl, throw=False)
     assert GUnhandledNested == type(actual_model)
 
 
@@ -261,16 +278,16 @@ def _verify_root_stmt(idl, expected_python, expected):
         assert actual.to_python() == expected_python
 
 
-def _interface_stmt(idl_piece: str) -> GMethod | GAttribute | None:
+def _interface_stmt(idl_piece: str, throw=True) -> GMethod | GAttribute | None:
     idl = 'interface Dummy {\n' + idl_piece + '\n}'
-    stmt = _root_stmt(idl)
-    assert isinstance(stmt, GClass)
+    stmt = _root_stmt(idl, throw)
+    expect_isinstance(stmt, GClass)
     if len(stmt.body) == 1:
         return stmt.body[0]
     return None
 
 
-def _root_stmt(idl, throw=False) -> GRootStmt:
+def _root_stmt(idl, throw=True) -> GRootStmt:
     sts = ingest(idl, throw=throw)
     assert len(sts) == 1
     st = sts[0]

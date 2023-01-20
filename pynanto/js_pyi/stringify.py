@@ -5,6 +5,7 @@ import traceback
 from io import StringIO
 from typing import TYPE_CHECKING, List
 
+from js_pyi.assertions import unhandled
 from js_pyi.conversion import to_py_type, to_py_value, to_py_name
 
 if TYPE_CHECKING:
@@ -52,13 +53,24 @@ def s_annotation_named(a: GAnnotation) -> str:
     return ann
 
 
-def s_annotation(a: GAnnotation) -> str:
+def s_type(a: GType) -> str:
     if isinstance(a, str):
-        return s_annotation([a])
-    if isinstance(a, list):
-        return ' | '.join([to_py_type(e) for e in a])
+        return to_py_type(a)
+
+    from js_pyi.datamodel import GGeneric
+    if isinstance(a, GGeneric):
+        a: GGeneric
+        ann = s_annotation(a.annotation)
+        return f'{a.name}[{ann}]'
 
     unhandled(a)
+
+
+def s_annotation(a: GAnnotation) -> str:
+    if isinstance(a, list):
+        return ' | '.join([s_annotation(e) for e in a])
+
+    return s_type(a)
 
 
 _invalid_keywords = {'None', 'class', 'in', 'float', 'long', 'int'}

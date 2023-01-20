@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import List
 
-from js_pyi.datamodel import GStmt, GUnhandled, GClass, GInclude, expect_isinstance, GEnum
+from js_pyi.assertions import expect_isinstance
+from js_pyi.datamodel import GStmt, GUnhandled, GClass, GInclude, GEnum
 from js_pyi.itertools import partition, groupby as groupby2
 
 

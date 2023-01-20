@@ -6,8 +6,8 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
     IncludesStatement, Typedef, ExtendedAttribute
 
+from js_pyi.assertions import unhandled, expect_isinstance
 from js_pyi.datamodel import *
-from js_pyi.datamodel import unhandled, expect_isinstance
 
 _none = 'None'
 
@@ -45,6 +45,21 @@ def i_primitive_type(primitive_type: PrimitiveType):
     unhandled(t)
 
 
+def _wrap_if_nullable(o, suffix: TypeSuffix | None):
+    nullable = suffix is not None
+    if nullable:
+        o = _put_annotation_type(o, _none)
+    return o
+
+
+def _wrap_if_generic(res, non_any_type: NonAnyType):
+    if non_any_type.promise is not None:
+        return GGeneric('Promise', res)
+    if non_any_type.sequence is not None:
+        return GGeneric('sequence', res)
+    return res
+
+
 def i_non_any_type(non_any_type: NonAnyType):
     expect_isinstance(non_any_type, NonAnyType)
 
@@ -52,17 +67,18 @@ def i_non_any_type(non_any_type: NonAnyType):
     t = non_any_type.type
     if isinstance(t, PrimitiveType):
         res = i_primitive_type(t)
+    elif isinstance(t, Type):
+        res = i_type(t)
     elif isinstance(t, TypeIdentifier):
         res = i_type_identifier(t)
     elif isinstance(t, Symbol):
         res = i_symbol(t)
     elif isinstance(t, TypeWithExtendedAttributes):
-        # generics
-        unhandled(t)
-        # res = i_type_with_extended_attributes(t)
+        res = i_type_with_extended_attributes(t)
     else:
         unhandled(t)
 
+    res = _wrap_if_generic(res, non_any_type)
     res = _wrap_if_nullable(res, non_any_type.suffix)
 
     return res
@@ -164,10 +180,8 @@ def i_interface_member__type_attribute(im: InterfaceMember):
     expect_isinstance(attribute.attribute.type, TypeWithExtendedAttributes)
     if im.name == 'global' or im.name == 'as':
         unhandled('The keyword `global` cannot be used as a variable name ')
-    return GAttribute(
-        im.name,
-        i_type_with_extended_attributes(attribute.attribute.type)
-    )
+    attributes = i_type_with_extended_attributes(attribute.attribute.type)
+    return GAttribute(im.name, attributes)
 
 
 def i_interface_member(member: InterfaceMember):
@@ -282,13 +296,6 @@ def _put_annotation_type(annotation, param):
     else:
         annotation = _put_annotation_type([annotation], param)
     return annotation
-
-
-def _wrap_if_nullable(o, suffix: TypeSuffix | None):
-    nullable = suffix is not None
-    if nullable:
-        o = _put_annotation_type(o, _none)
-    return o
 
 
 def keep_python_producer(statements: List[GStmt]) -> List[GStmt]:

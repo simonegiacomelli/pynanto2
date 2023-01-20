@@ -80,6 +80,11 @@ class GAttribute(GNamedAnnotation, GPythonProducer):
     def to_python(self): return s_attribute(self)
 
 
+@dataclass()
+class GGeneric(GNamedAnnotation):
+    pass
+
+
 @dataclass
 class GArg(GNamedAnnotation, GPythonProducer):
     default: Optional[str] = None
@@ -118,13 +123,3 @@ class GEnum(GNameAndBody, GRootStmt, GPythonProducer):
 @dataclass()
 class GEnumValue(GStmt, GPythonProducer):
     value: str
-
-
-def unhandled(argument):
-    raise Exception(f'unhandled type={type(argument)} `{argument}`')
-
-
-def expect_isinstance(instance, expected_type):
-    if not isinstance(instance, expected_type):
-        raise Exception(f' expect instance to be `{expected_type}` '
-                        f'but instead found to be `{type(instance)}`')
