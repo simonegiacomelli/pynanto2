@@ -9,21 +9,21 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
     IncludesStatement, Typedef
 
 from js_pyi.datamodel import *
-from js_pyi.datamodel import unhandled, expect_type
+from js_pyi.datamodel import unhandled, expect_isinstance
 from js_pyi.itertools import groupby, partition
 
 _none = 'None'
 
 
 def i_symbol(symbol: Symbol):
-    expect_type(symbol, Symbol)
+    expect_isinstance(symbol, Symbol)
     s = symbol.symbol
 
     return s
 
 
 def i_default(default: Default):
-    expect_type(default, Default)
+    expect_isinstance(default, Default)
     value = default.value
     if '/*' in value:
         unhandled(default)
@@ -31,12 +31,12 @@ def i_default(default: Default):
 
 
 def i_type_identifier(ti: TypeIdentifier):
-    expect_type(ti, TypeIdentifier)
+    expect_isinstance(ti, TypeIdentifier)
     return ti.name
 
 
 def i_primitive_type(primitive_type: PrimitiveType):
-    expect_type(primitive_type, PrimitiveType)
+    expect_isinstance(primitive_type, PrimitiveType)
 
     t = primitive_type.type
     if isinstance(t, Symbol):
@@ -49,7 +49,7 @@ def i_primitive_type(primitive_type: PrimitiveType):
 
 
 def i_non_any_type(non_any_type: NonAnyType):
-    expect_type(non_any_type, NonAnyType)
+    expect_isinstance(non_any_type, NonAnyType)
 
     res = None
     t = non_any_type.type
@@ -72,7 +72,7 @@ def i_non_any_type(non_any_type: NonAnyType):
 
 
 def i_single_type(single_type: SingleType):
-    expect_type(single_type, SingleType)
+    expect_isinstance(single_type, SingleType)
     t = single_type.type
     if isinstance(t, AnyType):
         unhandled(single_type)
@@ -89,7 +89,7 @@ def interface_bases(interface: Interface):
 
 
 def i_type_with_extended_attributes(twea: TypeWithExtendedAttributes) -> GType:
-    expect_type(twea, TypeWithExtendedAttributes)
+    expect_isinstance(twea, TypeWithExtendedAttributes)
 
     t = twea.type
     if isinstance(t, UnionType):
@@ -103,7 +103,7 @@ def i_type_with_extended_attributes(twea: TypeWithExtendedAttributes) -> GType:
 
 
 def i_type(t: Type):
-    expect_type(t, Type)
+    expect_isinstance(t, Type)
 
     tt = t.type
     if isinstance(tt, SingleType):
@@ -118,7 +118,7 @@ def i_type(t: Type):
 
 
 def i_argument(argument: Argument):
-    expect_type(argument, Argument)
+    expect_isinstance(argument, Argument)
 
     argument_type = argument.type
     if isinstance(argument_type, Type):
@@ -130,15 +130,15 @@ def i_argument(argument: Argument):
 
 
 def i_operation(o: Operation):
-    expect_type(o, Operation)
+    expect_isinstance(o, Operation)
     return i_type(o.return_type)
 
 
 def i_interface_member__type_method(member: InterfaceMember):
-    expect_type(member, InterfaceMember)
+    expect_isinstance(member, InterfaceMember)
     args = []
     for a in member.arguments:
-        expect_type(a, Argument)
+        expect_isinstance(a, Argument)
         a: Argument
         annotation = i_argument(a)
         if not a.required:
@@ -158,13 +158,13 @@ def i_interface_member__type_method(member: InterfaceMember):
 
 
 def i_interface_member__type_attribute(im: InterfaceMember):
-    expect_type(im, InterfaceMember)
-    expect_type(im.member, Attribute)
+    expect_isinstance(im, InterfaceMember)
+    expect_isinstance(im.member, Attribute)
 
     attribute: Attribute = im.member
 
-    expect_type(attribute.attribute, AttributeRest)
-    expect_type(attribute.attribute.type, TypeWithExtendedAttributes)
+    expect_isinstance(attribute.attribute, AttributeRest)
+    expect_isinstance(attribute.attribute.type, TypeWithExtendedAttributes)
     if im.name == 'global' or im.name == 'as':
         unhandled('The keyword `global` cannot be used as a variable name ')
     return GAttribute(
@@ -174,7 +174,7 @@ def i_interface_member__type_attribute(im: InterfaceMember):
 
 
 def i_interface_member(member: InterfaceMember):
-    expect_type(member, InterfaceMember)
+    expect_isinstance(member, InterfaceMember)
 
     idl_type = member.idl_type
 
@@ -187,7 +187,7 @@ def i_interface_member(member: InterfaceMember):
 
 
 def i_interface(interface: Interface, throw: bool):
-    expect_type(interface, Interface)
+    expect_isinstance(interface, Interface)
     members = [i_construct(construct, throw) for construct in interface.members]
     return GClass(interface.name, bases=interface_bases(interface), body=members)
 
@@ -197,24 +197,24 @@ def i_enum_value(enum_value: EnumValue):
 
 
 def i_include_statement(i: IncludesStatement):
-    expect_type(i, IncludesStatement)
+    expect_isinstance(i, IncludesStatement)
     return GInclude(i.name, i.includes)
 
 
 def i_enum(enum: Enum):
-    expect_type(enum, Enum)
+    expect_isinstance(enum, Enum)
     members = [i_enum_value(value) for value in enum.enum_values]
     return GEnum(enum.name, body=members)
 
 
 def i_typedef(td: Typedef):
-    expect_type(td, Typedef)
+    expect_isinstance(td, Typedef)
     ann = i_type_with_extended_attributes(td.type)
     return GTypedef(td.name, ann)
 
 
 def i_construct(construct: Construct, throw: bool):
-    expect_type(construct, Construct)
+    expect_isinstance(construct, Construct)
 
     if isinstance(construct, Interface):
         return i_interface(construct, throw)
@@ -238,7 +238,7 @@ def i_construct(construct: Construct, throw: bool):
 
 
 def i_union_member_types(umt: UnionMemberType):
-    expect_type(umt, UnionMemberType)
+    expect_isinstance(umt, UnionMemberType)
     assert umt.suffix is None
     t = umt.type
     if isinstance(t, NonAnyType):
@@ -275,7 +275,7 @@ def _m_interface(statements: List[GClass]) -> GClass:
     # check pre-conditions
     name = None
     for st in statements:
-        expect_type(st, GClass)
+        expect_isinstance(st, GClass)
         if name is None:
             name = st.name
         else:

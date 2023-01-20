@@ -192,11 +192,24 @@ def test_merge():
     actual = merge(piece1 + piece2)
     assert actual == expected
 
-    # include
-    # piece3 = ingest('Doc includes Bar')
-    # actual = merge(piece1 + piece2 + piece3)
-    # expect_isinstance(expected[0].base, 'Bar')
-    # assert actual ==
+
+def test_merge_include():
+    piece1 = ingest('interface Doc : Blob  { attribute Blob foo; }')
+    piece2 = ingest('partial interface Doc  { attribute Element bar; }')
+    piece3 = ingest('Doc includes Bar')
+
+    actual = merge(piece1 + piece2 + piece3)
+
+    expected = ingest('interface Doc : Blob {  attribute Blob foo; attribute Element bar; }')
+    _append_base(expected[0], 'Bar')
+
+    assert actual == expected
+
+
+def _append_base(cl: GClass, base: str):
+    expect_isinstance(cl, GClass)
+    cl.bases.append(base)
+
 
 def test_keep_python_producer():
     stmts = [GUnhandled('un1'),
@@ -289,6 +302,3 @@ def _root_stmt(idl, throw=False) -> GRootStmt:
     return st
 
 
-def expect_isinstance(instance, expected_type):
-    if not isinstance(instance, expected_type):
-        raise Exception('Expect to find a {expected_type} but found {type(instance)}')
