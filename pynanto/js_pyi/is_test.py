@@ -160,18 +160,18 @@ def test_interface():
         "}"
     )
 
-    assert actual == [GInterface('Document', bases=['Blob'], body=[
+    assert actual == [GClass('Document', bases=['Blob'], body=[
         (GMethod('createElement',
                  arguments=[GArg('localName', 'DOMString')],
                  returns='FooElement'))]
-                                 )]
+                             )]
 
 
 def test_empty_interface():
     _verify_root_stmt(
         'interface Foo {\n}',
         'class Foo: ...',
-        GInterface('Foo')
+        GClass('Foo')
     )
 
 
@@ -179,7 +179,7 @@ def test_complete_interface():
     _verify_root_stmt(
         'interface Doc : Blob  { attribute Blob baz; } ',
         'class Foo:\n    baz: Blob',
-        GInterface('Doc', bases=['Blob'], body=[(GAttribute('baz', 'Blob'))])
+        GClass('Doc', bases=['Blob'], body=[(GAttribute('baz', 'Blob'))])
     )
 
 
@@ -192,12 +192,17 @@ def test_merge():
     actual = merge(piece1 + piece2)
     assert actual == expected
 
+    # include
+    # piece3 = ingest('Doc includes Bar')
+    # actual = merge(piece1 + piece2 + piece3)
+    # expect_isinstance(expected[0].base, 'Bar')
+    # assert actual ==
 
 def test_keep_python_producer():
     stmts = [GUnhandled('un1'),
-             GInterface('Doc', body=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Blob')])]
+             GClass('Doc', body=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Blob')])]
     actual = keep_python_producer(stmts)
-    assert actual == [GInterface('Doc', body=[GAttribute('attr1', 'Blob')])]
+    assert actual == [GClass('Doc', body=[GAttribute('attr1', 'Blob')])]
 
 
 class Test_root:
@@ -247,8 +252,8 @@ attribute Blob global;
     actual = ingest(inner_unhandled_idl, throw=False)
     assert len(actual) == 1
     a = actual[0]
-    expect_isinstance(a, GInterface)
-    a: GInterface
+    expect_isinstance(a, GClass)
+    a: GClass
     assert len(a.body) == 2
 
 
@@ -269,7 +274,7 @@ def _verify_root_stmt(idl, expected_python, expected):
 def _interface_stmt(idl_piece: str) -> GMethod | GAttribute | None:
     idl = 'interface Dummy {\n' + idl_piece + '\n}'
     stmt = _root_stmt(idl)
-    assert isinstance(stmt, GInterface)
+    assert isinstance(stmt, GClass)
     if len(stmt.body) == 1:
         return stmt.body[0]
     return None

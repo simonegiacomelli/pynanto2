@@ -54,7 +54,7 @@ class GGeneric:
 
 
 @dataclass()
-class GInterface(GNameAndBody, GRootStmt, GPythonProducer):
+class GClass(GNameAndBody, GRootStmt, GPythonProducer):
     bases: List[str] = field(default_factory=list)
 
     def to_python(self): return s_interface(self)

@@ -189,7 +189,7 @@ def i_interface_member(member: InterfaceMember):
 def i_interface(interface: Interface, throw: bool):
     expect_type(interface, Interface)
     members = [i_construct(construct, throw) for construct in interface.members]
-    return GInterface(interface.name, bases=interface_bases(interface), body=members)
+    return GClass(interface.name, bases=interface_bases(interface), body=members)
 
 
 def i_enum_value(enum_value: EnumValue):
@@ -271,17 +271,17 @@ def ingest(idl: str, throw: bool = True) -> List[GStmt]:
     return statements
 
 
-def _m_interface(statements: List[GInterface]) -> GInterface:
+def _m_interface(statements: List[GClass]) -> GClass:
     # check pre-conditions
     name = None
     for st in statements:
-        expect_type(st, GInterface)
+        expect_type(st, GClass)
         if name is None:
             name = st.name
         else:
             assert st.name == name
 
-    result = GInterface(name)
+    result = GClass(name)
     for st in statements:
         result.bases.extend(st.bases)
         result.body.extend(st.body)
@@ -313,7 +313,7 @@ def merge(statements: List[GStmt]) -> List[GStmt]:
         by_type = groupby(sts_for_name, lambda s: type(s))
         # { GInterface : [ ... ] , GSomething : [ ... ] }
         for typ, sts_for_type in by_type.items():
-            if typ == GInterface:
+            if typ == GClass:
                 mi = _m_interface(sts_for_type)
                 result.append(mi)
             else:

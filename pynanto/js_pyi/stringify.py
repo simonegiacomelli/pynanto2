@@ -22,7 +22,7 @@ def s_arg(a: GArg) -> str:
     return to_py_name(a.name) + s_annotation_named(a.annotation) + default
 
 
-def s_interface(i: GInterface) -> str:
+def s_interface(i: GClass) -> str:
     bases = ''
     if len(i.bases) > 0:
         bases = '(' + ', '.join(i.bases) + ')'
@@ -65,7 +65,7 @@ _invalid_keywords = {'None', 'class', 'in', 'float', 'long', 'int'}
 
 
 def s_enum(e: GEnum) -> str:
-    from js_pyi.datamodel import GInterface, GArg
+    from js_pyi.datamodel import GClass, GArg
 
     def to_arg(ev: GEnumValue) -> GArg:
         name = ev.value.rstrip('"').lstrip('"')
@@ -82,7 +82,7 @@ def s_enum(e: GEnum) -> str:
 
         return GArg(name, [], ev.value)
 
-    proxy = GInterface(e.name, list(map(to_arg, e.body)))
+    proxy = GClass(e.name, list(map(to_arg, e.body)))
     return s_interface(proxy)
 
 
