@@ -3,27 +3,32 @@ from __future__ import annotations
 from itertools import groupby
 from typing import List
 
-from js_pyi.datamodel import GStmt, GUnhandled, GClass, GInclude, expect_isinstance
+from js_pyi.datamodel import GStmt, GUnhandled, GClass, GInclude, expect_isinstance, GEnum
 from js_pyi.itertools import partition, groupby
 
 
 def merge(statements: List[GStmt]) -> List[GStmt]:
     unhandled, handled = partition(statements, lambda e: isinstance(e, GUnhandled))
-    result: List[GStmt] = []
+    enums: List[GStmt] = []
+    classes: List[GStmt] = []
+    the_rest: List[GStmt] = []
     by_name = groupby(handled, lambda stmt: stmt.name)
     # { 'Doc' : [ GClass('Doc', ... ), GClass('Doc', ...), GInclude('Doc', ...) ] , ... }
     for name, sts_for_name in by_name.items():
-        if GClass in map(lambda s: type(s), sts_for_name):
-            mi = _m_class(name, sts_for_name)
-            result.append(mi)
+        by_type = groupby(sts_for_name, lambda s: type(s))
+        if GClass in by_type:
+            mi = _m_class(by_type)
+            classes.append(mi)
+        elif GEnum in by_type:
+            assert len(sts_for_name) == 1
+            enums.append(sts_for_name[0])
         else:
-            raise Exception(f"Don't know how to merge name `{name}`\n{sts_for_name}")
+            the_rest.extend(sts_for_name)
 
-    return result + unhandled
+    return enums + the_rest + classes + unhandled
 
 
-def _m_class(name, sts_for_name):
-    by_type = groupby(sts_for_name, lambda s: type(s))
+def _m_class(by_type):
     # { GClass : [ ... ] , GInclude : [ ... ] }
     class_stmts = by_type.pop(GClass)
     class_stmt = _m_gclasses(class_stmts)
