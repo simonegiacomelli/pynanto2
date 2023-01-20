@@ -4,7 +4,7 @@ from __future__ import annotations
 import widlparser
 
 from js_pyi.datamodel import *
-from js_pyi.ingest import ingest, i_construct, merge, discard_unhandled_inplace
+from js_pyi.ingest import ingest, i_construct, merge, discard_unhandled
 
 
 def test_attribute():
@@ -145,7 +145,7 @@ def test_merge():
 def test_discard_unhandled():
     input = [GUnhandled('un1'),
              GInterface('Doc', body=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Node')])]
-    actual = discard_unhandled_inplace(input)
+    actual = discard_unhandled(input)
     assert actual == [GInterface('Doc', body=[GAttribute('attr1', 'Node')])]
 
 

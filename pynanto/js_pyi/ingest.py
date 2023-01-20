@@ -9,7 +9,7 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
 
 from js_pyi.datamodel import *
 from js_pyi.datamodel import unhandled, expect_type
-from js_pyi.itertools import groupby, partition, remove_inplace
+from js_pyi.itertools import groupby, partition
 
 _none = 'None'
 
@@ -296,13 +296,13 @@ def merge(statements: List[GStmt]) -> List[GStmt]:
     return result + unhandled
 
 
-def discard_unhandled_inplace(statements: List[GStmt]) -> List[GStmt]:
-    def if_unhandled(e):
-        return isinstance(e, GUnhandled)
+def discard_unhandled(statements: List[GStmt]) -> List[GStmt]:
+    def keep_handled(iterable):
+        return list(filter(lambda e: not isinstance(e, GUnhandled), iterable))
 
-    remove_inplace(statements, if_unhandled)
+    statements = keep_handled(statements)
 
     for st in statements:
-        remove_inplace(st.body, if_unhandled)
+        st.body = keep_handled(st.body)
 
     return statements
