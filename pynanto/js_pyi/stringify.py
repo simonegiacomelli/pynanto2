@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import textwrap
 import traceback
 from io import StringIO
 from typing import TYPE_CHECKING, List
@@ -23,7 +24,7 @@ def s_arg(a: GArg) -> str:
     return to_py_name(a.name) + s_annotation_named(a.annotation) + default
 
 
-def s_interface(i: GClass) -> str:
+def s_class(i: GClass) -> str:
     bases = ''
     if len(i.bases) > 0:
         bases = '(' + ', '.join(i.bases) + ')'
@@ -31,7 +32,9 @@ def s_interface(i: GClass) -> str:
     if len(i.children) == 0:
         return decl + ' ...'
     for b in i.children:
-        decl += '\n' + (' ' * 4) + b.to_python()
+        python = b.to_python()
+        indented = textwrap.indent(python, ' ' * 4)
+        decl += '\n' + indented
     return decl
 
 
@@ -43,7 +46,10 @@ def s_method(m: GMethod) -> str:
     args_arr = ['self'] + [s_arg(a) for a in m.arguments]
     args_str = ', '.join(args_arr)
     name = m.name
-    return f'def {name}({args_str}){returns}: ...'
+    decorator = ''
+    if m.overload:
+        decorator = '@overload\n'
+    return f'{decorator}def {name}({args_str}){returns}: ...'
 
 
 def s_annotation_named(a: GAnnotation) -> str:
@@ -96,7 +102,7 @@ def s_enum(e: GEnum) -> str:
         return GArg(name, [], ev.value)
 
     proxy = GClass(e.name, list(map(to_arg, e.children)))
-    return s_interface(proxy)
+    return s_class(proxy)
 
 
 def s_typedef(td: GTypedef) -> str:

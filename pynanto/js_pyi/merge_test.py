@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from js_pyi.datamodel import GMethod
 from js_pyi.ingest import ingest
 from js_pyi.ingest_stringify_test import _append_base
 from js_pyi.merge import merge
@@ -29,16 +30,14 @@ def test_merge_include():
     assert actual == expected
 
 
-# def test_merge_method_overload():
-#     idl = 'interface Doc { Blob foo();\n Blob foo(bool arg); }'
-#     interface = merge(ingest(idl))[0]
-#     assert len(interface.children) == 1
-#     actual: GClass = interface.children[0]
-#     assert actual == [
-#         GMethod('foo', [
-#             GArg('arg', ['bool', 'None'], default='None')
-#         ])]
-
-
-def test_merge_partition_by_name():
-    pass
+def test_merge_method_overload():
+    idl = 'interface Doc { Blob foo();\n Blob bar(); \n Blob foo(bool arg); }'
+    interface = merge(ingest(idl))[0]
+    assert len(interface.children) == 3
+    for m in interface.children:
+        m: GMethod
+        if m.name == 'foo':
+            assert m.overload
+            assert '@overload' in m.to_python()
+        else:
+            assert not m.overload

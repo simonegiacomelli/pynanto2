@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import s_method, s_attribute, s_interface, s_unhandled, s_enum, s_arg, s_typedef
+from js_pyi.stringify import s_method, s_attribute, s_class, s_unhandled, s_enum, s_arg, s_typedef
 
 
 class GPythonProducer:
@@ -69,7 +69,7 @@ class GGeneric:
 class GClass(GRootStmt, GPythonProducer, GHasChildren, GHasName):
     bases: List[str] = field(default_factory=list)
 
-    def to_python(self): return s_interface(self)
+    def to_python(self): return s_class(self)
 
 
 GType = typing.Union[str, GGeneric]
@@ -103,6 +103,7 @@ class GMethod(GStmt, GPythonProducer):
     name: str
     arguments: List[GArg] = field(default_factory=list)
     returns: Optional[GAnnotation] = 'undefined'
+    overload: bool = False
 
     def to_python(self): return s_method(self)
 
