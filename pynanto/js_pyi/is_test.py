@@ -188,7 +188,7 @@ def test_interface():
         "}"
     )
 
-    assert actual == [GClass('Document', bases=['Blob'], body=[
+    assert actual == [GClass('Document', bases=['Blob'], children=[
         (GMethod('createElement',
                  arguments=[GArg('localName', 'DOMString')],
                  returns='FooElement'))]
@@ -199,7 +199,7 @@ def test_empty_interface_with_constructor():
     _verify_root_stmt(
         '[Constructor]\ninterface Foo {\n}',
         'class Foo: ...',
-        GClass('Foo', body=[GIgnoredStmt(body_str='Constructor')])
+        GClass('Foo', children=[GIgnoredStmt(body_str='Constructor')])
     )
 
 
@@ -207,7 +207,7 @@ def test_complete_interface():
     _verify_root_stmt(
         'interface Doc : Blob  { attribute Blob baz; } ',
         'class Foo:\n    baz: Blob',
-        GClass('Doc', bases=['Blob'], body=[(GAttribute('baz', 'Blob'))])
+        GClass('Doc', bases=['Blob'], children=[(GAttribute('baz', 'Blob'))])
     )
 
 
@@ -218,9 +218,9 @@ def _append_base(cl: GClass, base: str):
 
 def test_keep_python_producer():
     stmts = [GUnhandled('un1'),
-             GClass('Doc', body=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Blob')])]
+             GClass('Doc', children=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Blob')])]
     actual = keep_python_producer(stmts)
-    assert actual == [GClass('Doc', body=[GAttribute('attr1', 'Blob')])]
+    assert actual == [GClass('Doc', children=[GAttribute('attr1', 'Blob')])]
 
 
 class Test_root:
@@ -272,7 +272,7 @@ attribute Blob global;
     a = actual[0]
     expect_isinstance(a, GClass)
     a: GClass
-    assert len(a.body) == 2
+    assert len(a.children) == 2
 
 
 def _verify_interface_stmt(idl, expected_python, expected_model):
@@ -293,8 +293,8 @@ def _interface_stmt(idl_piece: str, throw=True) -> GMethod | GAttribute | None:
     idl = 'interface Dummy {\n' + idl_piece + '\n}'
     stmt = _root_stmt(idl, throw)
     expect_isinstance(stmt, GClass)
-    if len(stmt.body) == 1:
-        return stmt.body[0]
+    if len(stmt.children) == 1:
+        return stmt.children[0]
     return None
 
 

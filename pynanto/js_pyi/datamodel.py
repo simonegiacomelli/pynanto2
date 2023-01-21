@@ -32,12 +32,12 @@ class GHasName:
 
 
 @dataclass()
-class GHasBody:
-    body: List[GStmt] = field(default_factory=list)
+class GHasChildren:
+    children: List[GStmt] = field(default_factory=list)
 
 
 @dataclass()
-class GNameAndBody(GHasBody, GHasName):
+class GNameAndBody(GHasChildren, GHasName):
     pass
 
 
@@ -66,7 +66,7 @@ class GGeneric:
 
 
 @dataclass()
-class GClass(GRootStmt, GPythonProducer, GHasBody, GHasName):
+class GClass(GRootStmt, GPythonProducer, GHasChildren, GHasName):
     bases: List[str] = field(default_factory=list)
 
     def to_python(self): return s_interface(self)
@@ -122,7 +122,7 @@ class GTypedef(GRootStmt, GPythonProducer):
 
 
 @dataclass
-class GEnum(GRootStmt, GPythonProducer, GHasBody, GHasName):
+class GEnum(GRootStmt, GPythonProducer, GHasChildren, GHasName):
     def to_python(self): return s_enum(self)
 
 

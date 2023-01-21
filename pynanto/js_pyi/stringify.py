@@ -28,9 +28,9 @@ def s_interface(i: GClass) -> str:
     if len(i.bases) > 0:
         bases = '(' + ', '.join(i.bases) + ')'
     decl = f'class {i.name}{bases}:'
-    if len(i.body) == 0:
+    if len(i.children) == 0:
         return decl + ' ...'
-    for b in i.body:
+    for b in i.children:
         decl += '\n' + (' ' * 4) + b.to_python()
     return decl
 
@@ -95,7 +95,7 @@ def s_enum(e: GEnum) -> str:
 
         return GArg(name, [], ev.value)
 
-    proxy = GClass(e.name, list(map(to_arg, e.body)))
+    proxy = GClass(e.name, list(map(to_arg, e.children)))
     return s_interface(proxy)
 
 

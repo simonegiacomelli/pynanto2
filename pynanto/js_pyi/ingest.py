@@ -200,7 +200,7 @@ def i_interface_member(member: InterfaceMember):
 def i_interface(interface: Interface, throw: bool):
     expect_isinstance(interface, Interface)
     members = [i_construct(construct, throw) for construct in interface.members]
-    return GClass(interface.name, bases=interface_bases(interface), body=members)
+    return GClass(interface.name, bases=interface_bases(interface), children=members)
 
 
 def i_enum_value(enum_value: EnumValue):
@@ -215,7 +215,7 @@ def i_include_statement(i: IncludesStatement):
 def i_enum(enum: Enum):
     expect_isinstance(enum, Enum)
     members = [i_enum_value(value) for value in enum.enum_values]
-    return GEnum(enum.name, body=members)
+    return GEnum(enum.name, children=members)
 
 
 def i_typedef(td: Typedef):
@@ -305,8 +305,8 @@ def keep_python_producer(statements: List[GStmt]) -> List[GStmt]:
     statements = filter_pp(statements)
 
     for st in statements:
-        if hasattr(st, 'body'):
-            st.body = filter_pp(st.body)
+        if isinstance(st, GHasChildren):
+            st.children = filter_pp(st.children)
 
     return statements
 
@@ -316,12 +316,12 @@ def keep_unhandled(statements: List[GStmt]) -> List[GStmt]:
         return list(filter(lambda e: isinstance(e, GUnhandled), iterable))
 
     for st in statements:
-        if hasattr(st, 'body'):
-            st.body = keep_unhand(st.body)
+        if isinstance(st, GHasChildren):
+            st.body = keep_unhand(st.children)
 
     statements = list(filter(
         lambda e: isinstance(e, GUnhandled)
-                  or (hasattr(st, 'body') and len(e.body) > 0), statements)
+                  or (isinstance(st, GHasChildren) and len(e.children) > 0), statements)
     )
 
     return statements

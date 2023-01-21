@@ -58,7 +58,7 @@ def _m_gclasses(statements: List[GClass]) -> GClass:
     result = GClass(name)
     for st in statements:
         result.bases.extend(st.bases)
-        result.body.extend(st.body)
+        result.children.extend(st.children)
     return result
 
 
