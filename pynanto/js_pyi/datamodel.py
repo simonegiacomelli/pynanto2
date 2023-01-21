@@ -13,7 +13,6 @@ class GPythonProducer:
         raise Exception(f'not implemented {type(self)}')
 
 
-@dataclass()
 class GStmt:
     pass
 
@@ -23,19 +22,23 @@ class GIgnoredStmt(GStmt):
     body_str: str
 
 
-@dataclass()
 class GRootStmt(GStmt):
     pass
 
 
 @dataclass()
-class GHasName(GStmt):
+class GHasName:
     name: str
 
 
 @dataclass()
-class GNameAndBody(GHasName):
+class GHasBody:
     body: List[GStmt] = field(default_factory=list)
+
+
+@dataclass()
+class GNameAndBody(GHasBody, GHasName):
+    pass
 
 
 @dataclass()
@@ -63,7 +66,7 @@ class GGeneric:
 
 
 @dataclass()
-class GClass(GNameAndBody, GRootStmt, GPythonProducer):
+class GClass(GRootStmt, GPythonProducer, GHasBody, GHasName):
     bases: List[str] = field(default_factory=list)
 
     def to_python(self): return s_interface(self)
@@ -119,7 +122,7 @@ class GTypedef(GRootStmt, GPythonProducer):
 
 
 @dataclass
-class GEnum(GNameAndBody, GRootStmt, GPythonProducer):
+class GEnum(GRootStmt, GPythonProducer, GHasBody, GHasName):
     def to_python(self): return s_enum(self)
 
 
