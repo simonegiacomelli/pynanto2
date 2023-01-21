@@ -50,7 +50,7 @@ def parse_product() -> bool:
     return success
 
 
-def develop(files: List[Path] | None = None) -> bool:
+def unhandled(files: List[Path] | None = None) -> bool:
     if files is None:
         files = find_all()
 
