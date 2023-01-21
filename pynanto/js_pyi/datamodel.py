@@ -29,8 +29,12 @@ class GRootStmt(GStmt):
 
 
 @dataclass()
-class GNameAndBody(GStmt):
+class GHasName(GStmt):
     name: str
+
+
+@dataclass()
+class GNameAndBody(GHasName):
     body: List[GStmt] = field(default_factory=list)
 
 
@@ -70,8 +74,7 @@ GAnnotation = typing.Union[GType, List[GType]]
 
 
 @dataclass()
-class GNamedAnnotation(GStmt):
-    name: str
+class GNamedAnnotation(GHasName):
     annotation: GAnnotation = field(default_factory=list)
 
 
