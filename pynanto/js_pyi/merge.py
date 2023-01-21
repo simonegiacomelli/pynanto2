@@ -1,17 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import List, Dict
+from typing import List
 
 from js_pyi.assertions import expect_isinstance
 from js_pyi.datamodel import GStmt, GUnhandled, GClass, GInclude, GEnum
 from js_pyi.itertools import partition, groupby as groupby2
-
-
-@dataclass
-class PartitionByName:
-    named: Dict[str, List[GNamed]]
-    other: List[GStmt]
 
 
 def merge(statements: List[GStmt]) -> List[GStmt]:
@@ -35,7 +28,7 @@ def merge(statements: List[GStmt]) -> List[GStmt]:
     return enums + the_rest + classes + unhandled
 
 
-def _m_class(by_type):
+def _m_class(by_type) -> GClass:
     # { GClass : [ ... ] , GInclude : [ ... ] }
     class_stmts = by_type.pop(GClass)
     class_stmt = _m_gclasses(class_stmts)

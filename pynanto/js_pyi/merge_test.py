@@ -30,10 +30,15 @@ def test_merge_include():
 
 
 # def test_merge_method_overload():
-#     idl = 'Blob foo();\n Blob foo(bool arg);'
-#     actual = merge(ingest(idl))
-#     expected = ingest('undefined alert')
-#     assert actual ==
+#     idl = 'interface Doc { Blob foo();\n Blob foo(bool arg); }'
+#     interface = merge(ingest(idl))[0]
+#     assert len(interface.children) == 1
+#     actual: GClass = interface.children[0]
+#     assert actual == [
+#         GMethod('foo', [
+#             GArg('arg', ['bool', 'None'], default='None')
+#         ])]
+
 
 def test_merge_partition_by_name():
     pass
