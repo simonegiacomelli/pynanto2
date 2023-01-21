@@ -27,3 +27,9 @@ def test_merge_include():
     _append_base(expected[0], 'Baz')
 
     assert actual == expected
+
+# def test_merge_method_overload():
+#     idl = 'Blob foo();\n Blob foo(bool arg);'
+#     actual = merge(ingest(idl))
+#     expected = ingest('undefined alert')
+#     assert actual ==
