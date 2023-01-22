@@ -33,6 +33,7 @@ def to_py_value(s) -> str:
 
 _names_dict = {
     'async': 'async_',
+    'from': 'from_',
 }
 
 
