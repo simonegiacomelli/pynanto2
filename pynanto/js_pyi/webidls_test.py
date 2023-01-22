@@ -12,3 +12,4 @@ def test_findall():
     assert find('Document.webidl') in actual
     assert find('Bluetooth.webidl') in actual
     assert find('PaymentRequest.webidl') in actual
+    assert find('FileMode.webidl') in actual

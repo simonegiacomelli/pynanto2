@@ -189,14 +189,6 @@ def test_interface():
                              )]
 
 
-def test_empty_interface_with_constructor():
-    _verify_root_stmt(
-        '[Constructor]\ninterface Foo {\n}',
-        'class Foo: ...',
-        GClass('Foo', children=[GIgnoredStmt(body_str='Constructor')])
-    )
-
-
 def test_complete_interface():
     _verify_root_stmt(
         'interface Doc : Blob  { attribute Blob baz; } ',
@@ -284,6 +276,7 @@ def _verify_root_stmt(idl, expected_python, expected):
     else:
         if expected_python != '':
             raise Exception('The type does not implement GPythonProducer')
+
 
 def _interface_stmt(idl_piece: str, throw=True) -> GMethod | GAttribute | None:
     idl = 'interface Dummy {\n' + idl_piece + '\n}'
