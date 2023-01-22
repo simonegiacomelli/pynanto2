@@ -11,7 +11,7 @@ def test_correctness_quick_0():
 
     assert 'class Element(Node, ChildNode, NonDocumentTypeChildNode, ParentNode, Animatable, GeometryUtils):' in \
            actual
-    expected = ['class ScrollLogicalPosition:', 'start = "start"', 'center = "center"', 'end = "end"']
+    expected = ['ScrollLogicalPosition', "start", "center", "end"]
     for each in expected:
         assert each in actual
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 import textwrap
 import traceback
 from io import StringIO
@@ -84,25 +83,9 @@ _invalid_keywords = {'None', 'class', 'in', 'float', 'long', 'int'}
 
 
 def s_enum(e: GEnum) -> str:
-    from js_pyi.datamodel import GClass, GArg
-
-    def to_arg(ev: GEnumValue) -> GArg:
-        name = ev.value.rstrip('"').lstrip('"')
-        if name == '':
-            name = 'empty_'
-        elif name[0].isdigit():
-            name = 'X_' + name
-        elif name in _invalid_keywords:
-            name = name + '_'
-
-        pattern = re.compile("[^0-9a-zA-Z]?")
-        if pattern.match(name):
-            name = re.sub('[^0-9a-zA-Z]', '_', name)
-
-        return GArg(name, [], ev.value)
-
-    proxy = GClass(e.name, list(map(to_arg, e.children)))
-    return s_class(proxy)
+    values = ', '.join(e.values)
+    result = f'{e.name} = Literal[{values}]'
+    return result
 
 
 def s_typedef(td: GTypedef) -> str:

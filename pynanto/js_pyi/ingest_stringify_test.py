@@ -106,22 +106,9 @@ def test_typedef():
 
 def test_enum_root_stmt():
     _verify_root_stmt(
-        'enum Foo {"bar","None","class","a-b+c/d", "","2x-y" };',
-        'class Foo:\n'
-        '    bar = "bar"\n'
-        '    None_ = "None"\n'
-        '    class_ = "class"\n'
-        '    a_b_c_d = "a-b+c/d"\n'
-        '    empty_ = ""\n'
-        '    X_2x_y = "2x-y"',
-        GEnum('Foo', [
-            GEnumValue('"bar"'),
-            GEnumValue('"None"'),
-            GEnumValue('"class"'),
-            GEnumValue('"a-b+c/d"'),
-            GEnumValue('""'),
-            GEnumValue('"2x-y"'),
-        ])
+        'enum Foo {"bar","baz" };',
+        'Foo = Literal["bar", "baz"]',
+        GEnum('Foo', ['"bar"', '"baz"'])
     )
 
 
@@ -213,7 +200,7 @@ def test_empty_interface_with_constructor():
 def test_complete_interface():
     _verify_root_stmt(
         'interface Doc : Blob  { attribute Blob baz; } ',
-        'class Foo:\n    baz: Blob',
+        'class Doc(Blob):\n    baz: Blob',
         GClass('Doc', bases=['Blob'], children=[(GAttribute('baz', 'Blob'))])
     )
 
@@ -292,9 +279,11 @@ def _verify_interface_stmt(idl, expected_python, expected_model):
 def _verify_root_stmt(idl, expected_python, expected):
     actual = _root_stmt(idl, throw=True)
     assert actual == expected
-    if expected is GPythonProducer:
+    if isinstance(expected, GPythonProducer):
         assert actual.to_python() == expected_python
-
+    else:
+        if expected_python != '':
+            raise Exception('The type does not implement GPythonProducer')
 
 def _interface_stmt(idl_piece: str, throw=True) -> GMethod | GAttribute | None:
     idl = 'interface Dummy {\n' + idl_piece + '\n}'

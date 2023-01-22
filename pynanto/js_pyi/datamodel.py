@@ -125,10 +125,7 @@ class GTypedef(GRootStmt, GPythonProducer):
 
 
 @dataclass
-class GEnum(GRootStmt, GPythonProducer, GHasChildren, GHasName):
+class GEnum(GRootStmt, GPythonProducer, GHasName):
+    values: List[str]
+
     def to_python(self): return s_enum(self)
-
-
-@dataclass()
-class GEnumValue(GStmt, GPythonProducer):
-    value: str

@@ -10,7 +10,7 @@ def main():
 
 _head = """# @formatter:off
 
-from typing import Awaitable, Sequence, overload
+from typing import Awaitable, Sequence, Literal, overload
 
 """
 _tail = """

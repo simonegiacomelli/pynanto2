@@ -204,7 +204,7 @@ def i_interface(interface: Interface | Mixin, throw: bool):
 
 
 def i_enum_value(enum_value: EnumValue):
-    return GEnumValue(enum_value.value)
+    return enum_value.value
 
 
 def i_include_statement(i: IncludesStatement):
@@ -214,8 +214,8 @@ def i_include_statement(i: IncludesStatement):
 
 def i_enum(enum: Enum):
     expect_isinstance(enum, Enum)
-    members = [i_enum_value(value) for value in enum.enum_values]
-    return GEnum(enum.name, children=members)
+    values = [i_enum_value(value) for value in enum.enum_values]
+    return GEnum(enum.name, values=values)
 
 
 def i_typedef(td: Typedef):
