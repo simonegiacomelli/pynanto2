@@ -321,7 +321,7 @@ def keep_unhandled(statements: List[GStmt]) -> List[GStmt]:
 
     statements = list(filter(
         lambda e: isinstance(e, GUnhandled)
-                  or (isinstance(st, GHasChildren) and len(e.children) > 0), statements)
+                  or (isinstance(e, GHasChildren) and len(e.children) > 0), statements)
     )
 
     return statements
