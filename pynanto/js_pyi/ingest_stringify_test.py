@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from js_pyi.assertions import expect_isinstance
 from js_pyi.datamodel import *
+from js_pyi.datamodel import GPythonProducer
 from js_pyi.ingest import ingest, keep_python_producer
 
 
@@ -77,6 +78,12 @@ def test_float():
         'def foo(self, x: float): ...',
         GMethod('foo', [GArg('x', 'float')])
     )
+
+
+def test_interface_mixin():
+    idl = 'interface mixin Foo {\n  attribute OnErrorEventHandler onerror; Flip foo(); \n }; '
+    stmt = _root_stmt(idl, throw=True)
+    expect_isinstance(stmt, GClass)
 
 
 def test_include():

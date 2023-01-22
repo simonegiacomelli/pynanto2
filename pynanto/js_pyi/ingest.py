@@ -4,7 +4,7 @@ import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
-    IncludesStatement, Typedef, ExtendedAttribute
+    IncludesStatement, Typedef, ExtendedAttribute, Mixin, MixinMember, MixinAttribute
 
 from js_pyi.assertions import unhandled, expect_isinstance
 from js_pyi.datamodel import *
@@ -148,7 +148,7 @@ def i_operation(o: Operation):
 
 
 def i_interface_member__type_method(member: InterfaceMember):
-    expect_isinstance(member, InterfaceMember)
+    expect_isinstance(member, InterfaceMember, MixinMember)
     args = []
     for a in member.arguments:
         expect_isinstance(a, Argument)
@@ -171,8 +171,8 @@ def i_interface_member__type_method(member: InterfaceMember):
 
 
 def i_interface_member__type_attribute(im: InterfaceMember):
-    expect_isinstance(im, InterfaceMember)
-    expect_isinstance(im.member, Attribute)
+    expect_isinstance(im, InterfaceMember, MixinMember)
+    expect_isinstance(im.member, Attribute, MixinAttribute)
 
     attribute: Attribute = im.member
 
@@ -185,7 +185,7 @@ def i_interface_member__type_attribute(im: InterfaceMember):
 
 
 def i_interface_member(member: InterfaceMember):
-    expect_isinstance(member, InterfaceMember)
+    expect_isinstance(member, InterfaceMember, MixinMember)
 
     idl_type = member.idl_type
 
@@ -197,8 +197,8 @@ def i_interface_member(member: InterfaceMember):
     unhandled(idl_type)
 
 
-def i_interface(interface: Interface, throw: bool):
-    expect_isinstance(interface, Interface)
+def i_interface(interface: Interface | Mixin, throw: bool):
+    expect_isinstance(interface, Interface, Mixin)
     members = [i_construct(construct, throw) for construct in interface.members]
     return GClass(interface.name, bases=interface_bases(interface), children=members)
 
@@ -232,7 +232,7 @@ def i_extended_attribute(construct: ExtendedAttribute):
 def i_construct(construct: Construct, throw: bool):
     expect_isinstance(construct, Construct)
 
-    if isinstance(construct, Interface):
+    if isinstance(construct, Interface) or isinstance(construct, Mixin):
         return i_interface(construct, throw)
     if isinstance(construct, Enum):
         return i_enum(construct)
@@ -242,7 +242,7 @@ def i_construct(construct: Construct, throw: bool):
         return i_include_statement(construct)
     if isinstance(construct, ExtendedAttribute):
         return i_extended_attribute(construct)
-    if isinstance(construct, InterfaceMember):
+    if isinstance(construct, InterfaceMember) or isinstance(construct, MixinMember):
         if throw:
             res = i_interface_member(construct)
         else:
