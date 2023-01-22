@@ -119,6 +119,10 @@ def s_unhandled(u: GUnhandled) -> str:
     return ex_str + u.body_str + '\n>>>\n'
 
 
+def s_ignored(i: GIgnoredStmt) -> str:
+    return '""" # GIgnoredStmt \n' + i.body_str + '\n"""'
+
+
 def s_statements(statements: List[GStmt]) -> str:
     res = StringIO()
     for st in statements:

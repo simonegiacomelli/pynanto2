@@ -5,7 +5,7 @@ from typing import List
 
 from js_pyi.ingest import ingest, keep_unhandled
 from js_pyi.stringify import s_statements
-from js_pyi.webidls import find, find_all
+from js_pyi.webidls import find_all
 
 
 def unhandled(files: List[Path] | None = None) -> bool:
@@ -25,7 +25,7 @@ def unhandled(files: List[Path] | None = None) -> bool:
 
 def main():
     # develop([find('EventHandler.webidl')])
-    unhandled([find('EventHandler.webidl')])
+    unhandled()
 
 
 if __name__ == '__main__':

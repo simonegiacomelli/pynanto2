@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import s_method, s_attribute, s_class, s_unhandled, s_enum, s_arg, s_typedef
+from js_pyi.stringify import s_method, s_attribute, s_class, s_unhandled, s_enum, s_arg, s_typedef, s_ignored
 
 
 class GPythonProducer:
@@ -18,8 +18,10 @@ class GStmt:
 
 
 @dataclass()
-class GIgnoredStmt(GStmt):
+class GIgnoredStmt(GStmt, GPythonProducer):
     body_str: str
+
+    def to_python(self): return s_ignored(self)
 
 
 class GRootStmt(GStmt):
