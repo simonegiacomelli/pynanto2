@@ -7,6 +7,14 @@ from js_pyi.datamodel import GStmt, GUnhandled, GClass, GInclude, GEnum, GMethod
 from js_pyi.itertools import partition, groupby as groupby2, groupby
 
 
+def _fix_constructor(cl: GClass):
+    constructors = filter(lambda m: isinstance(m, GMethod) and m.name == 'constructor', cl.children)
+    for c in constructors:
+        c: GMethod
+        c.name = 'New'
+        c.returns = cl.name
+
+
 def _mark_method_overload(cl: GClass):
     methods = filter(lambda m: isinstance(m, GMethod), cl.children)
     by_name = groupby(methods, lambda m: m.name)
@@ -28,6 +36,7 @@ def merge(statements: List[GStmt]) -> List[GStmt]:
         by_type = groupby2(sts_for_name, lambda s: type(s))
         if GClass in by_type:
             mi = _m_class(by_type)
+            _fix_constructor(mi)
             _mark_method_overload(mi)
             classes.append(mi)
         elif GEnum in by_type:

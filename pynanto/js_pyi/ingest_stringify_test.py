@@ -141,6 +141,14 @@ def test_nullable_result():
     )
 
 
+def test_constructor():
+    _verify_interface_stmt(
+        'constructor(Blob name);',
+        'def constructor(self, name: Blob): ...',
+        GMethod('constructor', [GArg('name', 'Blob')])
+    )
+
+
 def test_compound_nullable():
     _verify_interface_stmt(
         'undefined foo( (HTMLElement or long)? before );',

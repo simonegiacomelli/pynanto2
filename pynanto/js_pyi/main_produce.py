@@ -11,6 +11,8 @@ def main():
 _head = """# @formatter:off
 
 from typing import Awaitable, Sequence, Literal, overload
+USVString = str
+
 
 """
 _tail = """

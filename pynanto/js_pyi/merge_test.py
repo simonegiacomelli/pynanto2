@@ -41,3 +41,15 @@ def test_merge_method_overload():
             assert '@overload' in m.to_python()
         else:
             assert not m.overload
+
+
+def test_merge_constructor_overload():
+    idl = 'interface Doc { constructor();\n constructor(bool arg); }'
+    interface = merge(ingest(idl))[0]
+    assert len(interface.children) == 2
+    for m in interface.children:
+        m: GMethod
+        assert m.name == 'New'
+        assert m.returns == 'Doc'
+        assert m.overload
+        assert '@overload' in m.to_python()

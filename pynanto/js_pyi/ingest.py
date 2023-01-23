@@ -4,7 +4,7 @@ import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
-    IncludesStatement, Typedef, ExtendedAttribute, Mixin, MixinMember, MixinAttribute
+    IncludesStatement, Typedef, ExtendedAttribute, Mixin, MixinMember, MixinAttribute, Constructor
 
 from js_pyi.assertions import unhandled, expect_isinstance
 from js_pyi.datamodel import *
@@ -166,6 +166,8 @@ def i_interface_member__type_method(member: InterfaceMember):
     if isinstance(member.member, Operation):
         returns = i_operation(member.member)
         return GMethod(member.name, arguments=args, returns=returns)
+    if isinstance(member.member, Constructor):
+        return GMethod(member.name, arguments=args)
 
     unhandled(member.member)
 
