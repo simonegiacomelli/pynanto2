@@ -15,14 +15,11 @@ def find_all() -> List[Path]:
 
 def _find_all():
     parent = Path(__file__).parent
-    root = parent / 'webidls'
-    folders = 'enabled unstable unavailable_option_primitive'.split(' ')
 
-    for path in map(lambda s: root / s, folders):
-        yield from _yield_path(path)
-    yield from _yield_path(parent / 'webidls-manual')
+    yield from _yield_path(parent / 'w3c_webref/ed/idl', '*.idl')
+    yield from _yield_path(parent / 'webidls-manual', '*.webidl')
 
 
-def _yield_path(path):
-    files = list(path.glob('*.webidl'))
+def _yield_path(path, webidl):
+    files = list(path.glob(webidl))
     yield from files
