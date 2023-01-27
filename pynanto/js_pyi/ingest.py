@@ -4,7 +4,8 @@ import widlparser
 from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAttributes, Argument, UnionType, \
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
-    IncludesStatement, Typedef, ExtendedAttribute, Mixin, MixinMember, MixinAttribute, Constructor
+    IncludesStatement, Typedef, ExtendedAttribute, Mixin, MixinMember, MixinAttribute, Constructor, Dictionary, \
+    DictionaryMember, Inheritance
 
 from js_pyi.assertions import unhandled, expect_isinstance
 from js_pyi.datamodel import *
@@ -101,6 +102,13 @@ def interface_bases(interface: Interface):
     return [str(interface.inheritance.base)]
 
 
+def i_inheritance(i: Inheritance | None):
+    if i is None:
+        return []
+    expect_isinstance(i, Inheritance)
+    return [str(i.base)]
+
+
 def i_type_with_extended_attributes(twea: TypeWithExtendedAttributes) -> GType:
     expect_isinstance(twea, TypeWithExtendedAttributes)
 
@@ -179,7 +187,7 @@ def i_interface_member__type_attribute(im: InterfaceMember):
     attribute: Attribute = im.member
 
     expect_isinstance(attribute.attribute, AttributeRest)
-    expect_isinstance(attribute.attribute.type, TypeWithExtendedAttributes)
+
     if im.name == 'global' or im.name == 'as':
         unhandled('The keyword `global` cannot be used as a variable name ')
     attributes = i_type_with_extended_attributes(attribute.attribute.type)
@@ -203,6 +211,17 @@ def i_interface(interface: Interface | Mixin, throw: bool):
     expect_isinstance(interface, Interface, Mixin)
     members = [i_construct(construct, throw) for construct in interface.members]
     return GClass(interface.name, bases=interface_bases(interface), children=members)
+
+
+def i_dictionary(dictionary: Dictionary, throw: bool):
+    expect_isinstance(dictionary, Dictionary)
+    bases = ['TypedDict'] + i_inheritance(dictionary.inheritance)
+    members = [i_construct(construct, throw) for construct in dictionary.members]
+    return GClass(dictionary.name, members, bases=bases)
+
+
+def i_dictionary_member(dm: DictionaryMember):
+    return GAttribute(dm.name, i_type_with_extended_attributes(dm.type))
 
 
 def i_enum_value(enum_value: EnumValue):
@@ -236,6 +255,10 @@ def i_construct(construct: Construct, throw: bool):
 
     if isinstance(construct, Interface) or isinstance(construct, Mixin):
         return i_interface(construct, throw)
+    if isinstance(construct, Dictionary):
+        return i_dictionary(construct, throw)
+    if isinstance(construct, DictionaryMember):
+        return i_dictionary_member(construct)
     if isinstance(construct, Enum):
         return i_enum(construct)
     if isinstance(construct, Typedef):

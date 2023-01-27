@@ -86,6 +86,14 @@ def test_interface_mixin():
     expect_isinstance(stmt, GClass)
 
 
+def test_dictionary_stmt():
+    _verify_root_stmt(
+        'dictionary Doc : Parent { required Blob baz; } ',
+        'class Doc(TypedDict, Parent):\n    baz: Blob',
+        GClass('Doc', [(GAttribute('baz', 'Blob'))], bases=['TypedDict', 'Parent'], )
+    )
+
+
 def test_include():
     _verify_root_stmt('Foo includes Bar', '', GInclude('Foo', 'Bar'))
 
@@ -215,30 +223,6 @@ def test_keep_python_producer():
              GClass('Doc', children=[GUnhandled('un2'), GUnhandled('un2'), GAttribute('attr1', 'Blob')])]
     actual = keep_python_producer(stmts)
     assert actual == [GClass('Doc', children=[GAttribute('attr1', 'Blob')])]
-
-
-class Test_root:
-    root_unhandled_idl = """
-dictionary ConsoleInstanceOptions {
-ConsoleInstanceDumpCallback dump;
-}
-"""
-
-    def test_root_raise(self):
-        exception = False
-        try:
-            ingest(self.root_unhandled_idl)
-        except Exception as ex:
-            exception = True
-
-        assert exception
-
-    def test_root_unhandled(self):
-        actual = ingest(self.root_unhandled_idl, throw=False)
-        assert len(actual) == 1
-        a = actual[0]
-        assert isinstance(a, GUnhandled)
-        assert 'dump' in a.body_str
 
 
 def test_parse_error():

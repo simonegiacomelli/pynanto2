@@ -84,7 +84,7 @@ class GNamedAnnotation(GHasName):
 
 
 @dataclass()
-class GAttribute(GNamedAnnotation, GPythonProducer):
+class GAttribute(GStmt, GNamedAnnotation, GPythonProducer):
     def to_python(self): return s_attribute(self)
 
 
