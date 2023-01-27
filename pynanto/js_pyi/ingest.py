@@ -62,6 +62,10 @@ def _wrap_if_generic(res, non_any_type: NonAnyType):
     return res
 
 
+def i_any_type(any_type: AnyType):
+    return 'any'
+
+
 def i_non_any_type(non_any_type: NonAnyType):
     expect_isinstance(non_any_type, NonAnyType)
 
@@ -90,7 +94,7 @@ def i_single_type(single_type: SingleType):
     expect_isinstance(single_type, SingleType)
     t = single_type.type
     if isinstance(t, AnyType):
-        unhandled(single_type)
+        return i_any_type(t)
     elif isinstance(t, NonAnyType):
         return i_non_any_type(t)
 

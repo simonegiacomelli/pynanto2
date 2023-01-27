@@ -91,12 +91,23 @@ def test_dictionary_stmt():
         'dictionary Doc : Parent { '
         '  required Blob baz ; '
         '  Flip foo;'
-        '  bool break ; str is; '
+        '  bool break ; str is;'
         '} ',
         'class Doc(TypedDict, Parent):\n    baz: Blob\n    foo: NotRequired[Flip]',
         GClass('Doc',
                [GAttribute('baz', 'Blob'), GAttribute('foo', GNotRequired('Flip'))],
                bases=['TypedDict', 'Parent'], )
+    )
+
+
+def test_dictionary_any_type():
+    _verify_root_stmt(
+        'dictionary Doc { '
+        '  any state = null;'
+        '} ',
+        'class Doc(TypedDict):\n    state: NotRequired[any]',
+        GClass('Doc', [GAttribute('state', GNotRequired('any'))],
+               bases=['TypedDict'])
     )
 
 

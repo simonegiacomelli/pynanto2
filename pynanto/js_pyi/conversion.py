@@ -35,7 +35,8 @@ reserved_keywords = {
     'async',
     'from',
     'break',
-    'is'
+    'is',
+    'continue',
 }
 
 
