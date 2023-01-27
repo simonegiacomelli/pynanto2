@@ -223,9 +223,10 @@ def i_dictionary(dictionary: Dictionary, throw: bool):
 
 
 def i_dictionary_member(dm: DictionaryMember) -> GAttribute:
-    name = dm.name
     attr = i_type_with_extended_attributes(dm.type)
-    return GAttribute(name, attr)
+    if dm.required is None:
+        attr = GNotRequired(attr)
+    return GAttribute(dm.name, attr)
 
 
 def i_enum_value(enum_value: EnumValue):

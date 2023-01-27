@@ -68,6 +68,11 @@ class GGeneric:
 
 
 @dataclass()
+class GNotRequired:
+    annotation: 'GAnnotation'
+
+
+@dataclass()
 class GClass(GRootStmt, GPythonProducer, GHasChildren, GHasName):
     bases: List[str] = field(default_factory=list)
 
@@ -75,7 +80,7 @@ class GClass(GRootStmt, GPythonProducer, GHasChildren, GHasName):
 
 
 GType = typing.Union[str, GGeneric]
-GAnnotation = typing.Union[GType, List[GType]]
+GAnnotation = typing.Union[GType, List[GType], GNotRequired]
 
 
 @dataclass()

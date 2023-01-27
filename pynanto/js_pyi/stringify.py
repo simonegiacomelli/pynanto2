@@ -62,12 +62,16 @@ def s_type(a: GType) -> str:
     if isinstance(a, str):
         return to_py_type(a)
 
-    from js_pyi.datamodel import GGeneric
+    from js_pyi.datamodel import GGeneric, GNotRequired
     if isinstance(a, GGeneric):
         a: GGeneric
         ann = s_annotation(a.annotation)
         name = to_py_type(a.name)
         return f'{name}[{ann}]'
+    if isinstance(a, GNotRequired):
+        a: GNotRequired
+        ann = s_annotation(a.annotation)
+        return f'NotRequired[{ann}]'
 
     unhandled(a)
 
