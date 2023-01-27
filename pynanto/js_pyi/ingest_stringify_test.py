@@ -88,7 +88,7 @@ def test_interface_mixin():
 
 def test_dictionary_stmt():
     _verify_root_stmt(
-        'dictionary Doc : Parent { required Blob baz; } ',
+        'dictionary Doc : Parent { required Blob baz ; bool break ; str is; } ',
         'class Doc(TypedDict, Parent):\n    baz: Blob',
         GClass('Doc', [(GAttribute('baz', 'Blob'))], bases=['TypedDict', 'Parent'], )
     )

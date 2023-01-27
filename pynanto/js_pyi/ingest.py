@@ -8,6 +8,7 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
     DictionaryMember, Inheritance
 
 from js_pyi.assertions import unhandled, expect_isinstance
+from js_pyi.conversion import reserved_keywords
 from js_pyi.datamodel import *
 
 _none = 'None'
@@ -216,12 +217,15 @@ def i_interface(interface: Interface | Mixin, throw: bool):
 def i_dictionary(dictionary: Dictionary, throw: bool):
     expect_isinstance(dictionary, Dictionary)
     bases = ['TypedDict'] + i_inheritance(dictionary.inheritance)
-    members = [i_construct(construct, throw) for construct in dictionary.members]
+    members = [i_dictionary_member(construct) for construct in dictionary.members]
+    members = list(filter(lambda s: s.name not in reserved_keywords, members))
     return GClass(dictionary.name, members, bases=bases)
 
 
-def i_dictionary_member(dm: DictionaryMember):
-    return GAttribute(dm.name, i_type_with_extended_attributes(dm.type))
+def i_dictionary_member(dm: DictionaryMember) -> GAttribute:
+    name = dm.name
+    attr = i_type_with_extended_attributes(dm.type)
+    return GAttribute(name, attr)
 
 
 def i_enum_value(enum_value: EnumValue):
@@ -257,8 +261,6 @@ def i_construct(construct: Construct, throw: bool):
         return i_interface(construct, throw)
     if isinstance(construct, Dictionary):
         return i_dictionary(construct, throw)
-    if isinstance(construct, DictionaryMember):
-        return i_dictionary_member(construct)
     if isinstance(construct, Enum):
         return i_enum(construct)
     if isinstance(construct, Typedef):

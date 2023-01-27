@@ -31,11 +31,15 @@ def to_py_value(s) -> str:
     return _values_dict.get(s, s)
 
 
-_names_dict = {
-    'async': 'async_',
-    'from': 'from_',
+reserved_keywords = {
+    'async',
+    'from',
+    'break',
+    'is'
 }
 
 
 def to_py_name(s) -> str:
-    return _names_dict.get(s, s)
+    if s in reserved_keywords:
+        return s + '_'
+    return s
