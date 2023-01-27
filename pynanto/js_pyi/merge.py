@@ -8,11 +8,14 @@ from js_pyi.itertools import partition, groupby as groupby2, groupby
 
 
 def _fix_constructor(cl: GClass):
-    constructors = filter(lambda m: isinstance(m, GMethod) and m.name == 'constructor', cl.children)
+    constructors = list(filter(lambda m: isinstance(m, GMethod) and m.name == 'constructor', cl.children))
     for c in constructors:
         c: GMethod
         c.name = 'New'
         c.returns = cl.name
+        cl.children.remove(c)
+
+    cl.children[:0] = constructors
 
 
 def _mark_method_overload(cl: GClass):
