@@ -155,34 +155,9 @@ def i_argument(argument: Argument):
     return str(argument_type.type)
 
 
-def i_operation(o: Operation):
-    expect_isinstance(o, Operation)
-    return i_type(o.return_type)
-
-
 def i_interface_member__type_method(member: InterfaceMember):
     expect_isinstance(member, InterfaceMember, MixinMember)
-    args = []
-    for a in member.arguments:
-        expect_isinstance(a, Argument)
-        a: Argument
-        annotation = i_argument(a)
-        if not a.required:
-            annotation = _put_annotation_type(annotation, _none)
-        g_arg = GArg(a.name, annotation)
-        if a.default is not None:
-            g_arg.default = i_default(a.default)
-        elif not a.required:
-            g_arg.default = _none
-        args.append(g_arg)
-
-    if isinstance(member.member, Operation):
-        returns = i_operation(member.member)
-        return GMethod(member.name, arguments=args, returns=returns)
-    if isinstance(member.member, Constructor):
-        return GMethod(member.name, arguments=args)
-
-    unhandled(member.member)
+    return i_operation(member.member)
 
 
 def i_interface_member__type_attribute(im: InterfaceMember):
@@ -248,7 +223,8 @@ def i_enum(enum: Enum):
     return GEnum(enum.name, values=values)
 
 
-def i_operation2(member: Operation):
+def i_operation(member: Operation | Constructor):
+    expect_isinstance(member, Operation, Constructor)
     args = []
     for a in member.arguments:
         expect_isinstance(a, Argument)
@@ -266,14 +242,17 @@ def i_operation2(member: Operation):
                 g_arg.default = _none
         args.append(g_arg)
 
-    returns = i_type(member.return_type)
-    return GMethod(member.name, arguments=args, returns=returns)
+    g_method = GMethod(member.name, arguments=args)
+    if isinstance(member, Operation):
+        returns = i_type(member.return_type)
+        g_method.returns = returns
+    return g_method
 
 
 def i_namespace_member(m: NamespaceMember):
     expect_isinstance(m, NamespaceMember)
     if isinstance(m.member, Operation):
-        return i_operation2(m.member)
+        return i_operation(m.member)
     unhandled(m)
 
 
