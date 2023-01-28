@@ -1,3 +1,4 @@
+import sys
 import traceback
 from pathlib import Path
 from types import ModuleType
@@ -74,6 +75,8 @@ class Config:
         # - through ??
 
         ef = external_filename(stack_backtrack)
+        print(f'detected user dir: {ef}')
+        print(f'{sys.path}')
         if ef is not None:
             self.bundles.add_flat_folder(ef.parent / 'app', relative_to=ef.parent)
             self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
