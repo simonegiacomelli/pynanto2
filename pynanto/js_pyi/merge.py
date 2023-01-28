@@ -71,7 +71,7 @@ def _m_gclasses(statements: List[GClass]) -> GClass:
         else:
             assert st.name == name
 
-    result = GClass(name)
+    result = GClass(name, is_namespace=st.is_namespace)
     for st in statements:
         result.bases.extend(st.bases)
         result.children.extend(st.children)

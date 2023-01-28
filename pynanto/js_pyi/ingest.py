@@ -259,7 +259,7 @@ def i_namespace_member(m: NamespaceMember):
 def i_namespace(ns: Namespace):
     expect_isinstance(ns, Namespace)
     members = [i_namespace_member(construct) for construct in ns.members]
-    return GNamespace(ns.name, children=members)
+    return GClass(ns.name, children=members, is_namespace=True)
 
 
 def i_typedef(td: Typedef):

@@ -4,8 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import s_method, s_attribute, s_class, s_unhandled, s_enum, s_arg, s_typedef, s_ignored, \
-    s_namespace
+from js_pyi.stringify import s_method, s_attribute, s_class, s_unhandled, s_enum, s_arg, s_typedef, s_ignored
 
 
 class GPythonProducer:
@@ -76,13 +75,9 @@ class GNotRequired:
 @dataclass()
 class GClass(GRootStmt, GPythonProducer, GHasChildren, GHasName):
     bases: List[str] = field(default_factory=list)
+    is_namespace: bool = False
 
     def to_python(self): return s_class(self)
-
-
-@dataclass
-class GNamespace(GClass):
-    def to_python(self): return s_namespace(self)
 
 
 GType = typing.Union[str, GGeneric]

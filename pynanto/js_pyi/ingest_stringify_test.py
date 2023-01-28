@@ -242,7 +242,8 @@ def test_namespace():
     _verify_root_stmt(
         'namespace console { undefined log(any... data); }',
         'class ConsoleNamespace:\n    def log(self, *data: Any): ...',
-        GNamespace('console', children=[(GMethod('log', [GArgVariadic('data', 'any')]))])
+        GClass('console', children=[(GMethod('log', [GArgVariadic('data', 'any')]))],
+               is_namespace=True)
     )
 
 

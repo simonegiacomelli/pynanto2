@@ -53,3 +53,14 @@ def test_merge_constructor_overload():
         assert m.returns == 'Doc'
         assert m.overload
         assert '@overload' in m.to_python()
+
+
+def test_merge_namespace():
+    piece1 = ingest('namespace Doc { undefined clear(); }')
+    piece2 = ingest('namespace Doc { undefined foo(int over); }')
+
+    actual = merge(piece1 + piece2)
+
+    expected = ingest('namespace Doc { undefined clear(); undefined foo(int over); }')
+
+    assert actual == expected

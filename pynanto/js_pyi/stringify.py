@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import dataclasses
 import textwrap
 import traceback
 from io import StringIO
@@ -28,17 +27,15 @@ def s_arg(a: GArg) -> str:
     return to_py_name(name) + s_annotation_named(a.annotation) + default
 
 
-def s_namespace(n: GNamespace) -> str:
-    copy = dataclasses.replace(n)
-    copy.name = n.name.capitalize() + 'Namespace'
-    return s_class(copy)
-
-
 def s_class(i: GClass) -> str:
     bases = ''
     if len(i.bases) > 0:
         bases = '(' + ', '.join(i.bases) + ')'
-    decl = f'class {i.name}{bases}:'
+    name = i.name
+    if i.is_namespace:
+        name = name.capitalize() + 'Namespace'
+
+    decl = f'class {name}{bases}:'
     if len(i.children) == 0:
         return decl + ' ...'
     for b in i.children:
