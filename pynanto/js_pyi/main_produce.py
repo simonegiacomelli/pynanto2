@@ -20,6 +20,7 @@ _tail = """
 document: Document
 window: Window
 navigator: Navigator
+console: ConsoleNamespace
 
 """
 if __name__ == '__main__':

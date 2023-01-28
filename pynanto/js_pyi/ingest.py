@@ -365,7 +365,7 @@ def keep_unhandled(statements: List[GStmt]) -> List[GStmt]:
 
     for st in statements:
         if isinstance(st, GHasChildren):
-            st.body = keep_unhand(st.children)
+            st.children = keep_unhand(st.children)
 
     statements = list(filter(
         lambda e: isinstance(e, GUnhandled)
