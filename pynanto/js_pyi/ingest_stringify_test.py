@@ -56,6 +56,14 @@ def test_method_no_params():
     )
 
 
+def test_method_continue():
+    _verify_interface_stmt(
+        'undefined continue();',
+        'def continue_(self): ...',
+        GMethod('continue'),
+    )
+
+
 def test_name_clash_async():
     _verify_interface_stmt(
         'undefined foo (Blob async);',

@@ -6,7 +6,7 @@ from io import StringIO
 from typing import TYPE_CHECKING, List
 
 from js_pyi.assertions import unhandled
-from js_pyi.conversion import to_py_type, to_py_value, to_py_name
+from js_pyi.conversion import to_py_type, to_py_value, to_py_name, reserved_keywords
 
 if TYPE_CHECKING:
     from js_pyi.datamodel import *
@@ -37,6 +37,12 @@ def s_class(i: GClass) -> str:
     return decl
 
 
+def s_member_name(name: str) -> str:
+    if name in reserved_keywords:
+        return name + '_'
+    return name
+
+
 def s_method(m: GMethod) -> str:
     returns = ''
     if m.returns is not None and m.returns != 'undefined':
@@ -44,7 +50,7 @@ def s_method(m: GMethod) -> str:
 
     args_arr = ['self'] + [s_arg(a) for a in m.arguments]
     args_str = ', '.join(args_arr)
-    name = m.name
+    name = s_member_name(m.name)
     decorator = ''
     if m.overload:
         decorator = '@overload\n'
