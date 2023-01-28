@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import textwrap
 import traceback
 from io import StringIO
@@ -20,7 +21,17 @@ def s_arg(a: GArg) -> str:
     default = ''
     if a.default is not None:
         default = ' = ' + to_py_value(a.default)
-    return to_py_name(a.name) + s_annotation_named(a.annotation) + default
+    name = a.name
+    from js_pyi.datamodel import GArgVariadic
+    if isinstance(a, GArgVariadic):
+        name = '*' + name
+    return to_py_name(name) + s_annotation_named(a.annotation) + default
+
+
+def s_namespace(n: GNamespace) -> str:
+    copy = dataclasses.replace(n)
+    copy.name = n.name.capitalize() + 'Namespace'
+    return s_class(copy)
 
 
 def s_class(i: GClass) -> str:

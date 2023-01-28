@@ -5,7 +5,7 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
     IncludesStatement, Typedef, ExtendedAttribute, Mixin, MixinMember, MixinAttribute, Constructor, Dictionary, \
-    DictionaryMember, Inheritance
+    DictionaryMember, Inheritance, Namespace, NamespaceMember
 
 from js_pyi.assertions import unhandled, expect_isinstance
 from js_pyi.conversion import reserved_keywords
@@ -248,6 +248,41 @@ def i_enum(enum: Enum):
     return GEnum(enum.name, values=values)
 
 
+def i_operation2(member: Operation):
+    args = []
+    for a in member.arguments:
+        expect_isinstance(a, Argument)
+        a: Argument
+        annotation = i_argument(a)
+        if a.variadic is not None:
+            g_arg = GArgVariadic(a.name, annotation)
+        else:
+            if not a.required:
+                annotation = _put_annotation_type(annotation, _none)
+            g_arg = GArg(a.name, annotation)
+            if a.default is not None:
+                g_arg.default = i_default(a.default)
+            elif not a.required:
+                g_arg.default = _none
+        args.append(g_arg)
+
+    returns = i_type(member.return_type)
+    return GMethod(member.name, arguments=args, returns=returns)
+
+
+def i_namespace_member(m: NamespaceMember):
+    expect_isinstance(m, NamespaceMember)
+    if isinstance(m.member, Operation):
+        return i_operation2(m.member)
+    unhandled(m)
+
+
+def i_namespace(ns: Namespace):
+    expect_isinstance(ns, Namespace)
+    members = [i_namespace_member(construct) for construct in ns.members]
+    return GNamespace(ns.name, children=members)
+
+
 def i_typedef(td: Typedef):
     expect_isinstance(td, Typedef)
     ann = i_type_with_extended_attributes(td.type)
@@ -274,6 +309,8 @@ def i_construct(construct: Construct, throw: bool):
         return i_include_statement(construct)
     if isinstance(construct, ExtendedAttribute):
         return i_extended_attribute(construct)
+    if isinstance(construct, Namespace):
+        return i_namespace(construct)
     if isinstance(construct, InterfaceMember) or isinstance(construct, MixinMember):
         if throw:
             res = i_interface_member(construct)

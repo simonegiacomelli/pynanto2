@@ -2,6 +2,7 @@ from __future__ import annotations
 
 _types_dict = {
     'undefined': 'None',
+    'any': 'Any',
     'DOMString': 'str',
     'long': 'int',
     'long long': 'int',
@@ -37,6 +38,8 @@ reserved_keywords = {
     'break',
     'is',
     'continue',
+    'assert',
+    'in',
 }
 
 

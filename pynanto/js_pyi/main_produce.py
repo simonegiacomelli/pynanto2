@@ -10,7 +10,7 @@ def main():
 
 _head = """# @formatter:off
 
-from typing import overload, Awaitable, Sequence, Literal, TypedDict, NotRequired
+from typing import overload, Any, Awaitable, Sequence, Literal, TypedDict, NotRequired
 USVString = str
 
 
