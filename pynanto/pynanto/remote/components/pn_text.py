@@ -1,4 +1,5 @@
 from js import document
+from pynanto.remote.components.ForwardTo import forward_to
 
 
 class PnText:
@@ -10,13 +11,5 @@ class PnText:
         self._proxy = div
         document.body.append(div)
 
-    def __getattr__(self, attr):
-        if attr == '_proxy':
-            return self._proxy
-        return getattr(self._proxy, attr)
 
-    def __setattr__(self, key, value):
-        if key == '_proxy':
-            super().__setattr__(key, value)
-        else:
-            setattr(self._proxy, key, value)
+forward_to(PnText, '_proxy')
