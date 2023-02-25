@@ -1,22 +1,24 @@
 def forward_to(host, guest_name: str):
-    # def ga(self, attr):
-    #     raise attr
-    #
-    #     def foo():
-    #         return "foo"
-    #
-    #     return foo
     def ga(self, attr):
         guest_obj = getattr(self, guest_name)
         return getattr(guest_obj, attr)
 
+    def sa(self, key, value):
+        if key == guest_name:
+            super(host, self).__setattr__(key, value)
+        else:
+            guest_obj = getattr(self, guest_name)
+            setattr(guest_obj, key, value)
+
     host.__getattr__ = ga
+    host.__setattr__ = sa
+
     return host
 
 
 ### tests
 
-class Proxied:
+class Guest:
     def __init__(self, string: str):
         self.string = string
 
@@ -24,31 +26,32 @@ class Proxied:
         return self.string
 
 
-class Target1:
+class Host1:
     def __init__(self, guest):
         self.guest = guest
+        self.prop1 = "prop1-val"
 
     def bar(self):
         return "bar"
 
 
 def test_proxy():
-    class Target2:
+    class Host2:
         def __init__(self, guest):
             self._guest = guest
 
-    forward_to(Target1, 'guest')
-    target1 = Target1(Proxied("foo"))
+    forward_to(Host1, 'guest')
+    target1 = Host1(Guest("foo"))
     assert target1.foo() == "foo"
 
-    forward_to(Target2, '_guest')
-    target2 = Target2(Proxied("bar"))
+    forward_to(Host2, '_guest')
+    target2 = Host2(Guest("bar"))
     assert target2.foo() == "bar"
 
 
 def test_non_existant():
-    forward_to(Target1, 'guest')
-    target1 = Target1(Proxied("foo"))
+    forward_to(Host1, 'guest')
+    target1 = Host1(Guest("foo"))
     try:
         target1.does_not_exist()
         exception = None
@@ -59,6 +62,16 @@ def test_non_existant():
 
 
 def test_shouldNotForward_existingHostMethods():
-    forward_to(Target1, 'guest')
-    target1 = Target1(Proxied("foo"))
+    forward_to(Host1, 'guest')
+    target1 = Host1(Guest("foo"))
     assert "bar" == target1.bar()
+    assert "prop1-val" == target1.prop1
+
+
+def test_shouldForwardSet():
+    forward_to(Host1, 'guest')
+    guest = Guest("foo")
+    target1 = Host1(guest)
+
+    target1.guestprop1 = "hello"
+    assert "hello" == guest.guestprop1
