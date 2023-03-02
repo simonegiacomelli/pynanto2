@@ -32,7 +32,7 @@ class Host1:
         self.prop1 = "prop1-val"
 
     def bar(self):
-        return "bar"
+        return self.prop1
 
 
 def test_proxy():
@@ -64,7 +64,7 @@ def test_non_existant():
 def test_shouldNotForward_existingHostMethods():
     forward_to(Host1, 'guest')
     target1 = Host1(Guest("foo"))
-    assert "bar" == target1.bar()
+    assert "prop1-val" == target1.bar()
     assert "prop1-val" == target1.prop1
 
 
@@ -75,3 +75,22 @@ def test_shouldForwardSet():
 
     target1.guestprop1 = "hello"
     assert "hello" == guest.guestprop1
+
+
+def test_HostSetter():
+    class HostLoc:
+        def __init__(self, guest):
+            self.guest = guest
+            self.prop1 = "prop1-val"
+
+        def reset(self):
+            self.guest.string = self.prop1
+
+    forward_to(HostLoc, 'guest')
+
+    guest = Guest("init")
+    target = HostLoc(guest)
+    target.prop1 = "changed1"
+    target.reset()
+    assert "changed1" == target.string
+    # assert not hasattr(guest, 'prop1')
