@@ -53,3 +53,12 @@ We can think of the following:
 - Kotlin Multiplatform jvm/js (Kotlin)
 - Clojure/Clojurescript (Clojure)
 - Blazor WebAssembly (C#)
+
+
+
+### Development Setup
+
+1. `conda-create - 3.7`
+1. `python -m pip install -e .[test]`
+1. `python -m pip install -e .[dev]`
+1. `python -m pip install -e .[testenv]`

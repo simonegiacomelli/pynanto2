@@ -30,3 +30,4 @@ def ws_fastapi() -> WsFastapi:
     from .webservers.fastapi import WsFastapi
     return WsFastapi()
 
+__version__ = '0.0.1'
