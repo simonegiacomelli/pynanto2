@@ -13,6 +13,7 @@ def test_quickstart_bootstrap(page: Page, webserver: Webserver):
         """print('running bootstrap custom code')\n"""
         """from js import document\n"""
         """document.body.innerHTML='<input id="tag1" value="Hello world 1!">'\n"""
+        """print(f'document.body.innerHTML=[{document.body.innerHTML}]')\n"""
     )
     page.goto(config.webserver.localhost_url())
     expect(page.locator('id=tag1')).to_have_value('Hello world 1!')
