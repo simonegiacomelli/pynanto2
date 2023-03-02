@@ -28,9 +28,10 @@ def patch_playwright_assertions() -> None:
                 if len(args) > timeout_arg_index:
                     args = list(args)  # type: ignore
                     args[timeout_arg_index] = 30000  # type: ignore
-                elif "timeout" in kwargs:
+                else:
                     kwargs["timeout"] = 30000
             return _member_obj(*args, **kwargs)
+
         return patch_timeout_inner
 
     for assertion_cls in [PageAssertions, LocatorAssertions, APIResponseAssertions]:
@@ -38,3 +39,6 @@ def patch_playwright_assertions() -> None:
             if isinstance(member_obj, FunctionType):
                 if "timeout" in inspect.signature(member_obj).parameters:
                     setattr(assertion_cls, member_name, patch_timeout(member_obj))
+
+
+patch_playwright_assertions()
