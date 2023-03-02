@@ -45,7 +45,10 @@ if (typeof loadPyodide === 'undefined') {
     script.onload = async () => {
         let pyodide = await loadPyodide();
         window.pyodide = pyodide;
-        console.log('loading pyodide.runPythonAsync(...)');
+        console.log('loading pyodide.runPythonAsync(...). See in the following lines for the code');
+        console.log('-----------------------  START PYTHON CODE  -------------------------------');
+        console.log(`# python replace marker`);
+        console.log('-----------------------  END PYTHON CODE    -------------------------------');
         pyodide.runPythonAsync(`# python replace marker`);
     };
     document.body.append(script)
