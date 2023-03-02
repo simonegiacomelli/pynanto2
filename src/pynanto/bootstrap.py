@@ -20,9 +20,9 @@ class Bootstrap:
             rp.append(self.default_python)
         with_indent = map(lambda l: '' + l, rp)
         parent = Path(__file__).parent
-        js = parent / 'bootstrap_pyodide.js'
-
-        return js.read_text().replace('# python replace marker', '\n'.join(with_indent))
+        # js = parent / 'bootstrap_pyodide.js'
+        # js_content = js.read_text()
+        return js_content.replace('# python replace marker', '\n'.join(with_indent))
 
 
 def _wrap_in_try_except(code: str) -> str:
@@ -35,3 +35,17 @@ except Exception as ex:
     import traceback
     traceback.print_exc()            
 """.replace('pass', '\n' + textwrap.indent(code, ' ' * 4))
+
+
+js_content = """
+if (typeof loadPyodide === 'undefined') {
+    let script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js';
+    script.onload = async () => {
+        let pyodide = await loadPyodide();
+        window.pyodide = pyodide;
+        pyodide.runPythonAsync(`# python replace marker`);
+    };
+    document.body.append(script)
+}
+"""
