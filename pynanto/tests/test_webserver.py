@@ -2,7 +2,7 @@ from pynanto import Response, Routes, Webserver
 from pynanto.response import Request
 from pynanto.server import find_port
 from pynanto.server.fetch import sync_fetch_response
-from pynanto_test import for_all_webservers
+from tests import for_all_webservers
 
 
 @for_all_webservers()

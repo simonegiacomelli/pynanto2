@@ -1,7 +1,7 @@
 from common import common_mul  # absolute import are not handled if not in the root;
 
 from js import document
-from pynanto_test.test_folder_conventions.server.rpc import server_information
+from tests.test_folder_conventions.server.rpc import server_information
 
 
 async def main():

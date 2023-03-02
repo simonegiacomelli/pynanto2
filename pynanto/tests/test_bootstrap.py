@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 import pynanto
 from pynanto import Bootstrap, Response, Routes, Webserver
 from pynanto.server import find_port
-from pynanto_test import for_all_webservers
+from tests import for_all_webservers
 
 
 @for_all_webservers()

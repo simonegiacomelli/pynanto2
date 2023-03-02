@@ -6,12 +6,12 @@ from pynanto import Routes, Webserver
 from pynanto.exceptions import RemoteException
 from pynanto.rpc import Module, RpcRequest, Services
 from pynanto.server import find_port
-from pynanto_test import for_all_webservers
-from pynanto_test.test_rpc import support1, support3
-from pynanto_test.test_rpc import support2
-from pynanto_test.test_unsync import unasync
+from tests import for_all_webservers
+from tests.test_rpc import support1, support3
+from tests.test_rpc import support2
+from tests.test_unsync import unasync
 
-support2_module_name = 'pynanto_test.test_rpc.support2'
+support2_module_name = 'tests.test_rpc.support2'
 
 
 def test_module_module():
@@ -19,7 +19,7 @@ def test_module_module():
     target = Module(support1)
 
     # THEN
-    assert target.name == 'pynanto_test.test_rpc.support1'
+    assert target.name == 'tests.test_rpc.support1'
     assert len(target.functions) == 2
 
 

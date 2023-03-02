@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from pynanto import Webserver
-from pynanto_test import for_all_webservers, new_config
+from tests import for_all_webservers, new_config
 
 
 @for_all_webservers()
