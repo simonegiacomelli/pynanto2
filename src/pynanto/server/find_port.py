@@ -11,6 +11,7 @@ def find_port() -> int:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
                 s.bind(('0.0.0.0', _start))
+                print(f'findport() -> {_start}')
                 return _start
             except socket.error as e:
                 if e.errno != errno.EADDRINUSE:
