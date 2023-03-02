@@ -22,7 +22,8 @@ class Bootstrap:
         parent = Path(__file__).parent
         # js = parent / 'bootstrap_pyodide.js'
         # js_content = js.read_text()
-        return js_content.replace('# python replace marker', '\n'.join(with_indent))
+        python_log = 'print("first instruction run by pyodide")\n'
+        return js_content.replace('# python replace marker', python_log + '\n'.join(with_indent))
 
 
 def _wrap_in_try_except(code: str) -> str:
