@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import Page
 
 
-@pytest.yield_fixture(scope="function", autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def before_each_after_each(page: Page):
     page.on('console', lambda msg: print(f'console [{msg.type}] ==== {msg.text}'))
     sep = '\n' + ('=' * 60) + '\n'
