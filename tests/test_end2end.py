@@ -10,6 +10,7 @@ from tests import for_all_webservers, new_config
 def test_quickstart_bootstrap(page: Page, webserver: Webserver):
     config = new_config(webserver)
     config.bootstrap.add_python(
+        """print('running bootstrap custom code')\n"""
         """from js import document\n"""
         """document.body.innerHTML='<input id="tag1" value="Hello world 1!">'\n"""
     )
