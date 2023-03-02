@@ -1,4 +1,0 @@
-#pynanto
-sqlalchemy
-fdb
-sqlalchemy-firebird
