@@ -3,9 +3,7 @@ from typing import TypeVar, Callable
 
 from pyodide.ffi import create_proxy
 
-from js import document, console
-
-HTMLElement = TypeVar('HTMLElement')
+from js import document, console, HTMLElement
 
 T = TypeVar('T')
 
@@ -20,6 +18,7 @@ class Widget:
         self.html = html
         self._widget_expanded = False
         self._container: HTMLElement = None
+        self.holder: HolderWidget = None
 
     def __call__(self, fun: Callable[[], T]) -> T:
         return WidgetConstructor(fun)
@@ -91,3 +90,33 @@ class Widget:
 
             m = getattr(self, name)
             element.addEventListener(event_name, create_proxy(m))
+
+    def close(self):
+        h = self.holder
+        if h is not None:
+            h.close(self)
+
+
+class HolderWidget(Widget):
+    def __init__(self, html: str = ''):
+        super().__init__(html)
+        self.stack = []
+
+    def show(self, widget: Widget):
+        widget.holder = self
+        c = self.container
+        while c.hasChildNodes():
+            c.removeChild(c.firstChild)
+
+        self._remove(widget)
+        self.stack.append(widget)
+        widget.append_to(self.container)
+
+    def close(self, widget: Widget):
+        self._remove(widget)
+        self.show(self.stack[-1])
+
+    def _remove(self, widget):
+        s = self.stack
+        if widget in s:
+            s.remove(widget)

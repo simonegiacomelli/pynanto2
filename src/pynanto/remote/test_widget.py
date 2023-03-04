@@ -2,7 +2,7 @@ import unittest
 
 from js import document, HTMLElement
 from pynanto.remote.unittest_fix import unittest_main_fixed
-from pynanto.remote.widget import Widget
+from pynanto.remote.widget import Widget, HolderWidget
 
 
 class WidgetTestCase(unittest.TestCase):
@@ -45,6 +45,32 @@ class WidgetTestCase(unittest.TestCase):
         foo = target.container.querySelector('#foo')
         foo.click()
         self.assertEqual([1], actual)
+
+
+class WidgetHolderTestCase(unittest.TestCase):
+
+    def test_holder(self):
+        target = HolderWidget()
+        target.show(Widget('one'))
+
+        self.assertIn('one', target.container.innerHTML)
+
+    def test_holder_twoWidgets(self):
+        target = HolderWidget()
+        target.show(Widget('one'))
+        target.show(Widget('two'))
+
+        self.assertNotIn('one', target.container.innerHTML)
+        self.assertIn('two', target.container.innerHTML)
+
+    def test_close(self):
+        target = HolderWidget()
+        target.show(Widget('one'))
+        widget = Widget('two')
+        target.show(widget)
+        widget.close()
+        self.assertIn('one', target.container.innerHTML)
+        self.assertNotIn('two', target.container.innerHTML)
 
 
 def main():
