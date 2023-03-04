@@ -28,7 +28,7 @@ def patch_playwright_assertions() -> None:
                 if len(args) > timeout_arg_index:
                     args = list(args)  # type: ignore
                     args[timeout_arg_index] = 30000  # type: ignore
-                else:
+                elif 'timeout' not in kwargs:
                     kwargs["timeout"] = 30000
             return _member_obj(*args, **kwargs)
 
