@@ -1,5 +1,7 @@
 from typing import Callable, Optional, Dict
 from pyodide.ffi import create_proxy, to_js
+
+import js
 from js import console, window, EventTarget
 
 KeyboardEvent = object
@@ -16,6 +18,8 @@ class Hotkey:
         self.handlers[hotkey] = handler
 
     def _detect_hotkey(self, e):
+        if not js.eval('(e) => e instanceof KeyboardEvent ')(e):
+            return
         key = ''
         if e.ctrlKey: key += 'CTRL-'
         if e.shiftKey: key += 'SHIFT-'
