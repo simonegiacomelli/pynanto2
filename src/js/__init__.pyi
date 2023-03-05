@@ -1249,6 +1249,7 @@ class FileReaderSync:
 
 class URL:
     def New(self, url: USVString, base: USVString | None = None) -> URL: ...
+    href: USVString
     origin: USVString
     protocol: USVString
     username: USVString
@@ -3894,6 +3895,7 @@ class VisualViewport(EventTarget):
     onscrollend: EventHandler
 
 class MediaList:
+    mediaText: CSSOMString
     length: int
     def appendMedium(self, medium: CSSOMString): ...
     def deleteMedium(self, medium: CSSOMString): ...
@@ -4287,6 +4289,7 @@ class DOMTokenList:
     def toggle(self, token: str, force: bool | None = None) -> bool: ...
     def replace(self, token: str, newToken: str) -> bool: ...
     def supports(self, token: str) -> bool: ...
+    value: str
 
 class XPathResult:
     resultType: int
@@ -5548,6 +5551,7 @@ class HTMLBRElement(HTMLElement):
     clear: str
 
 class HTMLHyperlinkElementUtils:
+    href: USVString
     origin: USVString
     protocol: USVString
     username: USVString
@@ -6358,6 +6362,7 @@ class BarProp:
     visible: bool
 
 class Location:
+    href: USVString
     origin: USVString
     protocol: USVString
     host: USVString
@@ -6601,6 +6606,7 @@ class NavigatorConcurrentHardware:
     hardwareConcurrency: int
 
 class WorkerLocation:
+    href: USVString
     origin: USVString
     protocol: USVString
     host: USVString

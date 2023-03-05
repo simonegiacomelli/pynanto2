@@ -5,7 +5,7 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
     IncludesStatement, Typedef, ExtendedAttribute, Mixin, MixinMember, MixinAttribute, Constructor, Dictionary, \
-    DictionaryMember, Inheritance, Namespace, NamespaceMember
+    DictionaryMember, Inheritance, Namespace, NamespaceMember, Stringifier
 
 from js_pyi.assertions import unhandled, expect_isinstance
 from js_pyi.conversion import reserved_keywords
@@ -162,15 +162,15 @@ def i_interface_member__type_method(member: InterfaceMember):
 
 def i_interface_member__type_attribute(im: InterfaceMember):
     expect_isinstance(im, InterfaceMember, MixinMember)
-    expect_isinstance(im.member, Attribute, MixinAttribute)
+    expect_isinstance(im.member, Attribute, MixinAttribute, Stringifier)
 
-    attribute: Attribute = im.member
+    member = im.member
 
-    expect_isinstance(attribute.attribute, AttributeRest)
+    expect_isinstance(member.attribute, AttributeRest)
 
     if im.name == 'global' or im.name == 'as':
         unhandled('The keyword `global` cannot be used as a variable name ')
-    attributes = i_type_with_extended_attributes(attribute.attribute.type)
+    attributes = i_type_with_extended_attributes(member.attribute.type)
     return GAttribute(im.name, attributes)
 
 

@@ -94,6 +94,12 @@ def test_interface_mixin():
     expect_isinstance(stmt, GClass)
 
 
+def test_stringifier():
+    idl = 'interface mixin Foo {\n [CEReactions] stringifier attribute USVString href; \n }; '
+    stmt = _root_stmt(idl, throw=True)
+    assert stmt == GClass('Foo', [GAttribute('href', 'USVString')])
+
+
 def test_dictionary_stmt():
     _verify_root_stmt(
         'dictionary Doc : Parent { '
