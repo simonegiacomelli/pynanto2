@@ -10,7 +10,7 @@ def find(filename: str) -> Path:
 
 
 def find_all() -> List[Path]:
-    return list(_find_all())
+    return list(sorted(_find_all()))
 
 
 def _find_all():
