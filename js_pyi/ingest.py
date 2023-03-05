@@ -5,7 +5,7 @@ from widlparser import Interface, InterfaceMember, Construct, TypeWithExtendedAt
     Attribute, AttributeRest, SingleType, AnyType, NonAnyType, PrimitiveType, Symbol, TypeIdentifier, Default, Type, \
     TypeSuffix, Operation, UnionMemberType, UnsignedIntegerType, UnrestrictedFloatType, Enum, EnumValue, \
     IncludesStatement, Typedef, ExtendedAttribute, Mixin, MixinMember, MixinAttribute, Constructor, Dictionary, \
-    DictionaryMember, Inheritance, Namespace, NamespaceMember, Stringifier
+    DictionaryMember, Inheritance, Namespace, NamespaceMember, Stringifier, Const
 
 from js_pyi.assertions import unhandled, expect_isinstance
 from js_pyi.conversion import reserved_keywords
@@ -160,6 +160,15 @@ def i_interface_member__type_method(member: InterfaceMember):
     return i_operation(member.member)
 
 
+def i_interface_member__type_const(im: InterfaceMember):
+    expect_isinstance(im, InterfaceMember, MixinMember)
+    expect_isinstance(im.member, Attribute, Const)
+
+    member = im.member
+
+    return GConst(member.name, str(member.value))
+
+
 def i_interface_member__type_attribute(im: InterfaceMember):
     expect_isinstance(im, InterfaceMember, MixinMember)
     expect_isinstance(im.member, Attribute, MixinAttribute, Stringifier)
@@ -183,7 +192,8 @@ def i_interface_member(member: InterfaceMember):
         return i_interface_member__type_method(member)
     if idl_type == 'attribute':
         return i_interface_member__type_attribute(member)
-
+    if idl_type == 'const':
+        return i_interface_member__type_const(member)
     unhandled(idl_type)
 
 

@@ -88,6 +88,14 @@ def test_float():
     )
 
 
+def test_const():
+    _verify_interface_stmt(
+        'const unsigned short FOO = 123;',
+        'FOO = 123',
+        GConst('FOO', '123')
+    )
+
+
 def test_interface_mixin():
     idl = 'interface mixin Foo {\n  attribute OnErrorEventHandler onerror; Flip foo(); \n }; '
     stmt = _root_stmt(idl, throw=True)

@@ -4,7 +4,7 @@ import typing
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from js_pyi.stringify import s_method, s_attribute, s_class, s_unhandled, s_enum, s_arg, s_typedef, s_ignored
+from js_pyi.stringify import s_method, s_attribute, s_class, s_unhandled, s_enum, s_arg, s_typedef, s_ignored, s_const
 
 
 class GPythonProducer:
@@ -92,6 +92,12 @@ class GNamedAnnotation(GHasName):
 @dataclass()
 class GAttribute(GStmt, GNamedAnnotation, GPythonProducer):
     def to_python(self): return s_attribute(self)
+
+
+@dataclass()
+class GConst(GStmt, GHasName, GPythonProducer):
+    value: str
+    def to_python(self): return s_const(self)
 
 
 @dataclass()

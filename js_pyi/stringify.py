@@ -16,6 +16,10 @@ def s_attribute(a: GAttribute) -> str:
     return to_py_name(a.name) + s_annotation_named(a.annotation)
 
 
+def s_const(a: GConst) -> str:
+    return to_py_name(a.name) + ' = ' + a.value
+
+
 def s_arg(a: GArg) -> str:
     default = ''
     if a.default is not None:
