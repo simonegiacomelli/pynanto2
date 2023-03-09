@@ -31,4 +31,4 @@ def ws_fastapi() -> WsFastapi:
     return WsFastapi()
 
 
-__version__ = '0.0.6'
+__version__ = '0.0.7'
