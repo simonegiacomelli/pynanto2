@@ -27,7 +27,7 @@ class Widget:
     def container(self) -> HTMLElement:
         if self._container is None:
             self._container = document.createElement('div')
-
+        self._container.setAttribute('w-type', self.__class__.__name__)
         if not self._widget_expanded:
             self._widget_expanded = True
             self._container.innerHTML = self.html

@@ -46,6 +46,15 @@ class WidgetTestCase(unittest.TestCase):
         foo.click()
         self.assertEqual([1], actual)
 
+    def test_w_type(self):
+        class Widget1(Widget):
+            def __init__(self):
+                super().__init__('')
+
+        target = Widget1()
+        w_type = target.container.getAttribute('w-type')
+        self.assertEqual('Widget1', w_type, f'outerHTML=`{target.container.outerHTML}`')
+
 
 class WidgetHolderTestCase(unittest.TestCase):
 
