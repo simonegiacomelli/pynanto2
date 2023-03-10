@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Callable, Awaitable
+
 from js import window, console
 
 import asyncio
@@ -15,3 +19,7 @@ async def waitAnimationFrame():
     window.requestAnimationFrame(create_once_callable(callback))
     await event.wait()
     console.log('waitAnimationFrame done')
+
+
+def set_timeout(callback: Callable[[], Awaitable[None]], timeout: int | None = 0):
+    window.setTimeout(create_once_callable(callback), timeout)

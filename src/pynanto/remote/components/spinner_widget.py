@@ -1,7 +1,8 @@
 from typing import Callable, Awaitable
 
 from js import HTMLElement, console
-from pynanto.remote.animation_frame import waitAnimationFrame
+from pynanto.remote.asyncjs import waitAnimationFrame
+
 from pynanto.remote.widget import Widget
 import contextlib
 

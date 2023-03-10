@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-def hash_args(content: str | None = None):
+def hash_args(content: str | None = None) -> dict:
     result = dict()
     if content is None:
         from js import window
