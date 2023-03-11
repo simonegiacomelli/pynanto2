@@ -1,4 +1,5 @@
 from typing import Callable, Optional, Dict
+
 from pyodide.ffi import create_proxy, to_js
 
 import js
@@ -17,8 +18,12 @@ class Hotkey:
     def add(self, hotkey: str, handler: _HotkeyHandler):
         self.handlers[hotkey] = handler
 
+    @classmethod
+    def keyboard_event(cls, e):
+        return js.eval('(e) => e instanceof KeyboardEvent ')(e)
+
     def _detect_hotkey(self, e):
-        if not js.eval('(e) => e instanceof KeyboardEvent ')(e):
+        if not self.keyboard_event(e):
             return
         key = ''
         if e.ctrlKey: key += 'CTRL-'
@@ -30,7 +35,7 @@ class Hotkey:
         if len(upc) == 1: upc = upc.upper()
 
         key += upc
-        if self.enable_log: console.log(key)
+        if self.enable_log: console.log(key, to_js(e))
         handle = self.handlers.get(key, None)
         if handle is None:
             return
