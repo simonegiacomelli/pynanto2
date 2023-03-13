@@ -1,21 +1,13 @@
 # Browse pyscript virtual filesystem
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import TypeVar
 
 from pyodide.ffi import create_proxy
 
-from js import console
-
 HTMLElement = TypeVar('HTMLElement')
-# from app.browser.html.dom_definitions import HTMLElement
-# from app.browser.html.dom_helpers import download_file
 from pynanto.remote.widget import Widget
-
-
-# from app.common.filesystem import zip_in_memory
 
 
 class FilesystemTreeWidget(Widget):
@@ -79,3 +71,46 @@ class FilesystemTreeWidget(Widget):
         for child in self.path.glob('*'):
             w = FilesystemTreeWidget(child, self._indent + 1)
             w.append_to(self._children)
+
+
+import base64
+import mimetypes
+
+from js import document, console
+
+
+def download_file(filename: str, content: bytes, mime_type: str = None):
+    if mime_type is None:
+        gt = mimetypes.guess_type(filename)
+        mime_type = gt[0]
+        if mime_type is None:
+            mime_type = 'application/octet-stream'
+        console.log(f'guess mime type for `{filename}` is `{mime_type}`')
+    a = document.createElement('a')
+    a.download = filename
+    a.href = f'data:{mime_type};base64,{base64.b64encode(content).decode("ascii")}'
+    document.body.append(a)
+    a.click()
+
+
+import os
+import zipfile
+from io import BytesIO
+
+
+def _zip_path(zip_file, path):
+    path = str(path)
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            zip_file.write(os.path.join(root, file),
+                           os.path.relpath(os.path.join(root, file),
+                                           os.path.join(path, '..')))
+
+
+def zip_in_memory(path):
+    stream = BytesIO()
+    with zipfile.ZipFile(stream, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=1) as zip_file:
+        _zip_path(zip_file, path)
+
+    stream.seek(0)
+    return stream.getbuffer().tobytes()
