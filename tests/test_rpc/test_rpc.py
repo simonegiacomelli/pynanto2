@@ -114,6 +114,8 @@ def test_rpc_integration(webserver: Webserver):
         target = await client_module.support3_with_typing_import()
         assert target == {'foo': 'bar'}  # this could fail do to missing 'from typing import Dict'
 
+        target = await client_module.support3_default_values_primitive_types(4, c=10)
+        assert target == 80
         # expect errors
         exception = None
         try:

@@ -160,6 +160,7 @@ def generate_stub_source(module: Module, rpc_url: str, imports: str):
     module_name = module.name
     # language=python
     stub_header = f"""
+from __future__ import annotations
 from pynanto.rpc import Proxy
 {imports}
 
@@ -173,7 +174,7 @@ proxy = Proxy(module_name, rpc_url, async_fetch_str)
         parameters = f.sign.parameters.values()
         params_list = ', '.join(p.name for p in parameters)
         args_list = '' if params_list == '' else ', ' + params_list
-        fun_stub = f'\nasync def {f.name}({params_list}):\n' + \
+        fun_stub = f'\nasync def {f.name}{f.signature}:\n' + \
                    f'    return await proxy.dispatch("{f.name}"{args_list})\n'
         stub_functions += fun_stub
 
