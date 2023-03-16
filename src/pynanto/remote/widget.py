@@ -101,6 +101,7 @@ class HolderWidget(Widget):
     def __init__(self, html: str = ''):
         super().__init__(html)
         self.stack = []
+        self.on_show = lambda w: ...
 
     def show(self, widget: Widget):
         widget.holder = self
@@ -111,6 +112,7 @@ class HolderWidget(Widget):
         self._remove(widget)
         self.stack.append(widget)
         widget.append_to(self.container)
+        self.on_show(widget)
 
     def close(self, widget: Widget):
         self._remove(widget)
