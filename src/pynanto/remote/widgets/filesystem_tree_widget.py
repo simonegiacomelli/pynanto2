@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from typing import TypeVar
 
+from pynanto.remote.asyncjs import set_timeout
 from pyodide.ffi import create_proxy
 
 from js import console
@@ -31,7 +32,9 @@ class FilesystemTreeWidget(Widget):
         self._download: HTMLElement = self
 
     def after_render(self):
+        set_timeout(self._after_append)
 
+    async def _after_append(self):
         self._entity.onclick = create_proxy(self.toggle_display)
         self._download.onclick = create_proxy(self.download)
 
