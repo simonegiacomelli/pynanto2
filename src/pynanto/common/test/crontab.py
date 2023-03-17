@@ -53,6 +53,11 @@ class CronTab(object):
     def __init__(self, *events):
         self.events = events
 
+    def run_thread(self):
+        import threading
+        th = threading.Thread(target=self.run, daemon=True)
+        th.start()
+
     def run(self):
         t = datetime(*datetime.now().timetuple()[:6])
         while True:
