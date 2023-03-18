@@ -3,9 +3,15 @@
 import time
 from datetime import datetime, timedelta
 
+from pynanto.common.log_setup import getLoggerFor
+
+logger = getLoggerFor(__file__)
+
 
 class AllMatch(set):
     def __contains__(self, item): return True  # match everything
+
+    def __str__(self) -> str: return '*'
 
 
 _allMatch = AllMatch()
@@ -24,7 +30,8 @@ def _to_set(obj):
 class Event(object):
     def __init__(self, action, sec=None, min=None, hour=None,
                  day=None, month=None, dow=None,
-                 args=(), kwargs={}):
+                 args=(), kwargs={}, log_action_run: bool = True):
+        self.log_action_run = log_action_run
         self.secs = _to_set(sec)
         self.mins = _to_set(min)
         self.hours = _to_set(hour)
@@ -46,6 +53,9 @@ class Event(object):
 
     def check(self, t: datetime):
         if self.matchtime(t):
+            if self.log_action_run:
+                string = ' '.join(map(str, [self.secs, self.mins, self.hours, self.days, self.months, self.dow]))
+                logger.info(f'Running job {string}')
             self.action(*self.args, **self.kwargs)
 
 
@@ -53,9 +63,9 @@ class CronTab(object):
     def __init__(self, *events):
         self.events = events
 
-    def run_thread(self):
+    def run_thread(self, name='Cron'):
         import threading
-        th = threading.Thread(target=self.run, daemon=True)
+        th = threading.Thread(target=self.run, daemon=True, name=name)
         th.start()
 
     def run(self):
