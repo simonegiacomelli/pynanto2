@@ -1,5 +1,5 @@
 import inspect
-from typing import TypeVar, Callable
+from typing import TypeVar, Callable, List
 
 from pyodide.ffi import create_proxy
 
@@ -8,8 +8,9 @@ from js import document, console, HTMLElement
 T = TypeVar('T')
 
 
-class WidgetConstructor:
+class WidgetProperty:
     def __init__(self, constructor):
+        self.name = ''
         self.constructor = constructor
 
 
@@ -21,7 +22,7 @@ class Widget:
         self.holder: HolderWidget = None
 
     def __call__(self, fun: Callable[[], T]) -> T:
-        return WidgetConstructor(fun)
+        return WidgetProperty(fun)
 
     @property
     def container(self) -> HTMLElement:
@@ -48,7 +49,7 @@ class Widget:
         def get_binder(value):
             if value == self:
                 return lambda element: element
-            if isinstance(value, WidgetConstructor):
+            if isinstance(value, WidgetProperty):
                 def wc_binder(element):
                     instance: Widget = value.constructor()
                     instance._container = element
@@ -58,16 +59,16 @@ class Widget:
                 return wc_binder
             return None
 
-        for key, value in self.__dict__.items():
+        for key, value in vars(self).items():
             binder = get_binder(value)
             if binder is None:
                 continue
 
             element = self.container.querySelector('#' + key)
-            if element is None:
-                raise Exception(f'Element not found, name:[{key}] html: [{self.html}]')
-            instance = binder(element)
-            self.__dict__[key] = instance
+            if element is not None:
+                # raise Exception(f'Element not found, name:[{key}] html: [{self.html}]')
+                instance = binder(element)
+                self.__dict__[key] = instance
 
     def _bind_events(self):
 
@@ -95,6 +96,17 @@ class Widget:
         h = self.holder
         if h is not None:
             h.close(self)
+
+    def uninitialized(self) -> List[WidgetProperty]:
+        self_vars = vars(self)
+        result = []
+        for name, value in self_vars.items():
+            if isinstance(value, WidgetProperty):
+                value: WidgetProperty
+                result.append(value)
+                if value.name == '':
+                    value.name = name
+        return result
 
 
 class HolderWidget(Widget):

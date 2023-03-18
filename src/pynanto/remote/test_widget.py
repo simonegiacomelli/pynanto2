@@ -55,6 +55,31 @@ class WidgetTestCase(unittest.TestCase):
         w_type = target.container.getAttribute('w-type')
         self.assertEqual('Widget1', w_type, f'outerHTML=`{target.container.outerHTML}`')
 
+    def test_uninitialized(self):
+        # GIVEN
+        class Target(Widget):
+            def __init__(self):
+                super().__init__("<div id='second'></div>")
+                self.first = self(lambda: Widget('orphan1'))
+                self.second = self(lambda: Widget('non-orphan2'))
+
+        target = Target()
+
+        # WHEN
+        call1 = target.uninitialized()
+        actual1 = list(map(lambda wp: wp.name, call1))
+
+        # THEN
+        self.assertEqual(['first', 'second'], actual1)
+
+        # WHEN
+        ignore = target.container
+
+        # THEN
+        call2 = target.uninitialized()
+        actual2 = list(map(lambda wp: wp.name, call2))
+        self.assertEqual(['first'], actual2)
+
 
 class WidgetHolderTestCase(unittest.TestCase):
 
