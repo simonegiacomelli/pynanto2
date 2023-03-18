@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import os
 from dataclasses import dataclass
@@ -23,8 +25,8 @@ class LogConfig:
 default = LogConfig()
 
 
-def setup_logging(config: LogConfig = default):
-    log_folder = (Path(__file__).parent.parent / 'data/logs').absolute()
+def setup_logging(log_folder: str | Path, config: LogConfig = default):
+    log_folder = Path(log_folder)
     log_folder.mkdir(exist_ok=True, parents=True)
     logging.basicConfig(
         level=logging.INFO,
