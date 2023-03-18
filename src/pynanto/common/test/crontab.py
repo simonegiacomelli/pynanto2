@@ -2,6 +2,7 @@
 
 import time
 from datetime import datetime, timedelta
+from typing import List
 
 from pynanto.common.log_setup import getLoggerFor
 
@@ -52,16 +53,26 @@ class Event(object):
                 (t.weekday() in self.dow))
 
     def check(self, t: datetime):
-        if self.matchtime(t):
-            if self.log_action_run:
-                string = ' '.join(map(str, [self.secs, self.mins, self.hours, self.days, self.months, self.dow]))
-                logger.info(f'Running job {string}')
+        if not self.matchtime(t):
+            return False
+        if self.log_action_run:
+            logger.info(f'Running job {self}')
+        try:
             self.action(*self.args, **self.kwargs)
+        except:
+            logger.error(f'Error executing event {self}')
+        return True
+
+    def __str__(self) -> str:
+        string = ' '.join(map(str, [self.secs, self.mins, self.hours, self.days, self.months, self.dow]))
+        return string
 
 
 class CronTab(object):
-    def __init__(self, *events):
-        self.events = events
+    def __init__(self, *events, log_loop: bool = False, log_executions: bool = False):
+        self.log_loop = log_loop
+        self.log_executions = log_executions
+        self.events: List[Event] = events
 
     def run_thread(self, name='Cron'):
         import threading
@@ -76,8 +87,18 @@ class CronTab(object):
             while datetime.now() < t:
                 time.sleep((t - datetime.now()).seconds)
 
+            if self.log_loop:
+                logger.info(f'checking events count {len(self.events)}')
+
+            executed = []
             for e in self.events:
-                e.check(t)
+                if e.check(t):
+                    executed.append(e)
+
+            if self.log_executions and len(executed) > 0:
+                logger.info(f'executed count {len(executed)}')
+                for e in executed:
+                    logger.info(f'  {e}')
 
 
 def main():
