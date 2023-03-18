@@ -9,7 +9,7 @@ T = TypeVar('T')
 
 
 class WidgetProperty:
-    def __init__(self, constructor):
+    def __init__(self, constructor: Callable[[], 'Widget']):
         self.name = ''
         self.constructor = constructor
 
@@ -38,8 +38,8 @@ class Widget:
 
         return self._container
 
-    def append_to(self, container_element):
-        container_element.append(self.container)
+    def append_to(self, element: HTMLElement):
+        element.append(self.container)
         return self
 
     def after_render(self):
@@ -107,6 +107,12 @@ class Widget:
                 if value.name == '':
                     value.name = name
         return result
+
+    def uninitialized_append_to(self, element: HTMLElement):
+        for prop in self.uninitialized():
+            instance = prop.constructor()
+            setattr(self, prop.name, instance)
+            instance.append_to(element)
 
 
 class HolderWidget(Widget):

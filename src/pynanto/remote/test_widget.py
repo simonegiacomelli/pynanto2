@@ -80,6 +80,13 @@ class WidgetTestCase(unittest.TestCase):
         actual2 = list(map(lambda wp: wp.name, call2))
         self.assertEqual(['first'], actual2)
 
+        # WHEN
+        target.uninitialized_append_to(target.container)
+
+        # THEN
+        parts = target.container.innerHTML.split('second', 1)
+        self.assertIn('orphan1', parts[1])
+
 
 class WidgetHolderTestCase(unittest.TestCase):
 
