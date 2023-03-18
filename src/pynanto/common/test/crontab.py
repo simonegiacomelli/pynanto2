@@ -85,7 +85,10 @@ class CronTab(object):
 
             t += timedelta(seconds=1)
             while datetime.now() < t:
-                time.sleep((t - datetime.now()).seconds)
+                seconds = (t - datetime.now()).seconds
+                if self.log_loop:
+                    logger.info(f'sleeping for {seconds}')
+                time.sleep(seconds)
 
             if self.log_loop:
                 logger.info(f'checking events count {len(self.events)}')
