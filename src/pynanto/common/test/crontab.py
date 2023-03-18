@@ -80,12 +80,12 @@ class CronTab(object):
         th.start()
 
     def run(self):
-        t = datetime(*datetime.now().timetuple()[:6])
-        while True:
 
+        while True:
+            t = datetime(*datetime.now().timetuple()[:6])
             t += timedelta(seconds=1)
             while datetime.now() < t:
-                seconds = (t - datetime.now()).seconds
+                seconds = (t - datetime.now()).total_seconds()
                 if self.log_loop:
                     logger.info(f'sleeping for {seconds}')
                 time.sleep(seconds)
