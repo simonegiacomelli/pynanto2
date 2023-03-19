@@ -69,8 +69,9 @@ class Datatable:
         for index, old_tuple in self._update.items():
             cur_row = self.rows[index]
             new_tuple = tuple(cur_row)
-            update.append((old_tuple, new_tuple))
-        return [update]
+            if new_tuple != old_tuple:
+                update.append((old_tuple, new_tuple))
+        return [tuple(update)]
 
 
 class Field:

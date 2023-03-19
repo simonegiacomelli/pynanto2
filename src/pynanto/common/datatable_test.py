@@ -20,16 +20,28 @@ def test_write():
 
 
 def test_delta():
-    rows = ('field0', 'field1'), (1, 'one'), (2, 'two')
-    target = new_target(rows)
+    target = new_target_for_edit()
     target.rows[1].fieldByName('field1').value = 'two-mod'
 
     update = target.delta()[0]
     assert (1, 'two'), (1, 'two-mod') == update
 
 
+def test_field_restore_value():
+    target = new_target_for_edit()
+    target.rows[1].fieldByName('field1').value = 'two-mod'
+    target.rows[1].fieldByName('field1').value = 'two'
+
+    update = target.delta()[0]
+    assert update == tuple()
+
+
 def mock_rows():
     return ('field1',), ('one',)
+
+
+def new_target_for_edit():
+    return new_target((('field0', 'field1'), (1, 'one'), (2, 'two')))
 
 
 def new_target(rows=None):
