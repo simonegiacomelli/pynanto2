@@ -18,9 +18,20 @@ def test_write():
     assert 'mod1' == target.rows[0].fieldByName('field1').value
 
 
+def test_delta():
+    rows = ('field0', 'field1'), (1, 'one'), (2, 'two')
+    target = new_target(rows)
+    target.rows[1].fieldByName('field1').value = 'two-mod'
+
+    update = target.delta()[0]
+    assert (1, 'two'), (1, 'two-mod') == update
+
+
 def mock_rows():
     return ('field1',), ('one',)
 
 
-def new_target():
-    return Datatable(mock_rows())
+def new_target(rows=None):
+    if rows is None:
+        rows = mock_rows()
+    return Datatable(rows)

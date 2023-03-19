@@ -8,9 +8,10 @@ class Datatable:
         assert len(rows) >= 1  # at least the header
         header = rows[0]
         assert all(map(lambda field_name: isinstance(field_name, str), header))  # verify header are strings
-        self.rows: List[Row] = list(map(lambda r: Row(self, r), rows[1:]))
+        self.rows: List[Row] = list(map(lambda r: Row(self, r[0], r[1]), enumerate(rows[1:])))
         self._field_index_dict = {f.upper(): index for (index, f) in enumerate(header)}
         self._n = None
+        self._update = {}
         super().__init__()
 
     def _fieldByName(self, field_name: str, row: Row) -> Field:
@@ -46,6 +47,18 @@ class Datatable:
     def _set_value(self, field_name: str, row: Row, value: any):
         index = self._field_index(field_name)
         row[index] = value
+        old_tuple = self._update.get(row._row_index, None)
+        if old_tuple is None:
+            old_tuple = tuple(row)
+            self._update[row._row_index] = old_tuple
+
+    def delta(self) -> list:
+        update = []
+        for index, old_tuple in self._update.items():
+            cur_row = self.rows[index]
+            new_tuple = tuple(cur_row)
+            update.append((old_tuple, new_tuple))
+        return [update]
 
 
 class Field:
@@ -66,8 +79,9 @@ class Field:
 
 class Row(list):
 
-    def __init__(self, table: Datatable, iterable=...):
+    def __init__(self, table: Datatable, row_index: int, iterable=...):
         super().__init__(iterable)
+        self._row_index = row_index
         self._table = table
 
     def valueByName(self, field_name: str):
