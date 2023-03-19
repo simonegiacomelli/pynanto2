@@ -20,10 +20,10 @@ class Datatable:
         return Field(field_name, value, row, self)
 
     def _valueByName(self, field_name: str, row: Row):
-        index = self._field_index(field_name)
+        index = self._get_field_index(field_name)
         return row[index]
 
-    def _field_index(self, field_name):
+    def _get_field_index(self, field_name):
         index = self._field_index_dict.get(field_name.upper(), None)
         if index is None:
             raise Exception(f'Field name not found `{field_name}`')
@@ -44,13 +44,25 @@ class Datatable:
             self._n = None
             raise StopIteration
 
+    def _get_old_value(self, field_name: str, row: Row):
+        t = self._get_old_tuple(row)
+        if t is None:
+            return self._valueByName(field_name, row)
+        index = self._get_field_index(field_name)
+        return t[index]
+
     def _set_value(self, field_name: str, row: Row, value: any):
-        index = self._field_index(field_name)
-        row[index] = value
-        old_tuple = self._update.get(row._row_index, None)
+        old_tuple = self._get_old_tuple(row)
         if old_tuple is None:
             old_tuple = tuple(row)
             self._update[row._row_index] = old_tuple
+
+        index = self._get_field_index(field_name)
+        row[index] = value
+
+    def _get_old_tuple(self, row):
+        old_tuple = self._update.get(row._row_index, None)
+        return old_tuple
 
     def delta(self) -> list:
         update = []
@@ -75,6 +87,10 @@ class Field:
     @value.setter
     def value(self, value):
         self._table._set_value(self.name, self._row, value)
+
+    @property
+    def oldValue(self):
+        return self._table._get_old_value(self.name, self._row)
 
 
 class Row(list):

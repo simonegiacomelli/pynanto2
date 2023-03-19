@@ -15,7 +15,8 @@ def test_fieldByName():
 def test_write():
     target = new_target()
     target.rows[0].fieldByName('field1').value = 'mod1'
-    assert 'mod1' == target.rows[0].fieldByName('field1').value
+    assert target.rows[0].fieldByName('field1').value == 'mod1'
+    assert target.rows[0].fieldByName('field1').oldValue == 'one'
 
 
 def test_delta():
