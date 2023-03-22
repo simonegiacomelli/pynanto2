@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
-from pynanto.webservers.python_embedded import WsPythonEmbedded
 from tests import new_config
+from wwwpy.webservers.python_embedded import WsPythonEmbedded
 
 
 def test_widget_playwright(page: Page):

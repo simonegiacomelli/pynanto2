@@ -1,4 +1,4 @@
-import pynanto as pn
+import wwwpy as pn
 
 
 def main():

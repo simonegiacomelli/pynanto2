@@ -1,9 +1,9 @@
 from playwright.sync_api import Page, expect
 
-import pynanto
-from pynanto import Bootstrap, Response, Routes, Webserver
-from pynanto.server import find_port
+import wwwpy
 from tests import for_all_webservers
+from wwwpy import Bootstrap, Response, Routes, Webserver
+from wwwpy.server import find_port
 
 
 @for_all_webservers()
@@ -26,7 +26,7 @@ def test_bootstrap(page: Page, webserver: Webserver):
 
 @for_all_webservers()
 def test_bootstrap_config(page: Page, webserver: Webserver):
-    cfg = pynanto.Config()
+    cfg = wwwpy.Config()
     cfg.bootstrap.add_python(
         'from js import document\n' +
         'document.getElementById("tag1").innerHTML = "Hello bootstrap!"\n'

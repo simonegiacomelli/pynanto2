@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pynanto.bundles import external_filename, path_is_contained
+from wwwpy.bundles import external_filename, path_is_contained
 
 
 def test_external_filename():

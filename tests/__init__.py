@@ -3,10 +3,10 @@ from types import ModuleType
 
 import pytest
 
-import pynanto
-from pynanto import Webserver
-from pynanto.server import find_port
-from pynanto.webservers.available_webservers import available_webservers
+import wwwpy
+from wwwpy import Webserver
+from wwwpy.server import find_port
+from wwwpy.webservers.available_webservers import available_webservers
 
 
 def for_all_webservers():
@@ -14,8 +14,8 @@ def for_all_webservers():
                    ids=available_webservers().ids)()
 
 
-def new_config(webserver: Webserver, rpc_module: ModuleType = None) -> pynanto.Config:
-    return pynanto.Config().quickstart(
+def new_config(webserver: Webserver, rpc_module: ModuleType = None) -> wwwpy.Config:
+    return wwwpy.Config().quickstart(
         webserver_instance=webserver,
         port=find_port(),
         blocking=False,

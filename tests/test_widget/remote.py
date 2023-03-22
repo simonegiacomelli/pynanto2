@@ -1,4 +1,4 @@
-import pynanto.remote.test_widget as tw
+import wwwpy.remote.test_widget as tw
 
 tw.main()
 

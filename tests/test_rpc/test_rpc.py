@@ -1,15 +1,15 @@
 import importlib.util
 from types import ModuleType
 
-import pynanto
-from pynanto import Routes, Webserver
-from pynanto.exceptions import RemoteException
-from pynanto.rpc import Module, RpcRequest, Services
-from pynanto.server import find_port
+import wwwpy
 from tests import for_all_webservers
 from tests.test_rpc import support1, support3
 from tests.test_rpc import support2
 from tests.test_unsync import unasync
+from wwwpy import Routes, Webserver
+from wwwpy.exceptions import RemoteException
+from wwwpy.rpc import Module, RpcRequest, Services
+from wwwpy.server import find_port
 
 support2_module_name = 'tests.test_rpc.support2'
 
@@ -96,8 +96,8 @@ def test_rpc_integration(webserver: Webserver):
     webserver.set_port(find_port()).start_listen().wait_ready()
 
     rpc_url = webserver.localhost_url() + services.route.path
-    imports = 'from pynanto.server.fetch import async_fetch_str'
-    stub_source = pynanto.rpc.generate_stub_source(module, rpc_url, imports)
+    imports = 'from wwwpy.server.fetch import async_fetch_str'
+    stub_source = wwwpy.rpc.generate_stub_source(module, rpc_url, imports)
     """ end """
 
     """ client part """

@@ -1,4 +1,4 @@
-from pynanto.unasync import unasync
+from wwwpy.unasync import unasync
 
 
 def test_unsync():

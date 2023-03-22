@@ -1,8 +1,8 @@
-from pynanto import Response, Routes, Webserver
-from pynanto.response import Request
-from pynanto.server import find_port
-from pynanto.server.fetch import sync_fetch_response
 from tests import for_all_webservers
+from wwwpy import Response, Routes, Webserver
+from wwwpy.response import Request
+from wwwpy.server import find_port
+from wwwpy.server.fetch import sync_fetch_response
 
 
 @for_all_webservers()
