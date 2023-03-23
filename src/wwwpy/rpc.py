@@ -114,7 +114,7 @@ class Proxy:
 class Services:
     def __init__(self):
         self._modules: Dict[str, Module] = {}
-        self.route = Route('/pynanto/rpc', self._route_callback)
+        self.route = Route('/wwwpy/rpc', self._route_callback)
 
     def add_module(self, module: Module):
         self._modules[module.name] = module

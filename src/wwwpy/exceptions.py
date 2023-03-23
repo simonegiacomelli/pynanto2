@@ -1,12 +1,12 @@
-class PynantoException(Exception):
+class WwwpyException(Exception):
     pass
 
 
-class RemoteException(PynantoException):
+class RemoteException(WwwpyException):
     """When user defined server code fails"""
     pass
 
 
-class RemoteError(PynantoException):
-    """When network/pynanto infrastructure fails"""
+class RemoteError(WwwpyException):
+    """When network/wwwpy infrastructure fails"""
     pass

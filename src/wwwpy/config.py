@@ -21,7 +21,7 @@ class Config:
         self.bootstrap = Bootstrap()
         self.bundles = Bundles()
         self._webserver: Optional[Webserver] = None
-        self.bundle_route = '/pynanto/bundle/default.zip'
+        self.bundle_route = '/wwwpy/bundle/default.zip'
 
     @property
     def webserver(self) -> Webserver:
@@ -90,8 +90,8 @@ class Config:
 
             self.bundles.add_resources(gen_remotepy)
 
-        pynanto_remote = Path(__file__).parent
-        self.bundles.add_flat_folder(pynanto_remote, relative_to=pynanto_remote.parent)
+        wwwpy_remote = Path(__file__).parent
+        self.bundles.add_flat_folder(wwwpy_remote, relative_to=wwwpy_remote.parent)
         # language=python
         load_default_bundle = f"""
 import sys

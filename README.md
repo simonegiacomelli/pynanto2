@@ -1,4 +1,4 @@
-Pynanto helps you share Python code between server and browser.
+Wwwpy helps you share Python code between server and browser.
 It lives on top of [Pyodide](https://github.com/pyodide/pyodide).
 
 
@@ -12,8 +12,8 @@ It avoids the impedance of having two different languages (e.g, Javascript in th
 
 Thanks to Pyodide, it's possible to install and run Python packages in the browser.
 
-Pynanto is an opinionated microframework that helps to be productive quickly.
-What Pynanto can do for you:
+Wwwpy is an opinionated microframework that helps to be productive quickly.
+What Wwwpy can do for you:
 - Start Pyodide
 - Bring Python files in the browser
 - Manage browser side Python dependencies
@@ -37,7 +37,7 @@ RPC mechanism
 ## 5) Provide Python helpers to deal with html/dom/javascript
 Widget(s) and HTML stubs
 
-# Pynanto lifecycle
+# Wwwpy lifecycle
 
 - Configure a web server to serve 
   - client_bundle.zip, this contains the Python sources we want to send to the client

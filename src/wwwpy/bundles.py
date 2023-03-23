@@ -29,11 +29,11 @@ class Bundles:
 
 
 def external_filename(stack_backtrack=1) -> Optional[Path]:
-    pynanto_root = Path(__file__).resolve().parent
+    wwwpy_root = Path(__file__).resolve().parent
 
     for stack in inspect.stack():
         source_path = Path(stack.filename).resolve()
-        if not path_is_contained(source_path, pynanto_root):
+        if not path_is_contained(source_path, wwwpy_root):
             stack_backtrack -= 1
             if stack_backtrack == 0:
                 return source_path
