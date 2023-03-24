@@ -41,7 +41,7 @@ except Exception as ex:
 js_content = """
 if (typeof loadPyodide === 'undefined') {
     let script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js';
+    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js';
     script.onload = async () => {
         let pyodide = await loadPyodide();
         window.pyodide = pyodide;
