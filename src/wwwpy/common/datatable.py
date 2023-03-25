@@ -14,6 +14,9 @@ class Datatable:
         self._update = {}
         super().__init__()
 
+    def __str__(self):
+        return str((self.header,) + tuple(self.rows))
+
     def _fieldByName(self, field_name: str, row: Row) -> Field:
         field_name = field_name.upper()
         value = self._valueByName(field_name, row)
@@ -84,6 +87,21 @@ class Field:
     @property
     def value(self):
         return self._value
+
+    @property
+    def as_string(self):
+        value = self.value
+        return '' if value is None else str(value)
+
+    @property
+    def as_float(self):
+        value = self.value
+        return 0.0 if value is None else float(value)
+
+    @property
+    def as_int(self):
+        value = self.value
+        return 0 if value is None else int(value)
 
     @value.setter
     def value(self, value):
