@@ -6,10 +6,10 @@ from typing import Tuple, List
 class Datatable:
     def __init__(self, rows: Tuple):
         assert len(rows) >= 1  # at least the header
-        header = rows[0]
-        assert all(map(lambda field_name: isinstance(field_name, str), header))  # verify header are strings
+        self.header = rows[0]
+        assert all(map(lambda field_name: isinstance(field_name, str), self.header))  # verify header are strings
         self.rows: List[Row] = list(map(lambda r: Row(self, r[0], r[1]), enumerate(rows[1:])))
-        self._field_index_dict = {f.upper(): index for (index, f) in enumerate(header)}
+        self._field_index_dict = {f.upper(): index for (index, f) in enumerate(self.header)}
         self._n = None
         self._update = {}
         super().__init__()
