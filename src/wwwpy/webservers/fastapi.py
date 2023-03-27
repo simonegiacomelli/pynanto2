@@ -22,7 +22,7 @@ class WsFastapi(Webserver):
 
         self.app.add_route(route.path, route=func)
 
-    def to_native_response(self, pn_response: wwwpy.Response):
+    def to_native_response(self, pn_response: wwwpy.HttpResponse):
         return Response(content=pn_response.content, media_type=pn_response.content_type)
 
     def _start_listen(self):

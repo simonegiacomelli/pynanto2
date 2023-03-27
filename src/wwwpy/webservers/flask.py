@@ -19,7 +19,7 @@ class WsFlask(Webserver):
 
         self.app.add_url_rule(route.path, route.path, func)
 
-    def to_native_response(self, pn_response: wwwpy.Response) -> Response:
+    def to_native_response(self, pn_response: wwwpy.HttpResponse) -> Response:
         return Response(pn_response.content, status=200, content_type=pn_response.content_type)
 
     def _start_listen(self):

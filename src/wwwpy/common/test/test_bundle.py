@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional, NamedTuple
 
 from wwwpy import StringResource, PathResource
-from wwwpy.common.bundle import from_filesystem, default_resource_filter, build_archive
+from wwwpy.resources import default_resource_filter, from_filesystem, build_archive
 
 parent = Path(__file__).parent
 

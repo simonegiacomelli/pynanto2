@@ -4,10 +4,11 @@ from pathlib import Path
 from types import ModuleType
 from typing import Optional, Iterator
 
+from wwwpy import Bundles
 from wwwpy.bootstrap import Bootstrap
-from wwwpy.bundles import Bundles, external_filename
-from wwwpy.resource import Resource, PathResource
-from wwwpy.response import Response, Request
+from wwwpy.http_request import Request
+from wwwpy.http_response import HttpResponse
+from wwwpy.resources import Resource, PathResource, stacktrace_pathfinder
 from wwwpy.routes import Routes
 from wwwpy.rpc import Services, Stubber, Module
 from wwwpy.webserver import Webserver
@@ -74,7 +75,7 @@ class Config:
         # - through an 'import module_name'
         # - through ??
 
-        ef = external_filename(stack_backtrack)
+        ef = stacktrace_pathfinder(stack_backtrack)
         print(f'detected user dir: {ef}')
         print(f'{sys.path}')
         if ef is not None:
@@ -117,9 +118,9 @@ await remote.main()
 
         return self
 
-    def quickstart_index_response(self, request: Request) -> Response:
+    def quickstart_index_response(self, request: Request) -> HttpResponse:
         bootstrap_javascript = self.bootstrap.get_javascript()
-        return Response(
+        return HttpResponse(
             f'<h1>loading...</h1>'
             f'<script>{bootstrap_javascript}</script>'
             , 'text/html'

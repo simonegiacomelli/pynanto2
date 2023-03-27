@@ -3,10 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from .bootstrap import Bootstrap
-from .bundle import Bundle
-from .bundles import Bundles
-from .resource import Resource, StringResource, PathResource
-from .response import Response
+from .http_response import HttpResponse
+from .resources import Resource, StringResource, PathResource, Bundles, Bundle
 from .routes import Routes, Route
 from .webserver import Webserver
 from .webservers.available_webservers import available_webservers
@@ -31,4 +29,4 @@ def ws_fastapi() -> WsFastapi:
     return WsFastapi()
 
 
-__version__ = '0.0.25'
+__version__ = '0.0.26'

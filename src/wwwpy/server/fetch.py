@@ -1,7 +1,7 @@
 import urllib
 import urllib.request
 
-from wwwpy import Response
+from wwwpy import HttpResponse
 
 
 async def async_fetch_str(url: str, method: str = 'GET', data: str = '') -> str:
@@ -9,9 +9,9 @@ async def async_fetch_str(url: str, method: str = 'GET', data: str = '') -> str:
     return response.content
 
 
-def sync_fetch_response(url: str, method: str = 'GET', data: str = '') -> Response:
+def sync_fetch_response(url: str, method: str = 'GET', data: str = '') -> HttpResponse:
     def make_response(r):
-        return Response(
+        return HttpResponse(
             r.read().decode("utf-8"),
             r.headers.get_content_type()
         )

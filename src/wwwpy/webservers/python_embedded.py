@@ -5,7 +5,8 @@ from threading import Thread
 from typing import Optional, Callable, Dict
 from urllib.parse import urlparse, parse_qs
 
-from wwwpy.response import Response, Request
+from wwwpy.http_request import Request
+from wwwpy.http_response import HttpResponse
 from wwwpy.routes import Route
 from wwwpy.webserver import Webserver
 from wwwpy.webserver import wait_forever
@@ -103,6 +104,6 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     s = WsPythonEmbedded()
-    s._setup_route(Route('/', lambda: Response('ciao', 'text/html')))
+    s._setup_route(Route('/', lambda: HttpResponse('ciao', 'text/html')))
     s.start_listen()
     wait_forever()

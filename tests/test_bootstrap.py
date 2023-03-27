@@ -2,7 +2,7 @@ from playwright.sync_api import Page, expect
 
 import wwwpy
 from tests import for_all_webservers
-from wwwpy import Bootstrap, Response, Routes, Webserver
+from wwwpy import Bootstrap, HttpResponse, Routes, Webserver
 from wwwpy.server import find_port
 
 
@@ -13,8 +13,8 @@ def test_bootstrap(page: Page, webserver: Webserver):
         'document.getElementById("tag1").value = "Hello world!"\n'
     ).get_javascript()
 
-    response = Response(f'<input id="tag1" value="Hello">'
-                        f'<script>{bootstrap_javascript}</script>', 'text/html')
+    response = HttpResponse(f'<input id="tag1" value="Hello">'
+                            f'<script>{bootstrap_javascript}</script>', 'text/html')
 
     routes = Routes().add_route('/', lambda _: response)
     webserver.set_routes(routes).set_port(find_port()).start_listen().wait_ready()
@@ -34,8 +34,8 @@ def test_bootstrap_config(page: Page, webserver: Webserver):
 
     cfg.set_routes(Routes().add_route(
         '/',
-        lambda _: Response(f'<div id="tag1"></div>'
-                           f'<script>{cfg.bootstrap.get_javascript()}</script>', 'text/html')
+        lambda _: HttpResponse(f'<div id="tag1"></div>'
+                               f'<script>{cfg.bootstrap.get_javascript()}</script>', 'text/html')
     ))
 
     cfg.attach_webserver(webserver)

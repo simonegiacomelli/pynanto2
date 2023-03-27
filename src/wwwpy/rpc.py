@@ -16,7 +16,8 @@ except:
             ...
 
 from wwwpy import Resource, StringResource
-from wwwpy.response import Request, Response
+from wwwpy.http_response import HttpResponse
+from wwwpy.http_request import Request
 from wwwpy.routes import Route
 from wwwpy.unasync import unasync
 
@@ -136,9 +137,9 @@ class Services:
         response = RpcResponse(result, exception)
         return response.to_json()
 
-    def _route_callback(self, request: Request) -> Response:
+    def _route_callback(self, request: Request) -> HttpResponse:
         resp = self.dispatch(request.content)
-        response = Response(resp, 'application/json')
+        response = HttpResponse(resp, 'application/json')
         return response
 
 
