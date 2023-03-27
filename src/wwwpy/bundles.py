@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from wwwpy.bundle import Bundle
 from wwwpy.bundle import strategy_no_cache, ResourceGenerator, LambdaBundle
-from wwwpy.common.bundle import bundle_definition
+from wwwpy.common.bundle import from_filesystem
 from wwwpy.resource import StringResource
 from wwwpy.response import Response, Request
 
@@ -21,7 +21,7 @@ class Bundles:
         self.list.append(LambdaBundle(resource_generator))
 
     def add_flat_folder(self, folder: Path, relative_to: Optional[Path] = None):
-        self.add_resources(lambda: bundle_definition(folder, relative_to=relative_to))
+        self.add_resources(lambda: from_filesystem(folder, relative_to=relative_to))
 
     def add_file_content(self, filename: str, content: str):
         resource_list = [StringResource(filename, content)]

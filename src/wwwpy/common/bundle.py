@@ -7,21 +7,25 @@ from wwwpy.resource import PathResource
 from wwwpy.resource import Resource, StringResource
 
 
-def default_item_filter(item: Resource) -> Optional[Resource]:
-    if not isinstance(item, PathResource):
-        return item
-    item: PathResource
-    filepath = item.filepath
+def default_resource_filter(resource: Resource) -> Optional[Resource]:
+    if not isinstance(resource, PathResource):
+        return resource
+    resource: PathResource
+    filepath = resource.filepath
     if filepath.name == '.DS_Store':
         return None
     if filepath.name == '__pycache__' and filepath.is_dir():
         return None
-    return item
+    return resource
 
 
-def bundle_definition(
+ResourceIterator = Iterator[Resource]
+ResourceFilter = Callable[[Resource], Optional[Resource]]
+
+
+def from_filesystem(
         folder: Path, relative_to: Optional[Path] = None,
-        item_filter: Callable[[PathResource], Optional[PathResource]] = default_item_filter
+        resource_filter: ResourceIterator = default_resource_filter
 ) -> Iterator[PathResource]:
     if relative_to is None:
         relative_to = folder
@@ -30,7 +34,7 @@ def bundle_definition(
         for f in path.glob('*'):
             rel = f.relative_to(relative_to)
             candidate = PathResource(str(rel), f)
-            item = item_filter(candidate)
+            item = resource_filter(candidate)
             if item is not None:
                 if f.is_file():
                     yield item

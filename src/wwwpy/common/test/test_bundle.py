@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional, NamedTuple
 
 from wwwpy import StringResource, PathResource
-from wwwpy.common.bundle import bundle_definition, default_item_filter, build_archive
+from wwwpy.common.bundle import from_filesystem, default_resource_filter, build_archive
 
 parent = Path(__file__).parent
 
@@ -15,20 +15,20 @@ class Test_bundle_definition(unittest.TestCase):
 
     def test_one_file(self):
         folder = self.support_data / 'one_file'
-        actual = set(bundle_definition(folder))
+        actual = set(from_filesystem(folder))
         expect = set([PathResource('foo.py', folder / 'foo.py')])
         self.assertEqual(expect, actual)
 
     def test_zero_file(self):
         folder = self.support_data / 'zero_file'
         folder.mkdir(exist_ok=True)  # git does not commit empty folders
-        actual = set(bundle_definition(folder))
+        actual = set(from_filesystem(folder))
         expect = set([])
         self.assertEqual(expect, actual)
 
     def test_selective(self):
         folder = self.support_data / 'relative_to'
-        actual = set(bundle_definition(folder / 'yes', relative_to=folder))
+        actual = set(from_filesystem(folder / 'yes', relative_to=folder))
         expect = set([PathResource('yes/yes.txt', folder / 'yes/yes.txt')])
         self.assertEqual(expect, actual)
 
@@ -43,9 +43,9 @@ class Test_bundle_definition(unittest.TestCase):
         def item_filter(item: PathResource) -> Optional[PathResource]:
             if item.filepath == reject:
                 return None
-            return default_item_filter(item)
+            return default_resource_filter(item)
 
-        actual = set(bundle_definition(folder, item_filter=item_filter))
+        actual = set(from_filesystem(folder, resource_filter=item_filter))
         expect = set([PathResource('yes/yes.txt', folder / 'yes/yes.txt')])
         self.assertEqual(expect, actual)
 
@@ -61,7 +61,7 @@ class Test_build_archive(unittest.TestCase):
         folder = self.support_data / 'simple'
         (folder / 'empty_dir').mkdir(exist_ok=True)  # should be ignored by build_archive
 
-        archive_bytes = build_archive(list(bundle_definition(folder)) +
+        archive_bytes = build_archive(list(from_filesystem(folder)) +
                                       [StringResource('dir1/baz.txt', "#baz")])
 
         actual_files = set()
