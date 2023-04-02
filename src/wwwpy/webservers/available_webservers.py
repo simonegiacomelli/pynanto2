@@ -18,21 +18,21 @@ class AvailableWebservers:
 
 def _webservers_classes():
     result = []
-    try:
-        from wwwpy.webservers.fastapi import WsFastapi
-        result.append(WsFastapi)
-    except:
-        pass
-    try:
-        from wwwpy.webservers.flask import WsFlask
-        result.append(WsFlask)
-    except:
-        pass
-    try:
-        from wwwpy.webservers.tornado import WsTornado
-        result.append(WsTornado)
-    except:
-        pass
+    # try:
+    #     from wwwpy.webservers.fastapi import WsFastapi
+    #     result.append(WsFastapi)
+    # except:
+    #     pass
+    # try:
+    #     from wwwpy.webservers.flask import WsFlask
+    #     result.append(WsFlask)
+    # except:
+    #     pass
+    # try:
+    #     from wwwpy.webservers.tornado import WsTornado
+    #     result.append(WsTornado)
+    # except:
+    #     pass
 
     from wwwpy.webservers.python_embedded import WsPythonEmbedded
     result.append(WsPythonEmbedded)

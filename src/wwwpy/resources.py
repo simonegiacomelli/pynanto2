@@ -45,11 +45,11 @@ class Bundles:
     def to_response(self, request: Request) -> HttpResponse:
         return HttpResponse.application_zip(self.strategy(self.list))
 
-    def add_resources(self, resource_generator: ResourceGenerator):
+    def add_resources(self, resource_generator: CallableResourceIterator):
         self.list.append(LambdaBundle(resource_generator))
 
     def add_flat_folder(self, folder: Path, relative_to: Optional[Path] = None):
-        self.add_resources(lambda: from_filesystem(folder, relative_to=relative_to))
+        self.add_resources(lambda: from_filesystem_once(folder, relative_to=relative_to))
 
     def add_file_content(self, filename: str, content: str):
         resource_list = [StringResource(filename, content)]
@@ -80,7 +80,7 @@ def _path_is_contained(child: Path, parent: Path):
     return child_parts == parent_parts
 
 
-ResourceGenerator = Callable[[], Iterator[Resource]]
+CallableResourceIterator = Callable[[], Iterator[Resource]]
 
 
 class Bundle(ABC):
@@ -102,12 +102,11 @@ def flatten_bundles(bundle_list: List[Bundle]) -> Iterable[Resource]:
 
 
 class LambdaBundle(Bundle):
-    def __init__(self, resource_generator: ResourceGenerator):
+    def __init__(self, resource_generator: CallableResourceIterator):
         self.resource_generator = resource_generator
 
     def list(self) -> Iterable[Resource]:
-        gen = self.resource_generator()
-        yield from gen
+        return self.resource_generator()
 
 
 def strategy_no_cache(bundles: List[Bundle]) -> bytes:
@@ -130,7 +129,7 @@ ResourceIterator = Iterator[Resource]
 ResourceFilter = Callable[[Resource], Optional[Resource]]
 
 
-def from_filesystem(
+def from_filesystem_once(
         folder: Path, relative_to: Optional[Path] = None,
         resource_filter: ResourceIterator = default_resource_filter
 ) -> Iterator[PathResource]:
