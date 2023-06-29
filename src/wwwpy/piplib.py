@@ -1,6 +1,6 @@
 
 async def install(package):
-    from js import pyodide
-    await pyodide.loadPackage('micropip')
+    import pyodide_js
+    await pyodide_js.loadPackage('micropip')
     import micropip
     await micropip.install([package])

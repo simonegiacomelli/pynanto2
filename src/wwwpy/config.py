@@ -75,14 +75,14 @@ class Config:
         # - through an 'import module_name'
         # - through ??
 
-        ef = stacktrace_pathfinder(stack_backtrack)
-        print(f'detected user dir: {ef}')
+        ud = stacktrace_pathfinder(stack_backtrack).parent
+        print(f'detected user dir: {ud}')
         print(f'{sys.path}')
-        if ef is not None:
-            self.bundles.add_flat_folder(ef.parent / 'app', relative_to=ef.parent)
-            self.bundles.add_flat_folder(ef.parent / 'remote', relative_to=ef.parent)
-            self.bundles.add_flat_folder(ef.parent / 'common', relative_to=ef.parent)
-            remotepy = ef.parent / 'remote.py'
+        if ud is not None:
+            self.bundles.add_flat_folder(ud / 'app', relative_to=ud)
+            self.bundles.add_flat_folder(ud / 'remote', relative_to=ud)
+            self.bundles.add_flat_folder(ud / 'common', relative_to=ud)
+            remotepy = ud / 'remote.py'
 
             def gen_remotepy() -> Iterator[Resource]:
                 if remotepy.exists():
